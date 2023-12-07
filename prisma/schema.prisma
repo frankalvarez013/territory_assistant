@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Congregation {
+  id               String      @id @default(uuid())
+  congregationName String
+  Territories      Territory[]
+  Users             User[]
+}
+
+model User {
+  id             String       @unique @default(uuid())
+  fName          String
+  lName          String
+  email          String       @unique
+  isAdmin        Boolean      @default(false)
+  congregationID String
+  congregation   Congregation @relation(fields: [congregationID], references: [id])
+  Territory      Territory[]
+
+  @@id([id, isAdmin])
+}
+
+model Territory {
+  territoryID     String       @unique
+  address         String
+  AssignedDate    DateTime
+  ExperiationDate DateTime
+  houses          House[]
+  congregationID  String
+  userID          String
+  Congregation    Congregation @relation(fields: [congregationID], references: [id])
+  user            User         @relation(fields: [userID], references: [id])
+
+  @@id([territoryID, congregationID])
+}
+
+enum Observation {
+  EMPTY
+  VISITED
+  DONTVISIT
+  DOG
+  NIGHT
+}
+
+model House {
+  territoryID String
+  StreetAd    String      @id
+  observation Observation
+  comment     String
+  dateVisited DateTime
+  Territory   Territory?  @relation(fields: [territoryID], references: [territoryID])
+}

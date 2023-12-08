@@ -12,16 +12,17 @@ datasource db {
 
 model Congregation {
   id               String      @id @default(uuid())
-  congregationName String
+  congregationName String      @db.VarChar(255)
+  address          String      @db.VarChar(255)
   Territories      Territory[]
-  Users             User[]
+  Users            User[]
 }
 
 model User {
   id             String       @unique @default(uuid())
-  fName          String
-  lName          String
-  email          String       @unique
+  fName          String       @db.VarChar(255)
+  lName          String       @db.VarChar(255)
+  email          String       @unique @db.VarChar(255)
   isAdmin        Boolean      @default(false)
   congregationID String
   congregation   Congregation @relation(fields: [congregationID], references: [id])
@@ -32,7 +33,7 @@ model User {
 
 model Territory {
   territoryID     String       @unique
-  address         String
+  address         String       @db.VarChar(255)
   AssignedDate    DateTime
   ExperiationDate DateTime
   houses          House[]
@@ -53,10 +54,10 @@ enum Observation {
 }
 
 model House {
-  territoryID String
-  StreetAd    String      @id
-  observation Observation
-  comment     String
+  territoryID String      @db.VarChar(255)
+  StreetAd    String      @id @db.VarChar(255)
+  observation Observation @default(EMPTY)
+  comment     String      @db.VarChar(255)
   dateVisited DateTime
   Territory   Territory?  @relation(fields: [territoryID], references: [territoryID])
 }

@@ -27,10 +27,12 @@ export async function GET(request: NextRequest){
     const allCongregations = await prisma.congregation.findMany();
     return NextResponse.json(allCongregations,{status:201})
 }
+
 export async function UPDATE(request: NextRequest){
+
     const allCongregations = await prisma.congregation.update({
         where: {
-            id: '123'
+            id: request.nextUrl.searchParams.get("foo") ?? undefined
         },
         data: {
             congregationName: 'NewName',
@@ -40,19 +42,12 @@ export async function UPDATE(request: NextRequest){
     return NextResponse.json(allCongregations,{status:201})
 }
 
-// export async function DELETE(request: NextRequest){
-//     const body = await request.json();
-//     const validation = createCongregationSchema.safeParse(body);
-//     if (!validation.success){
-//         return NextResponse.json(validation.error.errors, {status: 400})
-//     }
-//     console.log(body)
-//     const deletedCongregation = await prisma.congregation.delete({
-//         where: {
-//             congregationName:body.address
-//         }
-//         }
-//     )
+export async function DELETE(request: NextRequest){
 
-//     return NextResponse.json(newCongregation,{status: 201})
-// }
+    const allCongregations = await prisma.congregation.delete({
+        where: {
+            id: request.nextUrl.searchParams.get("foo") ?? undefined
+        }
+    });
+    return NextResponse.json(allCongregations,{status:201})
+}

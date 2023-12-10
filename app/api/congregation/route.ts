@@ -29,7 +29,7 @@ export async function GET(request: NextRequest){
 }
 
 export async function UPDATE(request: NextRequest){
-
+    
     const allCongregations = await prisma.congregation.update({
         where: {
             id: request.nextUrl.searchParams.get("foo") ?? undefined

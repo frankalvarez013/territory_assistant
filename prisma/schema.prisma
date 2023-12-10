@@ -11,9 +11,9 @@ datasource db {
 }
 
 model Congregation {
-  id               String      @id @default(uuid())
-  congregationName String      @db.VarChar(255)
-  address          String      @db.VarChar(255)
+  id               String      @id @unique @default(uuid())
+  congregationName String      @unique @db.VarChar(255)
+  address          String      @unique @db.VarChar(255)
   Territories      Territory[]
   Users            User[]
 }
@@ -28,20 +28,19 @@ model User {
   congregation   Congregation @relation(fields: [congregationID], references: [id])
   Territory      Territory[]
 
-  @@id([id, isAdmin])
+  @@id([id, congregationID])
 }
 
 model Territory {
-  territoryID     String       @unique
-  address         String       @db.VarChar(255)
+  territoryID     Int          @unique @default(autoincrement())
+  location        String       @db.VarChar(255)
+  houses          House[]
   AssignedDate    DateTime
   ExperiationDate DateTime
-  houses          House[]
   congregationID  String
-  userID          String
+  currentUserID   String
+  currentUser     User?         @relation(fields: [currentUserID], references: [id])
   Congregation    Congregation @relation(fields: [congregationID], references: [id])
-  user            User         @relation(fields: [userID], references: [id])
-
   @@id([territoryID, congregationID])
 }
 
@@ -54,10 +53,10 @@ enum Observation {
 }
 
 model House {
-  territoryID String      @db.VarChar(255)
+  territoryID Int
   StreetAd    String      @id @db.VarChar(255)
   observation Observation @default(EMPTY)
-  comment     String      @db.VarChar(255)
-  dateVisited DateTime
-  Territory   Territory?  @relation(fields: [territoryID], references: [territoryID])
+  comment     String?      @db.VarChar(255)
+  dateVisited DateTime?
+  Territory   Territory  @relation(fields: [territoryID], references: [territoryID])
 }

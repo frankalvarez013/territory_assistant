@@ -2,29 +2,31 @@ import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest } from "next";
 import {z} from "zod"
 import prisma from '@/prisma/client'
-const createCongregationSchema = z.object({
-    congregationName: z.string().min(1).max(255),
-    address: z.string().min(1).max(255)
+const createUserSchema = z.object({
+    id: z.string().min(1).max(255),
+    congregationID: z.string().min(1).max(255)
 })
 
 export async function POST(request: NextRequest){
     const body = await request.json();
-    const validation = createCongregationSchema.safeParse(body);
+    const validation = createUserSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const newCongregation = await prisma.congregation.create({
+    const newUser = await prisma.user.create({
         data: {
-            congregationName:body.congregationName, 
-            address: body.address
+            fName: body.fName,
+            lName: body.lName,
+            email: body.email,
+            congregationID: body.congregationID
         }
     }
     )
-    return NextResponse.json(newCongregation,{status: 201})
+    return NextResponse.json(newUser,{status: 201})
 }
 
 export async function GET(request: NextRequest){
-     const congregation = await prisma.congregation.findUnique({
+     const congregation = await prisma.user.findUnique({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         }
@@ -34,28 +36,29 @@ export async function GET(request: NextRequest){
 
 export async function UPDATE(request: NextRequest){
     const body = await request.json();
-    const validation = createCongregationSchema.safeParse(body);
+    const validation = createUserSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const allCongregations = await prisma.congregation.update({
+    const user = await prisma.user.update({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         },
         data: {
-            congregationName:body.congregationName, 
-            address: body.address
+            fName: body.fName,
+            lName: body.lName,
+            email: body.email,
+            congregationID: body.congregationID
         }
     });
-    return NextResponse.json(allCongregations,{status:201})
+    return NextResponse.json(user,{status:201})
 }
 
 export async function DELETE(request: NextRequest){
-
-    const allCongregations = await prisma.congregation.delete({
+    const user = await prisma.user.delete({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         }
     });
-    return NextResponse.json(allCongregations,{status:201})
+    return NextResponse.json(user,{status:201})
 }

@@ -39,8 +39,9 @@ model Territory {
   ExperiationDate DateTime
   congregationID  String
   currentUserID   String
-  currentUser     User?         @relation(fields: [currentUserID], references: [id])
+  currentUser     User?        @relation(fields: [currentUserID], references: [id])
   Congregation    Congregation @relation(fields: [congregationID], references: [id])
+
   @@id([territoryID, congregationID])
 }
 
@@ -54,9 +55,11 @@ enum Observation {
 
 model House {
   territoryID Int
-  StreetAd    String      @id @db.VarChar(255)
+  StreetAd    String      @unique @db.VarChar(255)
   observation Observation @default(EMPTY)
-  comment     String?      @db.VarChar(255)
+  comment     String?     @db.VarChar(255)
   dateVisited DateTime?
-  Territory   Territory  @relation(fields: [territoryID], references: [territoryID])
+  Territory   Territory   @relation(fields: [territoryID], references: [territoryID])
+
+  @@id([territoryID, StreetAd])
 }

@@ -24,24 +24,27 @@ export async function POST(request: NextRequest){
 }
 
 export async function GET(request: NextRequest){
-     const congregation = await prisma.congregation.findUnique({
-        where: {
-            id: request.nextUrl.searchParams.get("id") ?? undefined
-        }
-    });
-    return NextResponse.json(congregation,{status:201})
+    const idParam = request.nextUrl.searchParams.get("id")
+    let getCongregation: {} | null = null
+    if (idParam){
+        getCongregation = await prisma.congregation.findUnique({
+            where: {
+                id: request.nextUrl.searchParams.get("id") ?? undefined
+            }
+        });
+    } else {
+        getCongregation = await prisma.congregation.findMany({});
+    }
+    return NextResponse.json(getCongregation,{status:201})
 }
-export async function GETALL(request: NextRequest){
-    const congregation = await prisma.congregation.findMany({});
-   return NextResponse.json(congregation,{status:201})
-}
+
 export async function UPDATE(request: NextRequest){
     const body = await request.json();
     const validation = createCongregationSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const allCongregations = await prisma.congregation.update({
+    const updateCongregation = await prisma.congregation.update({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         },
@@ -50,15 +53,15 @@ export async function UPDATE(request: NextRequest){
             address: body.address
         }
     });
-    return NextResponse.json(allCongregations,{status:201})
+    return NextResponse.json(updateCongregation,{status:201})
 }
 
 export async function DELETE(request: NextRequest){
 
-    const allCongregations = await prisma.congregation.delete({
+    const deletedCongregation = await prisma.congregation.delete({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         }
     });
-    return NextResponse.json(allCongregations,{status:201})
+    return NextResponse.json(deletedCongregation,{status:201})
 }

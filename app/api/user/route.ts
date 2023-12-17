@@ -33,16 +33,19 @@ export async function POST(request: NextRequest){
     return NextResponse.json(newUser,{status: 201})
 }
 export async function GET(request: NextRequest){
-    const congregation = await prisma.user.findMany({
-       where: {
-           id: request.nextUrl.searchParams.get("id") ?? undefined
-       }
-   });
-   return NextResponse.json(congregation,{status:201})
-}
-export async function GETALL(request: NextRequest){
-    const congregation = await prisma.user.findMany({});
-   return NextResponse.json(congregation,{status:201})
+    const idParams = request.nextUrl.searchParams.get("id")
+    let getUser: {} | null = null
+    if (idParams){
+        getUser = await prisma.user.findUnique({
+            where: {
+                id: request.nextUrl.searchParams.get("id") ?? undefined
+            }
+        });
+    } else {
+        getUser = await prisma.user.findMany({});
+    }
+    
+   return NextResponse.json(getUser,{status:201})
 }
 
 export async function UPDATE(request: NextRequest){
@@ -51,7 +54,7 @@ export async function UPDATE(request: NextRequest){
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const user = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         },
@@ -62,14 +65,14 @@ export async function UPDATE(request: NextRequest){
             congregationID: body.congregationID
         }
     });
-    return NextResponse.json(user,{status:201})
+    return NextResponse.json(updatedUser,{status:201})
 }
 
 export async function DELETE(request: NextRequest){
-    const user = await prisma.user.delete({
+    const deletedUser = await prisma.user.delete({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         }
     });
-    return NextResponse.json(user,{status:201})
+    return NextResponse.json(deletedUser,{status:201})
 }

@@ -39,23 +39,23 @@ export async function GET(request: NextRequest){
     const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
     const streetAd = streetdAdParam ? streetdAdParam : undefined
     const territoryID = idParam ? parseInt(idParam) : undefined
-     const congregation = await prisma.house.findUnique({
-        where: {
-            territoryID: territoryID?? undefined,
-            StreetAd: streetAd?? undefined
-        }
-    });
-    return NextResponse.json(congregation,{status:201})
-}
-export async function GETALL(request: NextRequest){
-    const idParam = request.nextUrl.searchParams.get("TerritoryID")
-    const territoryID = idParam ? parseInt(idParam) : undefined
-     const congregation = await prisma.house.findMany({
-        where: {
-            territoryID: territoryID?? undefined,
-        }
-    });
-    return NextResponse.json(congregation,{status:201})
+    let getHouse: {} | null = null
+    if(territoryID){
+        getHouse = await prisma.house.findUnique({
+            where: {
+                territoryID: territoryID?? undefined,
+                StreetAd: streetAd?? undefined
+            }
+        });
+    } else {
+        getHouse = await prisma.house.findMany({
+            where: {
+                territoryID: territoryID?? undefined,
+            }
+        });
+    }
+     
+    return NextResponse.json(getHouse,{status:201})
 }
 
 export async function UPDATE(request: NextRequest){
@@ -68,7 +68,7 @@ export async function UPDATE(request: NextRequest){
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const user = await prisma.house.update({
+    const updatedHouse = await prisma.house.update({
         where: {
             territoryID: territoryID?? undefined,
             StreetAd: streetAd?? undefined
@@ -81,7 +81,7 @@ export async function UPDATE(request: NextRequest){
             observation: body.observation,
         }
     });
-    return NextResponse.json(user,{status:201})
+    return NextResponse.json(updatedHouse,{status:201})
 }
 
 export async function DELETE(request: NextRequest){
@@ -89,11 +89,11 @@ export async function DELETE(request: NextRequest){
     const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
     const streetAd = streetdAdParam ? streetdAdParam : undefined
     const territoryID = idParam ? parseInt(idParam) : undefined
-     const congregation = await prisma.house.delete({
+     const deletedHouse = await prisma.house.delete({
         where: {
             territoryID: territoryID?? undefined,
             StreetAd: streetAd?? undefined
         }
     });
-    return NextResponse.json(congregation,{status:201})
+    return NextResponse.json(deletedHouse,{status:201})
 }

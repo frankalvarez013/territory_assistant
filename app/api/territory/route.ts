@@ -41,6 +41,17 @@ export async function GET(request: NextRequest){
     return NextResponse.json(congregation,{status:201})
 }
 
+export async function GETALL(request: NextRequest){
+    const idParam = request.nextUrl.searchParams.get("id")
+    const territoryID = idParam ? parseInt(idParam) : undefined
+     const congregation = await prisma.territory.findMany({
+        where: {
+            territoryID: territoryID?? undefined
+        }
+    });
+    return NextResponse.json(congregation,{status:201})
+}
+
 export async function UPDATE(request: NextRequest){
     const idParam = request.nextUrl.searchParams.get("id")
     const territoryID = idParam ? parseInt(idParam) : undefined

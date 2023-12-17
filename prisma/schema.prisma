@@ -16,6 +16,7 @@ model Congregation {
   address          String      @unique @db.VarChar(255)
   Territories      Territory[]
   Users            User[]
+  House            House[]
 }
 
 model User {
@@ -31,8 +32,13 @@ model User {
   @@id([id, congregationID])
 }
 
+model CongregationTerritoryCounter {
+  congregationID  String @id
+  nextTerritoryID Int
+}
+
 model Territory {
-  territoryID     Int          @unique @default(autoincrement())
+  territoryID     Int          @unique
   location        String       @db.VarChar(255)
   houses          House[]
   AssignedDate    DateTime
@@ -53,13 +59,21 @@ enum Observation {
   NIGHT
 }
 
-model House {
-  territoryID Int
-  StreetAd    String      @unique @db.VarChar(255)
-  observation Observation @default(EMPTY)
-  comment     String?     @db.VarChar(255)
-  dateVisited DateTime?
-  Territory   Territory   @relation(fields: [territoryID], references: [territoryID])
+model HouseCounter {
+  territoryID Int @id @unique
+  nextHouseID Int
+}
 
-  @@id([territoryID, StreetAd])
+model House {
+  houseID        Int
+  territoryID    Int
+  congregationID String
+  StreetAd       String       @unique @db.VarChar(255)
+  observation    Observation  @default(EMPTY)
+  comment        String?      @db.VarChar(255)
+  dateVisited    DateTime?
+  Territory      Territory    @relation(fields: [territoryID], references: [territoryID])
+  Congregation   Congregation @relation(fields: [congregationID], references: [id])
+
+  @@id([territoryID, houseID, congregationID])
 }

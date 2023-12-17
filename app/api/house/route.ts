@@ -21,7 +21,9 @@ export async function POST(request: NextRequest){
     
     const newHouse = await prisma.house.create({
         data: {
+            houseID: 0,
             territoryID: body.territoryID,
+            congregationID: body.congregationID,
             StreetAd: body.StreetAd,
             dateVisited: body.dateVisited,
             comment: body.comment,
@@ -41,6 +43,16 @@ export async function GET(request: NextRequest){
         where: {
             territoryID: territoryID?? undefined,
             StreetAd: streetAd?? undefined
+        }
+    });
+    return NextResponse.json(congregation,{status:201})
+}
+export async function GETALL(request: NextRequest){
+    const idParam = request.nextUrl.searchParams.get("TerritoryID")
+    const territoryID = idParam ? parseInt(idParam) : undefined
+     const congregation = await prisma.house.findMany({
+        where: {
+            territoryID: territoryID?? undefined,
         }
     });
     return NextResponse.json(congregation,{status:201})

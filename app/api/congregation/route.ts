@@ -31,7 +31,10 @@ export async function GET(request: NextRequest){
     });
     return NextResponse.json(congregation,{status:201})
 }
-
+export async function GETALL(request: NextRequest){
+    const congregation = await prisma.congregation.findMany({});
+   return NextResponse.json(congregation,{status:201})
+}
 export async function UPDATE(request: NextRequest){
     const body = await request.json();
     const validation = createCongregationSchema.safeParse(body);

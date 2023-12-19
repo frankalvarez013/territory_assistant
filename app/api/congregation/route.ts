@@ -57,7 +57,7 @@ export async function UPDATE(request: NextRequest){
 }
 
 export async function DELETE(request: NextRequest){
-
+    
     const deletedCongregation = await prisma.congregation.delete({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined

@@ -17,6 +17,7 @@ export async function POST(request: NextRequest){
     // const timeUserKeepsTerritory = idParam ? parseInt(idParam) : undefined
     // const timeUserKeepsTerritory = parseInt(body.dateLength)
     const timeUserKeepsTerritory = 182
+    const defaultVal = 0
     const date = new Date()
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest){
     try{
         const newTerritory = await prisma.territory.create({
             data: {
-                territoryID: 1,
+                territoryID: defaultVal,
                 location: body.location,
                 AssignedDate: date,
                 ExperiationDate: endDate,
@@ -52,9 +53,11 @@ export async function POST(request: NextRequest){
 
 export async function GET(request: NextRequest){
     const idParam = request.nextUrl.searchParams.get("id")
+    console.log(idParam)
     const territoryID = idParam ? parseInt(idParam) : undefined
     let getTerritory: {} | null = null
-    if(territoryID){
+    console.log(territoryID)
+    if(typeof(territoryID) === 'number'){
         getTerritory = await prisma.territory.findUnique({
             where: {
                 territoryID: territoryID

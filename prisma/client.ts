@@ -4,12 +4,14 @@ const prismaClientSingleton = () => {
   return new PrismaClient().$extends({
     query: {
       territory: {
-        async create({ model, operation,args,query}) {
+        async create({args,query}) {
           const {congregationID} = args.data
           console.log(congregationID)
           //Fetch the nextTeritoryID for the given congregationID
           let congregationTerritoryCounter = await prisma.congregationTerritoryCounter.findUnique({
-            where: {congregationID}
+            where: {
+              congregationID:congregationID
+            }
           })
           console.log(congregationTerritoryCounter)
 
@@ -35,6 +37,7 @@ const prismaClientSingleton = () => {
             })
           }
           console.log(congregationTerritoryCounter)
+          return query(args);
         }
       },
       house: {

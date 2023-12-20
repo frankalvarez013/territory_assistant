@@ -6,37 +6,37 @@ const prismaClientSingleton = () => {
       territory: {
         async create({args,query}) {
           const {congregationID} = args.data
-          console.log(congregationID)
           //Fetch the nextTeritoryID for the given congregationID
           let congregationTerritoryCounter = await prisma.congregationTerritoryCounter.findUnique({
             where: {
               congregationID:congregationID
             }
           })
-          console.log(congregationTerritoryCounter)
-
           //if congregationTerritoryCounter is there use it, if not create it
-          if (!congregationTerritoryCounter && congregationID && args.data.territoryID){
+          if (congregationTerritoryCounter==null && congregationID && args.data.territoryID){
+            console.log("Starting New Counter...")
             congregationTerritoryCounter = await prisma.congregationTerritoryCounter.create({
               data: {
                 congregationID: congregationID,
-                nextTerritoryID: 1,
+                nextTerritoryID: 0,
               }
             })
           }
-          console.log(congregationTerritoryCounter)
-
-          if(congregationTerritoryCounter?.nextTerritoryID){
+          console.log("OldVal Counter",congregationTerritoryCounter)
+          if(typeof(congregationTerritoryCounter?.nextTerritoryID) === typeof(1) && congregationTerritoryCounter!=null){
             //Use the nextTerritoryID for the new Territory
-            args.data.territoryID = congregationTerritoryCounter?.nextTerritoryID
-            await prisma.congregationTerritoryCounter.update({
-              where: {congregationID},
+            args.data.territoryID = congregationTerritoryCounter.nextTerritoryID
+            const bobo = await prisma.congregationTerritoryCounter.update({
+              where: {
+                congregationID:congregationID
+              },
               data: {
                 nextTerritoryID: congregationTerritoryCounter?.nextTerritoryID+1
               }
             })
+            console.log("MiddleCheck...",bobo)
           }
-          console.log(congregationTerritoryCounter)
+          console.log("Updated Counter",congregationTerritoryCounter)
           return query(args);
         }
       },

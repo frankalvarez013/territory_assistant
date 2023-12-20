@@ -17,8 +17,6 @@ export async function GET(request: NextRequest){
         getCounter = await prisma.congregationTerritoryCounter.findMany({});
         return NextResponse.json(getCounter,{status:201})
     }
-     
-    
 }
 
 export async function DELETE(request: NextRequest){

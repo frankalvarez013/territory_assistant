@@ -11,7 +11,14 @@ const createHouseSchema = z.object({
     comment: z.string().min(1).max(255),
     observation: z.enum(["EMPTY","VISITED","DONTVISIT","DOG","NIGHT"])
 })
-
+const updateHouseSchema = z.object({
+    territoryID: z.number().positive().finite().optional(),
+    StreetAd: z.string().min(1).max(255).optional(),
+    dateVisited: z.date().optional(),
+    comment: z.string().min(1).max(255).optional(),
+    observation: z.enum(["EMPTY","VISITED","DONTVISIT","DOG","NIGHT"]).optional()
+    //use zod to check if the isAdmin is true or false "strings"
+})
 export async function POST(request: NextRequest){
     const body = await request.json();
     const validation = createHouseSchema.safeParse(body);
@@ -64,22 +71,22 @@ export async function UPDATE(request: NextRequest){
     const streetAd = streetdAdParam ? streetdAdParam : undefined
     const territoryID = idParam ? parseInt(idParam) : undefined
     const body = await request.json();
-    const validation = createHouseSchema.safeParse(body);
+    const validation = updateHouseSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
+    }
+    const updateData: { [key: string]: any} = {}
+    for (const [key,value] of Object.entries(body)){
+        if(value!==undefined){
+            updateData[key] = value;
+        }
     }
     const updatedHouse = await prisma.house.update({
         where: {
             territoryID: territoryID?? undefined,
             StreetAd: streetAd?? undefined
         },
-        data: {
-            territoryID: body.territoryID,
-            StreetAd: body.StreetAd,
-            dateVisited: body.dateVisited,
-            comment: body.comment,
-            observation: body.observation,
-        }
+        data: updateData
     });
     return NextResponse.json(updatedHouse,{status:201})
 }

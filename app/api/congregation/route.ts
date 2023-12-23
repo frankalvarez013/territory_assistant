@@ -6,7 +6,10 @@ const createCongregationSchema = z.object({
     congregationName: z.string().min(1).max(255),
     address: z.string().min(1).max(255)
 })
-
+const updateCongregationSchema = z.object({
+    congregationName: z.string().min(1).max(255).optional(),
+    address: z.string().min(1).max(255).optional()
+})
 export async function POST(request: NextRequest){
     const body = await request.json();
     const validation = createCongregationSchema.safeParse(body);
@@ -38,20 +41,23 @@ export async function GET(request: NextRequest){
     return NextResponse.json(getCongregation,{status:201})
 }
 
-export async function UPDATE(request: NextRequest){
+export async function PATCH(request: NextRequest){
     const body = await request.json();
-    const validation = createCongregationSchema.safeParse(body);
+    const validation = updateCongregationSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
+    }
+    const updateData : {[key: string]:any} = {}
+    for (const [key,value] of Object.entries(body)){
+        if(value!=undefined){
+            updateData[key] = value
+        }
     }
     const updateCongregation = await prisma.congregation.update({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         },
-        data: {
-            congregationName:body.congregationName, 
-            address: body.address
-        }
+        data: updateData
     });
     return NextResponse.json(updateCongregation,{status:201})
 }

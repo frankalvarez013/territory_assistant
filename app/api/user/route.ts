@@ -9,16 +9,22 @@ const createUserSchema = z.object({
     congregationID: z.string().min(1).max(255),
     //use zode to check if the isAdmin is true or false "strings"
 })
-
+const updateUserSchema = z.object({
+    fName: z.string().min(1).max(255).optional(),
+    lName: z.string().min(1).max(255).optional(),
+    email: z.string().min(1).max(255).optional(),
+    congregationID: z.string().min(1).max(255).optional(),
+    //use zod to check if the isAdmin is true or false "strings"
+})
 export async function POST(request: NextRequest){
     const body = await request.json();
     const validation = createUserSchema.safeParse(body);
-    let isAdmin1 = false
+    let isAdmin = false
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
     if(String(body.isAdmin).toLowerCase() === "true"){
-        isAdmin1 = true
+        isAdmin = true
     }
     const newUser = await prisma.user.create({
         data: {
@@ -26,12 +32,13 @@ export async function POST(request: NextRequest){
             lName: body.lName,
             email: body.email,
             congregationID: body.congregationID,
-            isAdmin: isAdmin1
+            isAdmin: isAdmin
         }
     }
     )
     return NextResponse.json(newUser,{status: 201})
 }
+
 export async function GET(request: NextRequest){
     const idParams = request.nextUrl.searchParams.get("id")
     let getUser: {} | null = null
@@ -48,22 +55,23 @@ export async function GET(request: NextRequest){
    return NextResponse.json(getUser,{status:201})
 }
 
-export async function UPDATE(request: NextRequest){
+export async function PATCH(request: NextRequest){
     const body = await request.json();
-    const validation = createUserSchema.safeParse(body);
+    const validation = updateUserSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
+    }
+    const updateData: { [key: string]: any} = {}
+    for (const [key,value] of Object.entries(body)){
+        if(value!==undefined){
+            updateData[key] = value;
+        }
     }
     const updatedUser = await prisma.user.update({
         where: {
             id: request.nextUrl.searchParams.get("id") ?? undefined
         },
-        data: {
-            fName: body.fName,
-            lName: body.lName,
-            email: body.email,
-            congregationID: body.congregationID
-        }
+        data: updateData
     });
     return NextResponse.json(updatedUser,{status:201})
 }

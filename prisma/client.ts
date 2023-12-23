@@ -13,12 +13,12 @@ const prismaClientSingleton = () => {
             }
           })
           //if congregationTerritoryCounter is there use it, if not create it
-          if (congregationTerritoryCounter==null && congregationID && args.data.territoryID){
+          if (congregationTerritoryCounter==null && congregationID){
             console.log("Starting New Counter...")
             congregationTerritoryCounter = await prisma.congregationTerritoryCounter.create({
               data: {
                 congregationID: congregationID,
-                nextTerritoryID: 0,
+                nextTerritoryID: 1,
               }
             })
           }
@@ -41,8 +41,8 @@ const prismaClientSingleton = () => {
         }
       },
       house: {
-        async create({ model, operation,args,query}) {
-          const territoryID = args.data.territoryID
+        async create({ args,query}) {
+          const {territoryID} = args.data
           //Fetch the nextTeritoryID for the given congregationID
             let houseCounter = await prisma.houseCounter.findUnique({
               where: {
@@ -68,6 +68,7 @@ const prismaClientSingleton = () => {
               }
             })
           }
+          return query(args);
         }
       }
     }

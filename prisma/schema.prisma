@@ -41,10 +41,10 @@ model Territory {
   territoryID     Int
   location        String       @unique @db.VarChar(255)
   houses          House[]
-  AssignedDate    DateTime
-  ExperiationDate DateTime
+  AssignedDate    DateTime?
+  ExperiationDate DateTime?
   congregationID  String
-  currentUserID   String
+  currentUserID   String?
   currentUser     User?        @relation(fields: [currentUserID], references: [id])
   Congregation    Congregation @relation(fields: [congregationID], references: [id])
 

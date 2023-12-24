@@ -2,6 +2,8 @@ import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest } from "next";
 import {z} from "zod"
 import prisma from '@/prisma/client'
+import { CongregationRequest } from "@/app/types/api";
+
 const createCongregationSchema = z.object({
     congregationName: z.string().min(1).max(255),
     address: z.string().min(1).max(255)
@@ -10,8 +12,10 @@ const updateCongregationSchema = z.object({
     congregationName: z.string().min(1).max(255).optional(),
     address: z.string().min(1).max(255).optional()
 })
+
+
 export async function POST(request: NextRequest){
-    const body = await request.json();
+    const body:CongregationRequest = await request.json();
     const validation = createCongregationSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})

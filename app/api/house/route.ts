@@ -1,9 +1,10 @@
 import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest } from "next";
-import {z} from "zod"
+import {ZodIssue, z} from "zod"
 import prisma from '@/prisma/client'
 import { comment } from "postcss";
-
+import type { House } from "@prisma/client";
+import { ErrorResponse } from "@/app/types/api";
 const createHouseSchema = z.object({
     territoryID: z.number().positive().finite(),
     StreetAd: z.string().min(1).max(255),
@@ -19,7 +20,7 @@ const updateHouseSchema = z.object({
     observation: z.enum(["EMPTY","VISITED","DONTVISIT","DOG","NIGHT"]).optional()
     //use zod to check if the isAdmin is true or false "strings"
 })
-export async function POST(request: NextRequest){
+export async function POST(request: NextRequest): Promise<NextResponse< House | ErrorResponse | ZodIssue[]>>{
     const body = await request.json();
     const validation = createHouseSchema.safeParse(body);
     if (!validation.success){

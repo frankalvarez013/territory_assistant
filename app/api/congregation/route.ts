@@ -1,9 +1,9 @@
 import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest } from "next";
-import {z} from "zod"
+import {ZodIssue, z} from "zod"
 import prisma from '@/prisma/client'
-import { CongregationRequest } from "@/app/types/api";
-
+import { ErrorResponse } from "@/app/types/api";
+import type { Congregation } from "@prisma/client";
 const createCongregationSchema = z.object({
     congregationName: z.string().min(1).max(255),
     address: z.string().min(1).max(255)
@@ -14,8 +14,8 @@ const updateCongregationSchema = z.object({
 })
 
 
-export async function POST(request: NextRequest){
-    const body:CongregationRequest = await request.json();
+export async function POST(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[]>>{
+    const body:Congregation = await request.json();
     const validation = createCongregationSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
@@ -30,28 +30,31 @@ export async function POST(request: NextRequest){
     return NextResponse.json(newCongregation,{status: 201})
 }
 
-export async function GET(request: NextRequest){
+export async function GET(request: NextRequest): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse>>{
     const idParam = request.nextUrl.searchParams.get("id")
-    let getCongregation: {} | null = null
+    let getCongregation: Congregation | Congregation[] | null = null
     if (idParam){
         getCongregation = await prisma.congregation.findUnique({
             where: {
-                id: request.nextUrl.searchParams.get("id") ?? undefined
+                id:idParam
             }
         });
     } else {
         getCongregation = await prisma.congregation.findMany({});
     }
+    if(!getCongregation){
+        return NextResponse.json({message: "Congregation not found"}, {status: 404})
+    }
     return NextResponse.json(getCongregation,{status:201})
 }
 
-export async function PATCH(request: NextRequest){
-    const body = await request.json();
+export async function PATCH(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[]>>{
+    const body:Congregation = await request.json();
     const validation = updateCongregationSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const updateData : {[key: string]:any} = {}
+    const updateData : {[key: string]:string} = {}
     for (const [key,value] of Object.entries(body)){
         if(value!=undefined){
             updateData[key] = value

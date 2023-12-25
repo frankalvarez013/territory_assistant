@@ -2,6 +2,7 @@ import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest } from "next";
 import {z} from "zod"
 import prisma from '@/prisma/client'
+import { User } from "@prisma/client";
 const createUserSchema = z.object({
     fName: z.string().min(1).max(255),
     lName: z.string().min(1).max(255),

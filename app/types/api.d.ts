@@ -1,5 +1,3 @@
-export type CongregationRequest = {
-    congregationName: string,
-    address: string;
+export type ErrorResponse = {
+    message: string;
 }
-

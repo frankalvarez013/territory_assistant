@@ -1,9 +1,10 @@
 import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest } from "next";
-import {z} from "zod"
+import {ZodIssue, z} from "zod"
 import prisma from '@/prisma/client'
 import { empty } from "@prisma/client/runtime/library";
-
+import type { Territory } from "@prisma/client";
+import { ErrorResponse,territoryJSON } from "@/app/types/api";
 const createTerritorySchema = z.object({
     location: z.string().min(1).max(255),
     // dateLength: z.string().min(1).max(255),
@@ -17,7 +18,7 @@ const updateTerritorySchema = z.object({
     currentUserID: z.string().min(1).max(255).optional(),
     //use zod to check if the isAdmin is true or false "strings"
 })
-export async function POST(request: NextRequest){
+export async function POST(request: NextRequest): Promise<NextResponse< territoryJSON | ZodIssue[] | ErrorResponse>>{
     const body = await request.json();
     const validation = createTerritorySchema.safeParse(body);
     // const idParam = request.nextUrl.searchParams.get("dateLength")
@@ -56,30 +57,35 @@ export async function POST(request: NextRequest){
     }
 }
 
-export async function GET(request: NextRequest){
+export async function GET(request: NextRequest):Promise<NextResponse<Territory | Territory[] | ErrorResponse>>{
     const terrId = request.nextUrl.searchParams.get("terrId")
     const terrIdCheck = terrId ? parseInt(terrId) : undefined
     const congId = request.nextUrl.searchParams.get("congId")
     const congIdCheck = congId ? congId : undefined
-    let getTerritory: {} | null = null
-    console.log(terrIdCheck,congIdCheck)
-    if(typeof(terrIdCheck) === 'number' && typeof(congIdCheck) ==='number'){
-        getTerritory = await prisma.territory.findUnique({
-            where: {
-                territoryID_congregationID:{
-                    territoryID: terrIdCheck,
-                    congregationID: congIdCheck
+    let getTerritory: Territory | Territory[] | null = null
+    try{
+        if(typeof(terrIdCheck) === 'number' && typeof(congIdCheck) ==='number'){
+            getTerritory = await prisma.territory.findUnique({
+                where: {
+                    territoryID_congregationID:{
+                        territoryID: terrIdCheck,
+                        congregationID: congIdCheck
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            getTerritory = await prisma.territory.findMany({});
+        }
+        if(!getTerritory){
+            return NextResponse.json({message:"Could Not Find Territory"})
+        }
         return NextResponse.json(getTerritory,{status:201})
-    } else {
-        getTerritory = await prisma.territory.findMany({});
-        return NextResponse.json(getTerritory,{status:201})
+    } catch (e){
+        return NextResponse.json({ message: "Could Not Find Territory" }, {status: 500});
     }
 }
 
-export async function PATCH(request: NextRequest){
+export async function PATCH(request: NextRequest): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>>{
     const terrId = request.nextUrl.searchParams.get("terrId")
     const terrIdCheck = terrId ? parseInt(terrId) : undefined
     const congId = request.nextUrl.searchParams.get("congId")
@@ -95,36 +101,53 @@ export async function PATCH(request: NextRequest){
             updateData[key] = value;
         }
     }
-    if (terrIdCheck && congIdCheck){
-        const updatedTerritory = await prisma.territory.update({
-            where: {
-                territoryID_congregationID:{
-                    territoryID: terrIdCheck,
-                    congregationID: congIdCheck.toString()
+    
+        if (terrIdCheck && congIdCheck){
+            try{
+                const updatedTerritory = await prisma.territory.update({
+                    where: {
+                        territoryID_congregationID:{
+                            territoryID: terrIdCheck,
+                            congregationID: congIdCheck.toString()
+                        }
+                    },
+                    data: updateData
+                });
+                if (updatedTerritory){
+                    return NextResponse.json({message:"Record was not found"})
                 }
-            },
-            data: updateData
-        });
-        return NextResponse.json(updatedTerritory,{status:201})
-    }
+                return NextResponse.json(updatedTerritory,{status:201})
+            } catch (e){
+                return NextResponse.json({message: "Make sure the parameters are correctly set with the correct types."})
+            }
+        } else {
+            return NextResponse.json({message: "Make sure the parameters are correctly set with the correct types."})
+        }
+
+
 }
 
-export async function DELETE(request: NextRequest){
+export async function DELETE(request: NextRequest): Promise<NextResponse<Territory | ErrorResponse>>{
     const terrId = request.nextUrl.searchParams.get("terrId")
     const terrIdCheck = terrId ? parseInt(terrId) : undefined
     const congId = request.nextUrl.searchParams.get("congId")
     const congIdCheck = congId ? congId : undefined
     if(typeof(terrIdCheck)===typeof(0) && congIdCheck && terrIdCheck !=null){
-        const deletedTerritory = await prisma.territory.delete({
-            where: {
-                territoryID_congregationID:{
-                    territoryID: terrIdCheck,
-                    congregationID: congIdCheck.toString()
+        try{
+            const deletedTerritory = await prisma.territory.delete({
+                where: {
+                    territoryID_congregationID:{
+                        territoryID: terrIdCheck,
+                        congregationID: congIdCheck.toString()
+                    }
                 }
-            }
-        });
-        console.log(deletedTerritory)
-        return NextResponse.json(deletedTerritory,{status:201})
+            });
+            return NextResponse.json(deletedTerritory,{status:201})
+        } catch(e){
+        return NextResponse.json({message: "Make sure the parameters are correctly set with the correct types."})
+        }
+    } else {
+        return NextResponse.json({message:"Make sure the parameters are correctly set with the correct types."})
     }
     // if(typeof(terrIdCheck)===typeof(0) && congIdCheck && terrIdCheck !=null){
     //     const emptyTerr = await prisma.territory.update({

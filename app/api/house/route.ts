@@ -26,28 +26,32 @@ export async function POST(request: NextRequest): Promise<NextResponse< House | 
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    
-    const newHouse = await prisma.house.create({
-        data: {
-            houseID: 0,
-            territoryID: body.territoryID,
-            congregationID: body.congregationID,
-            StreetAd: body.StreetAd,
-            dateVisited: body.dateVisited,
-            comment: body.comment,
-            observation: body.observation,
+    try{
+        const newHouse = await prisma.house.create({
+            data: {
+                houseID: 0,
+                territoryID: body.territoryID,
+                congregationID: body.congregationID,
+                StreetAd: body.StreetAd,
+                dateVisited: body.dateVisited,
+                comment: body.comment,
+                observation: body.observation,
+            }
         }
+        )
+        return NextResponse.json(newHouse,{status: 201})
+    } catch(e) {
+        return NextResponse.json({message:`This failed due to constraints... ${e}`},{status: 201})
     }
-    )
-    return NextResponse.json(newHouse,{status: 201})
+    
 }
 
-export async function GET(request: NextRequest){
+export async function GET(request: NextRequest):Promise<NextResponse<House | House[] | ErrorResponse>>{
     const idParam = request.nextUrl.searchParams.get("TerritoryID")
     const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
     const streetAd = streetdAdParam ? streetdAdParam : undefined
     const territoryID = idParam ? parseInt(idParam) : undefined
-    let getHouse: {} | null = null
+    let getHouse: House | House[] | null = null
     if(territoryID){
         getHouse = await prisma.house.findUnique({
             where: {
@@ -62,11 +66,13 @@ export async function GET(request: NextRequest){
             }
         });
     }
-     
+    if(!getHouse){
+        return NextResponse.json({message: "There was no record found with the information provided"},{status:404})
+    }
     return NextResponse.json(getHouse,{status:201})
 }
 
-export async function UPDATE(request: NextRequest){
+export async function UPDATE(request: NextRequest):Promise<NextResponse<House | ErrorResponse | ZodIssue[]>>{
     const idParam = request.nextUrl.searchParams.get("TerritoryID")
     const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
     const streetAd = streetdAdParam ? streetdAdParam : undefined
@@ -82,26 +88,36 @@ export async function UPDATE(request: NextRequest){
             updateData[key] = value;
         }
     }
-    const updatedHouse = await prisma.house.update({
-        where: {
-            territoryID: territoryID?? undefined,
-            StreetAd: streetAd?? undefined
-        },
-        data: updateData
-    });
-    return NextResponse.json(updatedHouse,{status:201})
+    try{
+        const updatedHouse = await prisma.house.update({
+            where: {
+                territoryID: territoryID?? undefined,
+                StreetAd: streetAd?? undefined
+            },
+            data: updateData
+        });
+        return NextResponse.json(updatedHouse,{status:201})
+    } catch (e){
+        return NextResponse.json({message:`This failed due to constraints... ${e}`},{status: 201})
+    }
+   
 }
 
-export async function DELETE(request: NextRequest){
+export async function DELETE(request: NextRequest):Promise<NextResponse<House | ErrorResponse>>{
     const idParam = request.nextUrl.searchParams.get("TerritoryID")
     const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
     const streetAd = streetdAdParam ? streetdAdParam : undefined
     const territoryID = idParam ? parseInt(idParam) : undefined
-     const deletedHouse = await prisma.house.delete({
-        where: {
-            territoryID: territoryID?? undefined,
-            StreetAd: streetAd?? undefined
-        }
-    });
-    return NextResponse.json(deletedHouse,{status:201})
+    try{
+        const deletedHouse = await prisma.house.delete({
+            where: {
+                territoryID: territoryID?? undefined,
+                StreetAd: streetAd?? undefined
+            }
+        });
+        return NextResponse.json(deletedHouse,{status:201})
+    } catch(e) {
+        return NextResponse.json({message: `This failed due to constraints...${e}`})
+    }
+   
 }

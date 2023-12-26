@@ -14,31 +14,41 @@ const updateCongregationSchema = z.object({
 })
 
 
-export async function POST(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[]>>{
+export async function POST(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[] | ErrorResponse>>{
     const body:Congregation = await request.json();
     const validation = createCongregationSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const newCongregation = await prisma.congregation.create({
-        data: {
-            congregationName:body.congregationName, 
-            address: body.address
+    try{
+        const newCongregation = await prisma.congregation.create({
+            data: {
+                congregationName:body.congregationName, 
+                address: body.address
+            }
         }
+        )
+        return NextResponse.json(newCongregation,{status: 201})
+    } catch (e){
+        return NextResponse.json({message: "Congregation not found"}, {status: 404})
     }
-    )
-    return NextResponse.json(newCongregation,{status: 201})
+   
 }
 
 export async function GET(request: NextRequest): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse>>{
     const idParam = request.nextUrl.searchParams.get("id")
     let getCongregation: Congregation | Congregation[] | null = null
     if (idParam){
-        getCongregation = await prisma.congregation.findUnique({
-            where: {
-                id:idParam
-            }
-        });
+        try{
+            getCongregation = await prisma.congregation.findUnique({
+                where: {
+                    id:idParam
+                }
+            });
+        }catch (e){
+            return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+        }
+        
     } else {
         getCongregation = await prisma.congregation.findMany({});
     }
@@ -48,7 +58,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<Congregati
     return NextResponse.json(getCongregation,{status:201})
 }
 
-export async function PATCH(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[]>>{
+export async function PATCH(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[] | ErrorResponse>>{
     const body:Congregation = await request.json();
     const validation = updateCongregationSchema.safeParse(body);
     if (!validation.success){
@@ -60,21 +70,29 @@ export async function PATCH(request: NextRequest): Promise<NextResponse<Congrega
             updateData[key] = value
         }
     }
-    const updateCongregation = await prisma.congregation.update({
-        where: {
-            id: request.nextUrl.searchParams.get("id") ?? undefined
-        },
-        data: updateData
-    });
-    return NextResponse.json(updateCongregation,{status:201})
+    try{
+        const updateCongregation = await prisma.congregation.update({
+            where: {
+                id: request.nextUrl.searchParams.get("id") ?? undefined
+            },
+            data: updateData
+        });
+        return NextResponse.json(updateCongregation,{status:201})
+    } catch (e){
+        return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+    }
+  
 }
 
-export async function DELETE(request: NextRequest){
-    
-    const deletedCongregation = await prisma.congregation.delete({
-        where: {
-            id: request.nextUrl.searchParams.get("id") ?? undefined
-        }
-    });
-    return NextResponse.json(deletedCongregation,{status:201})
+export async function DELETE(request: NextRequest): Promise<NextResponse<Congregation | ErrorResponse>>{
+    try{
+        const deletedCongregation = await prisma.congregation.delete({
+            where: {
+                id: request.nextUrl.searchParams.get("id") ?? undefined
+            }
+        });
+        return NextResponse.json(deletedCongregation,{status:201})
+    } catch (e){
+        return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+    }
 }

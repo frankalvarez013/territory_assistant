@@ -8,11 +8,16 @@ export async function GET(request: NextRequest): Promise<NextResponse<Congregati
     const congregationID = request.nextUrl.searchParams.get("id")
     let getCounter: CongregationTerritoryCounter | CongregationTerritoryCounter[] | null = null
     if(congregationID){
-        getCounter = await prisma.congregationTerritoryCounter.findUnique({
-            where: {
-                congregationID: congregationID,
-            }
-        });
+        try{
+            getCounter = await prisma.congregationTerritoryCounter.findUnique({
+                where: {
+                    congregationID: congregationID,
+                }
+            });
+        } catch(e) {
+            return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+        }
+        
     } else {
         getCounter = await prisma.congregationTerritoryCounter.findMany({});
     }
@@ -26,11 +31,16 @@ export async function DELETE(request: NextRequest):Promise<NextResponse<Congrega
     const congregationID = request.nextUrl.searchParams.get("id")
     let getCounter: CongregationTerritoryCounter| null = null
     if(congregationID){
-        getCounter = await prisma.congregationTerritoryCounter.delete({
-            where: {
-                congregationID: congregationID,
-            }
-        })
+        try{
+            getCounter = await prisma.congregationTerritoryCounter.delete({
+                where: {
+                    congregationID: congregationID,
+                }
+            })
+        }catch(e) {
+            return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+        }
+        
     }
     if (!getCounter){
         return NextResponse.json({message: "Congregation not found"}, {status: 404})

@@ -32,7 +32,7 @@ model User {
   @@id([id, congregationID])
 }
 
-model CongregationTerritoryCounter {
+model TerritoryCounter {
   congregationID  String @id
   nextTerritoryID Int
 }
@@ -62,7 +62,7 @@ enum Observation {
 
 model HouseCounter {
   territoryID    Int
-  congregationID Int
+  congregationID String
   nextHouseID    Int
 
   @@id([territoryID, congregationID])

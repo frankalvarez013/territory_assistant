@@ -41,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse< House | 
         )
         return NextResponse.json(newHouse,{status: 201})
     } catch(e) {
-        return NextResponse.json({message:`This failed due to constraints... ${e}`},{status: 201})
+        return NextResponse.json({message:`House POST Transaction failed:\n ${e}`},{status: 201})
     }
     
 }
@@ -67,12 +67,12 @@ export async function GET(request: NextRequest):Promise<NextResponse<House | Hou
         });
     }
     if(!getHouse){
-        return NextResponse.json({message: "There was no record found with the information provided"},{status:404})
+        return NextResponse.json({message: "House record not found"},{status:404})
     }
     return NextResponse.json(getHouse,{status:201})
 }
 
-export async function UPDATE(request: NextRequest):Promise<NextResponse<House | ErrorResponse | ZodIssue[]>>{
+export async function PATCH(request: NextRequest):Promise<NextResponse<House | ErrorResponse | ZodIssue[]>>{
     const idParam = request.nextUrl.searchParams.get("TerritoryID")
     const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
     const streetAd = streetdAdParam ? streetdAdParam : undefined
@@ -98,7 +98,7 @@ export async function UPDATE(request: NextRequest):Promise<NextResponse<House | 
         });
         return NextResponse.json(updatedHouse,{status:201})
     } catch (e){
-        return NextResponse.json({message:`This failed due to constraints... ${e}`},{status: 201})
+        return NextResponse.json({message:`House Update Transaction failed:\n ${e}`},{status: 201})
     }
    
 }
@@ -117,7 +117,7 @@ export async function DELETE(request: NextRequest):Promise<NextResponse<House | 
         });
         return NextResponse.json(deletedHouse,{status:201})
     } catch(e) {
-        return NextResponse.json({message: `This failed due to constraints...${e}`})
+        return NextResponse.json({message: `House DELETE Transaction failed:\n ${e}`})
     }
    
 }

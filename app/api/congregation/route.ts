@@ -13,7 +13,6 @@ const updateCongregationSchema = z.object({
     address: z.string().min(1).max(255).optional()
 })
 
-
 export async function POST(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[] | ErrorResponse>>{
     const body:Congregation = await request.json();
     const validation = createCongregationSchema.safeParse(body);
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Congregat
         )
         return NextResponse.json(newCongregation,{status: 201})
     } catch (e){
-        return NextResponse.json({message: "Congregation not found"}, {status: 404})
+        return NextResponse.json({message: `Congregation POST Transaction failed:\n ${e}`}, {status: 404})
     }
    
 }
@@ -46,14 +45,14 @@ export async function GET(request: NextRequest): Promise<NextResponse<Congregati
                 }
             });
         }catch (e){
-            return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+            return NextResponse.json({message: `Congregation GET Transaction failed:\n ${e}`}, {status: 404})
         }
         
     } else {
         getCongregation = await prisma.congregation.findMany({});
     }
     if(!getCongregation){
-        return NextResponse.json({message: "Congregation not found"}, {status: 404})
+        return NextResponse.json({message: "Congregation Record not Found:\n"}, {status: 404})
     }
     return NextResponse.json(getCongregation,{status:201})
 }
@@ -79,12 +78,14 @@ export async function PATCH(request: NextRequest): Promise<NextResponse<Congrega
         });
         return NextResponse.json(updateCongregation,{status:201})
     } catch (e){
-        return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+        return NextResponse.json({message: `Congregation UPDATE Transaction failed\n: ${e}`}, {status: 404})
     }
   
 }
 
 export async function DELETE(request: NextRequest): Promise<NextResponse<Congregation | ErrorResponse>>{
+    const idParam = request.nextUrl.searchParams.get("id")
+    console.log(idParam)
     try{
         const deletedCongregation = await prisma.congregation.delete({
             where: {
@@ -93,6 +94,6 @@ export async function DELETE(request: NextRequest): Promise<NextResponse<Congreg
         });
         return NextResponse.json(deletedCongregation,{status:201})
     } catch (e){
-        return NextResponse.json({message: `Congregation not found ${e}`}, {status: 404})
+        return NextResponse.json({message: `Congregation DELETE Transaction failed\n: ${e}`}, {status: 404})
     }
 }

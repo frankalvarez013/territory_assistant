@@ -41,11 +41,11 @@ export async function POST(request: NextRequest):Promise<NextResponse<User| ZodI
         return NextResponse.json(newUser,{status: 201})
 
     } catch(e) {
-        return NextResponse.json({message:`The User Creation failed some constraints: ${e}`})
+        return NextResponse.json({message:`User POST failed:\n ${e}`})
     }
 }
 
-export async function GET(request: NextRequest):Promise<NextResponse<User|User[]|ErrorResponse>>{
+export async function GET(request: NextRequest):Promise<NextResponse<User | User[] | ErrorResponse>>{
     const idParams = request.nextUrl.searchParams.get("id")
     let getUser: User | User[] | null = null
     try{
@@ -59,25 +59,37 @@ export async function GET(request: NextRequest):Promise<NextResponse<User|User[]
             getUser = await prisma.user.findMany({});
         }
         if(!getUser){
-            return NextResponse.json({message:"Record not found"})
+            return NextResponse.json({message:"User Record not found"})
         }
         return NextResponse.json(getUser,{status:201})
 
     } catch(e){
-        return NextResponse.json({message:"Either Could Get Update Record, or Record itself was not found: ", e})
+        return NextResponse.json({message:`USER GET transaction failed:\n ${e}`})
     }
 }
 
 export async function PATCH(request: NextRequest):Promise<NextResponse<User | ZodIssue[] | ErrorResponse>>{
     const body = await request.json();
     const validation = updateUserSchema.safeParse(body);
+    let isAdmin = false
+    if(String(body.isAdmin).toLowerCase() === "true"){
+        isAdmin = true
+    }
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
     const updateData: { [key: string]: any} = {}
     for (const [key,value] of Object.entries(body)){
         if(value!==undefined){
-            updateData[key] = value;
+            if(key === "isAdmin"){
+                let isAdmin = false
+                if(String(value).toLowerCase() === "true"){
+                    isAdmin = true
+                }
+                updateData[key] = isAdmin
+            } else {
+                updateData[key] = value;
+            }
         }
     }
     try{
@@ -89,7 +101,7 @@ export async function PATCH(request: NextRequest):Promise<NextResponse<User | Zo
         });
         return NextResponse.json(updatedUser,{status:201})
     } catch (e) {
-        return NextResponse.json({message:"Either Could not Update Record, or Record itself was not found: ", e})
+        return NextResponse.json({message:`User UPDATE Transaction Failed\n: ${e}`})
     }
   
 }
@@ -103,7 +115,7 @@ export async function DELETE(request: NextRequest):Promise<NextResponse<User | E
         });
         return NextResponse.json(deletedUser,{status:201})
     } catch(e){
-        return NextResponse.json({message:`Could not delete or find Record: ${e}`})
+        return NextResponse.json({message:`User DELETE Transaction Failed: ${e}`})
     }
    
 }

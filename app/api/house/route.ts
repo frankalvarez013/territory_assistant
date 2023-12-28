@@ -6,11 +6,15 @@ import { comment } from "postcss";
 import type { House } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
 const createHouseSchema = z.object({
-    territoryID: z.number().positive().finite(),
+    territoryID: z.string().refine(value =>
+        !isNaN(parseInt(value)) && isFinite(parseInt(value)),
+        {
+            message:"The string is not a valid number"
+        }),
     StreetAd: z.string().min(1).max(255),
-    dateVisited: z.date(),
-    comment: z.string().min(1).max(255),
-    observation: z.enum(["EMPTY","VISITED","DONTVISIT","DOG","NIGHT"])
+    dateVisited: z.date().optional(),
+    comment: z.string().min(1).max(255).optional(),
+    observation: z.enum(["EMPTY","VISITED","DONTVISIT","DOG","NIGHT"]).optional()
 })
 const updateHouseSchema = z.object({
     territoryID: z.number().positive().finite().optional(),
@@ -29,8 +33,8 @@ export async function POST(request: NextRequest): Promise<NextResponse< House | 
     try{
         const newHouse = await prisma.house.create({
             data: {
-                houseID: 0,
-                territoryID: body.territoryID,
+                houseID: 2,
+                territoryID: parseInt(body.territoryID),
                 congregationID: body.congregationID,
                 StreetAd: body.StreetAd,
                 dateVisited: body.dateVisited,
@@ -104,8 +108,8 @@ export async function PATCH(request: NextRequest):Promise<NextResponse<House | E
 }
 
 export async function DELETE(request: NextRequest):Promise<NextResponse<House | ErrorResponse>>{
-    const idParam = request.nextUrl.searchParams.get("TerritoryID")
-    const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
+    const idParam = request.nextUrl.searchParams.get("terrId")
+    const streetdAdParam = request.nextUrl.searchParams.get("streetAd")
     const streetAd = streetdAdParam ? streetdAdParam : undefined
     const territoryID = idParam ? parseInt(idParam) : undefined
     try{

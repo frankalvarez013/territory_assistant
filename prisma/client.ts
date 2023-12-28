@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-
+import type { HouseCounter } from '@prisma/client'
 const prismaClientSingleton = () => {
   return new PrismaClient().$extends({
     query: {
@@ -7,24 +7,25 @@ const prismaClientSingleton = () => {
         async create({args,query}) {
           const {congregationID} = args.data
           //Fetch the nextTeritoryID for the given congregationID
-          let congregationTerritoryCounter = await prisma.congregationTerritoryCounter.findUnique({
+          let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
             where: {
               congregationID:congregationID
             }
           })
           //if congregationTerritoryCounter is there use it, if not create it
           if (congregationTerritoryCounter==null && congregationID){
-            congregationTerritoryCounter = await prisma.congregationTerritoryCounter.create({
+            congregationTerritoryCounter = await prisma.territoryCounter.create({
               data: {
                 congregationID: congregationID,
                 nextTerritoryID: 1,
               }
             })
           }
+          console.log(congregationTerritoryCounter?.nextTerritoryID)
           if(typeof(congregationTerritoryCounter?.nextTerritoryID) === typeof(1) && congregationTerritoryCounter!=null){
             //Use the nextTerritoryID for the new Territory
             args.data.territoryID = congregationTerritoryCounter.nextTerritoryID
-            const bobo = await prisma.congregationTerritoryCounter.update({
+            const bobo = await prisma.territoryCounter.update({
               where: {
                 congregationID:congregationID
               },
@@ -38,33 +39,55 @@ const prismaClientSingleton = () => {
       },
       house: {
         async create({ args,query}) {
+          console.log("HELLO")
           const {territoryID} = args.data
-          //Fetch the nextTeritoryID for the given congregationID
-            let houseCounter = await prisma.houseCounter.findUnique({
+          const {congregationID} = args.data
+          let houseCounter: HouseCounter | null
+          if(territoryID && congregationID){
+            console.log("Find Counter...")
+            //Fetch the nextTeritoryID for the given congregationID
+            houseCounter = await prisma.houseCounter.findUnique({
               where: {
-                territoryID: territoryID
+                territoryID_congregationID:{
+                  territoryID: territoryID,
+                  congregationID: congregationID
+              }
               }
             })
-          //if congregationTerritoryCounter is there use it, if not create it
-          if (!houseCounter && territoryID && args.data.territoryID){
-            houseCounter = await prisma.houseCounter.create({
-              data: {
-                territoryID: territoryID,
-                nextHouseID: 1,
-              }
-            })
-          }
-          if(houseCounter?.nextHouseID){
-            //Use the nextTerritoryID for the new Territory
-            args.data.territoryID = houseCounter?.territoryID
-            await prisma.houseCounter.update({
-              where: {territoryID:territoryID},
-              data: {
-                nextHouseID: houseCounter?.nextHouseID+1
-              }
-            })
-          }
-          return query(args);
+            //if congregationTerritoryCounter is there use it, if not create it
+            console.log("WentThru...")
+            console.log("Check if HouseCounter is there: ",houseCounter)
+            if (houseCounter === null){
+              console.log("Create Counter")
+              houseCounter = await prisma.houseCounter.create({
+                data: {
+                  territoryID: territoryID,
+                  congregationID: congregationID,
+                  nextHouseID: 1,
+                }
+              })
+            }
+            console.log("WentThru...")
+            if(houseCounter?.nextHouseID){
+              console.log("Update New Val")
+              //Use the nextTerritoryID for the new Territory
+              console.log("Inserted Val",houseCounter.nextHouseID)
+              args.data.houseID = houseCounter?.nextHouseID
+              await prisma.houseCounter.update({
+                where: {
+                  territoryID_congregationID:{
+                    territoryID: territoryID,
+                    congregationID: congregationID
+                  }
+                },
+                data: {
+                  nextHouseID: houseCounter?.nextHouseID+1
+                }
+              })
+            }
+            console.log("End...")
+            return query(args);
+            }
         }
       }
     }

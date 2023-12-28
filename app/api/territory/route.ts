@@ -48,7 +48,7 @@ export async function POST(request: NextRequest): Promise<NextResponse< territor
         },{status: 201}) 
     } catch(e){
         // Log any error that occurs during the database operation
-        console.error("Error creating new territory:", e);
+        console.error("Error creating new territory:\n", e);
 
         // Return an error response
         return NextResponse.json({ message: `Territory POST Transaction failed:\n ${e}`}, {status: 500});
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest):Promise<NextResponse<Territory |
     const congIdCheck = congId ? congId : undefined
     let getTerritory: Territory | Territory[] | null = null
     try{
-        if(typeof(terrIdCheck) === 'number' && typeof(congIdCheck) ==='number'){
+        if(typeof(terrIdCheck) === 'number' && congIdCheck){
             getTerritory = await prisma.territory.findUnique({
                 where: {
                     territoryID_congregationID:{
@@ -93,38 +93,43 @@ export async function PATCH(request: NextRequest): Promise<NextResponse<Territor
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const timeUserKeepsTerritory = body.dateLength
-    const date = new Date()
-    const endDate = ExperiationDateCalculator(date,timeUserKeepsTerritory)
     const updateData: { [key: string]: any} = {}
     for (const [key,value] of Object.entries(body)){
         if(value!==undefined){
-            updateData[key] = value;
+            if(key =="dateLength"){
+                const dateLengthStr:string = body.dateLength
+                const dateLength = parseInt(dateLengthStr)
+                const date = new Date()
+                const endDate = ExperiationDateCalculator(date,dateLength)
+                updateData["AssignedDate"]= date
+                updateData["ExperiationDate"] = endDate
+            } else {
+                updateData[key] = value;
+            }
         }
     }
-    updateData["AssignedDate"]= date
-    updateData["ExperiationDate"] = endDate
-        if (terrIdCheck && congIdCheck){
-            try{
-                const updatedTerritory = await prisma.territory.update({
-                    where: {
-                        territoryID_congregationID:{
-                            territoryID: terrIdCheck,
-                            congregationID: congIdCheck.toString()
-                        }
-                    },
-                    data: updateData
-                });
-                if (!updatedTerritory){
-                    return NextResponse.json({message:"Territory Record was not found"})
-                }
-                return NextResponse.json(updatedTerritory,{status:201})
-            } catch (e){
-                return NextResponse.json({message: `Territory Update Transaction failed:\n ${e}`})
+    if (terrIdCheck && congIdCheck){
+        try{
+            const updatedTerritory = await prisma.territory.update({
+                where: {
+                    territoryID_congregationID:{
+                        territoryID: terrIdCheck,
+                        congregationID: congIdCheck.toString()
+                    }
+                },
+                data: updateData
+            });
+            if (!updatedTerritory){
+                return NextResponse.json({message:"Territory Record was not found"})
             }
-        } else {
-            return NextResponse.json({message: "Make sure the parameters are correctly set with the correct types."})
+            return NextResponse.json(updatedTerritory,{status:201})
+        } catch (e){
+            console.error("Error creating new territory:\n", e);
+            return NextResponse.json({message: `Territory Update Transaction failed:\n ${e}`})
         }
+    } else {
+        return NextResponse.json({message: "Make sure the parameters are correctly set with the correct types."})
+    }
 
 
 }
@@ -134,43 +139,43 @@ export async function DELETE(request: NextRequest): Promise<NextResponse<Territo
     const terrIdCheck = terrId ? parseInt(terrId) : undefined
     const congId = request.nextUrl.searchParams.get("congId")
     const congIdCheck = congId ? congId : undefined
+    if(typeof(terrIdCheck)===typeof(0) && congIdCheck && terrIdCheck !=null){
+        try{
+            const deletedTerritory = await prisma.territory.delete({
+                where: {
+                    territoryID_congregationID:{
+                        territoryID: terrIdCheck,
+                        congregationID: congIdCheck
+                    }
+                }
+            });
+            return NextResponse.json(deletedTerritory,{status:201})
+        } catch(e){
+        return NextResponse.json({message: "Make sure the parameters are correctly set with the correct types."})
+        }
+    } else {
+        return NextResponse.json({message:"Make sure the parameters are correctly set with the correct types."})
+    }
     // if(typeof(terrIdCheck)===typeof(0) && congIdCheck && terrIdCheck !=null){
     //     try{
-    //         const deletedTerritory = await prisma.territory.delete({
+    //         const emptyTerr = await prisma.territory.update({
     //             where: {
     //                 territoryID_congregationID:{
     //                     territoryID: terrIdCheck,
     //                     congregationID: congIdCheck.toString()
     //                 }
+    //             },
+    //             data: {
+    //                 AssignedDate: null,
+    //                 ExperiationDate: null,
+    //                 currentUserID: null,
     //             }
-    //         });
-    //         return NextResponse.json(deletedTerritory,{status:201})
-    //     } catch(e){
-    //     return NextResponse.json({message: "Make sure the parameters are correctly set with the correct types."})
+    //         })
+    //         return NextResponse.json(emptyTerr, {status:201})
+    //     } catch (e){
+    //         return NextResponse.json({message: `Territory Delete Transaction failed:\n ${e}`})
     //     }
-    // } else {
-    //     return NextResponse.json({message:"Make sure the parameters are correctly set with the correct types."})
     // }
-    if(typeof(terrIdCheck)===typeof(0) && congIdCheck && terrIdCheck !=null){
-        try{
-            const emptyTerr = await prisma.territory.update({
-                where: {
-                    territoryID_congregationID:{
-                        territoryID: terrIdCheck,
-                        congregationID: congIdCheck.toString()
-                    }
-                },
-                data: {
-                    AssignedDate: null,
-                    ExperiationDate: null,
-                    currentUserID: null,
-                }
-            })
-            return NextResponse.json(emptyTerr, {status:201})
-        } catch (e){
-            return NextResponse.json({message: `Territory Delete Transaction failed:\n ${e}`})
-        }
-    }
     return NextResponse.json({message:""})
 }
 

@@ -117,5 +117,4 @@ export async function DELETE(request: NextRequest):Promise<NextResponse<User | E
     } catch(e){
         return NextResponse.json({message:`User DELETE Transaction Failed: ${e}`})
     }
-   
 }

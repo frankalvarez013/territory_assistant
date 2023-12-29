@@ -33,7 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse< House | 
     try{
         const newHouse = await prisma.house.create({
             data: {
-                houseID: 2,
+                houseID: 1,
                 territoryID: parseInt(body.territoryID),
                 congregationID: body.congregationID,
                 StreetAd: body.StreetAd,

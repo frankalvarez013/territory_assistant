@@ -156,26 +156,6 @@ export async function DELETE(request: NextRequest): Promise<NextResponse<Territo
     } else {
         return NextResponse.json({message:"Make sure the parameters are correctly set with the correct types."})
     }
-    // if(typeof(terrIdCheck)===typeof(0) && congIdCheck && terrIdCheck !=null){
-    //     try{
-    //         const emptyTerr = await prisma.territory.update({
-    //             where: {
-    //                 territoryID_congregationID:{
-    //                     territoryID: terrIdCheck,
-    //                     congregationID: congIdCheck.toString()
-    //                 }
-    //             },
-    //             data: {
-    //                 AssignedDate: null,
-    //                 ExperiationDate: null,
-    //                 currentUserID: null,
-    //             }
-    //         })
-    //         return NextResponse.json(emptyTerr, {status:201})
-    //     } catch (e){
-    //         return NextResponse.json({message: `Territory Delete Transaction failed:\n ${e}`})
-    //     }
-    // }
     return NextResponse.json({message:""})
 }
 

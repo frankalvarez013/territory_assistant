@@ -1,5 +1,5 @@
 import { NextRequest,NextResponse } from "next/server";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import {ZodIssue, z} from "zod"
 import prisma from '@/prisma/client'
 import { ErrorResponse } from "@/app/types/api";
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<Congregat
    
 }
 
-export async function GET(request: NextRequest): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse>>{
+export async function GET(request: NextRequest, res:NextApiResponse): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse>>{
     const idParam = request.nextUrl.searchParams.get("id")
     let getCongregation: Congregation | Congregation[] | null = null
     if (idParam){
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<Congregati
     if(!getCongregation){
         return NextResponse.json({message: "Congregation Record not Found:\n"}, {status: 404})
     }
-    return NextResponse.json(getCongregation,{status:201})
+    return NextResponse.json(getCongregation,{status:200})
 }
 
 export async function PATCH(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[] | ErrorResponse>>{

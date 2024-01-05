@@ -98,6 +98,7 @@ const config: Config = {
   moduleNameMapper: {
     'src/(.*)': '<rootDir>/src/$1',
     'tests/(.*)': '<rootDir>/__tests__/$1',
+    '^@/(.*)$': '<rootDir>/$1', // Adjust the mapping to point to the correct directory
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -110,7 +111,7 @@ const config: Config = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: 'ts-jest',
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -145,7 +146,7 @@ const config: Config = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/singleton.ts'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -154,7 +155,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },

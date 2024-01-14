@@ -26,10 +26,8 @@ test('should create new user',async()=>{
   // to unknown and then to the desired type.
   const res = {status: jest.fn(()=> res), json: jest.fn()} as unknown as NextApiResponse
   const resp = await GET(req,res)
-  // console.dir(prismaMock.congregation.findUnique.mock.calls, { depth: null });
-  // console.log(JSON.stringify(prismaMock.congregation.findUnique.mock.calls, null, 2));
-  console.log(resp)
-  expect(resp.status).toHaveBeenCalledWith(200)
-  expect(resp.json).toHaveBeenLastCalledWith(congregationData)
+  expect(resp.status).toBe(200);
+  const jsonData = await resp.json();
+  expect(jsonData).toEqual(congregationData);
 }
 )

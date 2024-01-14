@@ -34,11 +34,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<Congregat
    
 }
 
-export async function GET(request: NextRequest, res:NextApiResponse): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse | undefined>>{
-    const idParam = request.nextUrl.searchParams.get("id")
-    let getCongregation: Congregation | Congregation[] | null = null
+export async function GET(request: NextRequest, res:NextApiResponse): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse>>{
+    const idParam = request.nextUrl.searchParams.get("id");
+    let getCongregation: Congregation | Congregation[] | null = null;
     if (idParam){
-        console.log("inside with idParam",idParam)
+        console.log("inside with idParam",idParam);
         try{
             getCongregation = await prisma.congregation.findUnique({
                 where: {
@@ -46,20 +46,19 @@ export async function GET(request: NextRequest, res:NextApiResponse): Promise<Ne
                 }
             });
         }catch (e){
-            console.log(e)
-            return NextResponse.json({message: `Congregation GET Transaction failed:\n ${e}`}, {status: 404})
+            console.log(e);
+            return NextResponse.json({message: `Congregation GET Transaction failed:\n ${e}`}, {status: 404});
         }
         
     } else {
         getCongregation = await prisma.congregation.findMany({});
     }
     if(!getCongregation){
-        console.log("Congregation Record not Found:\n",getCongregation)
-        return NextResponse.json({message: "Congregation Record not Found:\n"}, {status: 404})
+        console.log("Congregation Record not Found:\n",getCongregation);
+        res.status(404);
+        return NextResponse.json({message: "Congregation Record not Found:\n"}, {status: 404});
     }
-    console.log("Hey")
-    console.log(getCongregation)
-    res.status(200).json(getCongregation)
+    return NextResponse.json(getCongregation, {status: 200});
 }
 
 export async function PATCH(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[] | ErrorResponse>>{

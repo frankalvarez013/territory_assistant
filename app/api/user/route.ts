@@ -4,6 +4,7 @@ import {ZodIssue, z} from "zod"
 import prisma from '@/prisma/client'
 import { User } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
+import {signJWT} from '../../../lib/validations/token'
 const createUserSchema = z.object({
     fName: z.string().min(1).max(255),
     lName: z.string().min(1).max(255),

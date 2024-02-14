@@ -2,6 +2,7 @@
 import { useState,useEffect } from "react"
 import { getCsrfToken } from "next-auth/react";
 async function signIn(username, password,token) {
+  console.log(username,password,token);
   const res = await fetch('/api/auth/callback/credentials', {
     method: 'POST',
     headers: {

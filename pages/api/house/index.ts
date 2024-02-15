@@ -1,10 +1,7 @@
-import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest, NextApiResponse } from "next";
-import {ZodIssue, z} from "zod"
-import prisma from '@/prisma/client'
-import { comment } from "postcss";
+import {z} from "zod";
+import prisma from '@/prisma/client';
 import type { House } from "@prisma/client";
-import { ErrorResponse } from "@/app/types/api";
 const createHouseSchema = z.object({
     territoryID: z.string().refine(value =>
         !isNaN(parseInt(value)) && isFinite(parseInt(value)),
@@ -41,8 +38,7 @@ export async function POST(request: NextApiRequest,response: NextApiResponse){
                 comment: body.comment,
                 observation: body.observation,
             }
-        }
-        );
+        });
         return response.status(201).json(newHouse);
     } catch(e) {
         return response.status(201).json({message:`House POST Transaction failed:\n${e}`});
@@ -82,7 +78,7 @@ export async function PATCH(request: NextApiRequest,response: NextApiResponse){
     const body = request.body;
     const validation = updateHouseSchema.safeParse(body);
     if (!validation.success){
-        return NextResponse.json(validation.error.errors, {status: 400})
+        return response.status(400).json(validation.error.errors);
     }
     const updateData: { [key: string]: any} = {};
     for (const [key,value] of Object.entries(body)){

@@ -57,9 +57,9 @@ export async function GET(request:NextApiRequest,response:NextApiResponse){
             getUser = await prisma.user.findMany({});
         }
         if(!getUser){
-            return response.status(500).json({message:"User Record not found"});
+            return response.status(404).json({message:"User Record not found"});
         }
-        return response.status(201).json(getUser);
+        return response.status(200).json(getUser);
     } catch(e){
         return response.status(500).json({message:`USER GET transaction failed:\n ${e}`});
     }
@@ -115,19 +115,19 @@ export async function DELETE(request:NextApiRequest,response:NextApiResponse){
         });
         return response.status(201).json(deletedUser);
     } catch(e){
-        return response.status(500).json({message:`USER DELETE transaction failed:\n ${e}`});
+        return response.status(500).json({message:`USERa DELETE transaction failed:\n ${e}`});
     }
 }
 
 export default async function handler(req:NextApiRequest,res:NextApiResponse){
     switch(req.method){
         case 'POST':
-            POST(req,res);
+            return POST(req,res);
         case 'GET':
-            GET(req,res);
+            return GET(req,res);
         case 'PATCH':
-            PATCH(req,res);
+            return PATCH(req,res);
         case 'DELETE':
-            DELETE(req,res);
+            return DELETE(req,res);
     }
 }

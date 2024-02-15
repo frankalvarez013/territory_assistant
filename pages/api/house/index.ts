@@ -122,12 +122,12 @@ export async function DELETE(request: NextApiRequest,response: NextApiResponse){
 export default async function handler(req:NextApiRequest,res:NextApiResponse){
     switch(req.method){
         case 'POST':
-            POST(req,res);
+            return POST(req,res);
         case 'GET':
-            GET(req,res);
+            return GET(req,res);
         case 'PATCH':
-            PATCH(req,res);
+            return PATCH(req,res);
         case 'DELETE':
-            DELETE(req,res);
+            return DELETE(req,res);
     }
 }

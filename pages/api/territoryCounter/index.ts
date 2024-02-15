@@ -47,8 +47,8 @@ export async function DELETE(request:NextApiRequest, response:NextApiResponse){
 export default async function handler(req:NextApiRequest,res:NextApiResponse){
     switch(req.method){
         case 'GET':
-            GET(req,res);
+            return GET(req,res);
         case 'DELETE':
-            DELETE(req,res);
+            return DELETE(req,res);
     }
 }

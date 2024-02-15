@@ -1,12 +1,12 @@
 import { NextRequest,NextResponse } from "next/server";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import {z} from "zod"
 import prisma from '@/prisma/client'
 import type { HouseCounter } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
-export async function GET(request: NextRequest):Promise<NextResponse<HouseCounter | HouseCounter[] | ErrorResponse>>{
-    const territoryID = request.nextUrl.searchParams.get("terrId")
-    const congregationID = request.nextUrl.searchParams.get("congId")
+export async function GET(request: NextApiRequest,response:NextApiResponse){
+    const territoryID = Array.isArray(request.query.TerritoryID) ? request.query.TerritoryID[0] : request.query.TerritoryID;
+    const congregationID = Array.isArray(request.query.congId) ? request.query.congId[0] : request.query.congId;
     const territoryIDCheck = territoryID ? parseInt(territoryID) : undefined
     let getCounter: HouseCounter | HouseCounter[] | null = null
     try{
@@ -23,19 +23,19 @@ export async function GET(request: NextRequest):Promise<NextResponse<HouseCounte
             getCounter = await prisma.houseCounter.findMany({});
         }
         if (!getCounter){
-            return NextResponse.json({message: "Congregation Record not found"}, {status: 404})
+            return response.status(404).json({message: "Congregation Record not found"})
         }
-        return NextResponse.json(getCounter,{status:201})
+        return response.status(201).json(getCounter)
     } catch(e) {
-        return NextResponse.json({message: `houseCounter GET Transaction failed:\n ${e}`}, {status: 404})
+        return response.status(404).json({message: `houseCounter GET Transaction failed:\n ${e}`})
     }
    
 
 }
 
-export async function DELETE(request: NextRequest):Promise<NextResponse<HouseCounter | ErrorResponse>>{
-    const territoryID = request.nextUrl.searchParams.get("terrId")
-    const congregationID = request.nextUrl.searchParams.get("congId")
+export async function DELETE(request: NextApiRequest,response:NextApiResponse){
+    const territoryID = Array.isArray(request.query.TerritoryID) ? request.query.TerritoryID[0] : request.query.TerritoryID;
+    const congregationID = Array.isArray(request.query.congId) ? request.query.congId[0] : request.query.congId;
     const territoryIDCheck = territoryID ? parseInt(territoryID) : undefined
     let getCounter: HouseCounter | null= null
     if(territoryIDCheck && congregationID){
@@ -49,12 +49,22 @@ export async function DELETE(request: NextRequest):Promise<NextResponse<HouseCou
                 }
             })
         } catch(e) {
-            return NextResponse.json({message: `houseCounter Delete Transaction failed:\n ${e}`}, {status: 404})
+            return response.status(404).json({message: `houseCounter Delete Transaction failed:\n ${e}`})
         }
         
     }
     if(!getCounter){
-        return NextResponse.json({message:"Congregation Record not found"}, {status: 404})
+        return response.status(404).json({message:"Congregation Record not found"})
     }
-    return NextResponse.json(getCounter,{status:201})
+    return response.status(201).json(getCounter)
+
+}
+
+export default async function handler(req:NextApiRequest,res:NextApiResponse){
+    switch(req.method){
+        case 'GET':
+            GET(req,res);
+        case 'DELETE':
+            DELETE(req,res);
+    }
 }

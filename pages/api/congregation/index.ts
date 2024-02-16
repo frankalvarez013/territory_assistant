@@ -1,22 +1,24 @@
+import { NextRequest,NextResponse } from "next/server";
 import { NextApiRequest, NextApiResponse } from "next";
-import {z} from "zod";
-import prisma from '@/prisma/client';
+import {ZodIssue, z} from "zod"
+import prisma from '@/prisma/client'
+import { ErrorResponse } from "@/app/types/api";
 import type { Congregation } from "@prisma/client";
  
 const createCongregationSchema = z.object({
     congregationName: z.string().min(1).max(255),
     address: z.string().min(1).max(255)
-});
+})
 const updateCongregationSchema = z.object({
     congregationName: z.string().min(1).max(255).optional(),
     address: z.string().min(1).max(255).optional()
-});
+})
 
 export async function POST(request: NextApiRequest,res:NextApiResponse){
     const body:Congregation = request.body;
     const validation = createCongregationSchema.safeParse(body);
     if (!validation.success){
-        return res.status(400).json(validation.error.errors);
+        return res.status(400).json(validation.error.errors)
     }
     try{
         const newCongregation = await prisma.congregation.create({
@@ -24,8 +26,9 @@ export async function POST(request: NextApiRequest,res:NextApiResponse){
                 congregationName:body.congregationName, 
                 address: body.address
             }
-        });
-        return res.status(201).json(newCongregation);
+        }
+        )
+        return res.status(201).json(newCongregation)
     } catch (e){
         return res.status(404).json({ message: `Congregation POST Transaction failed:\n ${e}` });
     }
@@ -59,16 +62,16 @@ export async function GET(request: NextApiRequest, res:NextApiResponse){
 }
 
 export async function PATCH(request: NextApiRequest,res:NextApiResponse){
-    const body:Congregation = request.body;
+    const body:Congregation = request.body
     const id = Array.isArray(request.query.id) ? request.query.id[0] : request.query.id;
     const validation = updateCongregationSchema.safeParse(body);
     if (!validation.success){
-        return res.status(400).json(validation.error.errors);
+        return res.status(400).json(validation.error.errors)
     }
     const updateData : {[key: string]:string} = {}
     for (const [key,value] of Object.entries(body)){
         if(value!=undefined){
-            updateData[key] = value;
+            updateData[key] = value
         }
     }
     try{
@@ -93,7 +96,7 @@ export async function DELETE(request: NextApiRequest,res:NextApiResponse){
                 id: id
             }
         });
-        return res.status(201).json(deletedCongregation);
+        return res.status(201).json(deletedCongregation)
     } catch (e){
         return res.status(404).json({ message: `Congregation DELETE Transaction failed:\n ${e}` });
     }

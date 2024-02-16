@@ -14,11 +14,11 @@ const updateCongregationSchema = z.object({
     address: z.string().min(1).max(255).optional()
 })
 
-export async function POST(request: NextApiRequest,res:NextApiResponse){
-    const body:Congregation = request.body;
+export async function POST(request: NextRequest, res:NextApiResponse): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse | ZodIssue[]>>{
+    const body:Congregation = await request.json();
     const validation = createCongregationSchema.safeParse(body);
     if (!validation.success){
-        return res.status(400).json(validation.error.errors)
+        return NextResponse.json(validation.error.errors, {status: 400});
     }
     try{
         const newCongregation = await prisma.congregation.create({
@@ -28,27 +28,25 @@ export async function POST(request: NextApiRequest,res:NextApiResponse){
             }
         }
         )
-        return res.status(201).json(newCongregation)
+        return NextResponse.json(newCongregation,{status: 201})
     } catch (e){
-        return res.status(404).json({ message: `Congregation POST Transaction failed:\n ${e}` });
+        return NextResponse.json({message: `Congregation GET Transaction failed:\n ${e}`}, {status: 404});
     }
-   
 }
 
-export async function GET(request: NextApiRequest, res:NextApiResponse){
-    const id = Array.isArray(request.query.id) ? request.query.id[0] : request.query.id;
+export async function GET(request: NextRequest, res:NextApiResponse): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse>>{
+    const idParam = request.nextUrl.searchParams.get("id");
     let getCongregation: Congregation | Congregation[] | null = null;
-    if (id){
-        console.log("inside with idParam",id);
+    if (idParam){
         try{
             getCongregation = await prisma.congregation.findUnique({
                 where: {
-                    id:id
+                    id:idParam
                 }
             });
         }catch (e){
             console.log(e);
-            return res.status(404).json({ message: `Congregation GET Transaction failed:\n ${e}` });
+            return NextResponse.json({message: `Congregation GET Transaction failed:\n ${e}`}, {status: 404});
         }
         
     } else {
@@ -56,17 +54,16 @@ export async function GET(request: NextApiRequest, res:NextApiResponse){
     }
     if(!getCongregation){
         console.log("Congregation Record not Found:\n",getCongregation);
-        return res.status(404).json({ message: `Congregation Record not found:` });
+        return NextResponse.json({message: "Congregation Record not Found:\n"}, {status: 404});
     }
-    return res.status(200).json(getCongregation);
+    return NextResponse.json(getCongregation, {status: 200});
 }
 
-export async function PATCH(request: NextApiRequest,res:NextApiResponse){
-    const body:Congregation = request.body
-    const id = Array.isArray(request.query.id) ? request.query.id[0] : request.query.id;
+export async function PATCH(request: NextRequest): Promise<NextResponse<Congregation | ZodIssue[] | ErrorResponse>>{
+    const body:Congregation = await request.json();
     const validation = updateCongregationSchema.safeParse(body);
     if (!validation.success){
-        return res.status(400).json(validation.error.errors)
+        return NextResponse.json(validation.error.errors, {status: 400})
     }
     const updateData : {[key: string]:string} = {}
     for (const [key,value] of Object.entries(body)){
@@ -77,40 +74,27 @@ export async function PATCH(request: NextApiRequest,res:NextApiResponse){
     try{
         const updateCongregation = await prisma.congregation.update({
             where: {
-                id: id
+                id: request.nextUrl.searchParams.get("id") ?? undefined
             },
             data: updateData
         });
-        return res.status(201).json(updateCongregation);
+        return NextResponse.json(updateCongregation,{status:201});
     } catch (e){
-        return res.status(404).json({ message: `Congregation GET Transaction failed:\n ${e}` });
+        return NextResponse.json({message: `Congregation UPDATE Transaction failed\n: ${e}`}, {status: 404});
     }
   
 }
 
-export async function DELETE(request: NextApiRequest,res:NextApiResponse){
-    const id = Array.isArray(request.query.id) ? request.query.id[0] : request.query.id;
+export async function DELETE(request: NextRequest): Promise<NextResponse<Congregation | ErrorResponse>>{
+    const idParam = request.nextUrl.searchParams.get("id")
     try{
         const deletedCongregation = await prisma.congregation.delete({
             where: {
-                id: id
+                id: request.nextUrl.searchParams.get("id") ?? undefined
             }
         });
-        return res.status(201).json(deletedCongregation)
+        return NextResponse.json(deletedCongregation,{status:201});
     } catch (e){
-        return res.status(404).json({ message: `Congregation DELETE Transaction failed:\n ${e}` });
-    }
-}
-
-export default async function handler(req:NextApiRequest,res:NextApiResponse){
-    switch(req.method){
-        case 'POST':
-            return POST(req,res);
-        case 'GET':
-            return GET(req,res);
-        case 'PATCH':
-            return PATCH(req,res);
-        case 'DELETE':
-            return DELETE(req,res);  
+        return NextResponse.json({message: `Congregation DELETE Transaction failed\n: ${e}`}, {status: 404});
     }
 }

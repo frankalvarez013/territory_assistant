@@ -159,12 +159,12 @@ function ExperiationDateCalculator( date: Date, daysToAdd: number): Date{
 export default async function handler(req:NextApiRequest,res:NextApiResponse){
     switch(req.method){
         case 'POST':
-            return POST(req,res);
+            POST(req,res);
         case 'GET':
-            return GET(req,res);
+            GET(req,res);
         case 'PATCH':
-            return PATCH(req,res);
+            PATCH(req,res);
         case 'DELETE':
-            return DELETE(req,res);
+            DELETE(req,res);
     }
 }

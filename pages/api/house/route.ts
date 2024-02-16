@@ -1,5 +1,5 @@
 import { NextRequest,NextResponse } from "next/server";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 import {ZodIssue, z} from "zod"
 import prisma from '@/prisma/client'
 import { comment } from "postcss";
@@ -15,7 +15,7 @@ const createHouseSchema = z.object({
     dateVisited: z.date().optional(),
     comment: z.string().min(1).max(255).optional(),
     observation: z.enum(["EMPTY","VISITED","DONTVISIT","DOG","NIGHT"]).optional()
-});
+})
 const updateHouseSchema = z.object({
     territoryID: z.number().positive().finite().optional(),
     StreetAd: z.string().min(1).max(255).optional(),
@@ -23,12 +23,12 @@ const updateHouseSchema = z.object({
     comment: z.string().min(1).max(255).optional(),
     observation: z.enum(["EMPTY","VISITED","DONTVISIT","DOG","NIGHT"]).optional()
     //use zod to check if the isAdmin is true or false "strings"
-});
-export async function POST(request: NextApiRequest,response: NextApiResponse){
-    const body = request.body;
+})
+export async function POST(request: NextRequest): Promise<NextResponse< House | ErrorResponse | ZodIssue[]>>{
+    const body = await request.json();
     const validation = createHouseSchema.safeParse(body);
     if (!validation.success){
-        return response.status(400).json(validation.error.errors);
+        return NextResponse.json(validation.error.errors, {status: 400})
     }
     try{
         const newHouse = await prisma.house.create({
@@ -42,24 +42,25 @@ export async function POST(request: NextApiRequest,response: NextApiResponse){
                 observation: body.observation,
             }
         }
-        );
-        return response.status(201).json(newHouse);
+        )
+        return NextResponse.json(newHouse,{status: 201})
     } catch(e) {
-        return response.status(201).json({message:`House POST Transaction failed:\n${e}`});
+        return NextResponse.json({message:`House POST Transaction failed:\n ${e}`},{status: 201})
     }
     
 }
 
-export async function GET(request: NextApiRequest,response: NextApiResponse){
-    const idParam = Array.isArray(request.query.TerritoryID) ?  request.query.TerritoryID[0] : request.query.TerritoryID;
-    const streetAdParam = Array.isArray(request.query.StreetAd) ? request.query.StreetAd[0] : request.query.StreetAd;
-    const territoryID = idParam ? parseInt(idParam) : undefined;
-    let getHouse: House | House[] | null = null;
+export async function GET(request: NextRequest):Promise<NextResponse<House | House[] | ErrorResponse>>{
+    const idParam = request.nextUrl.searchParams.get("TerritoryID")
+    const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
+    const streetAd = streetdAdParam ? streetdAdParam : undefined
+    const territoryID = idParam ? parseInt(idParam) : undefined
+    let getHouse: House | House[] | null = null
     if(territoryID){
         getHouse = await prisma.house.findUnique({
             where: {
                 territoryID: territoryID?? undefined,
-                StreetAd: streetAdParam?? undefined
+                StreetAd: streetAd?? undefined
             }
         });
     } else {
@@ -70,21 +71,22 @@ export async function GET(request: NextApiRequest,response: NextApiResponse){
         });
     }
     if(!getHouse){
-        return response.status(404).json({message: "House record not found"});
+        return NextResponse.json({message: "House record not found"},{status:404})
     }
-    return response.status(201).json(getHouse);
+    return NextResponse.json(getHouse,{status:201})
 }
 
-export async function PATCH(request: NextApiRequest,response: NextApiResponse){
-    const idParam = Array.isArray(request.query.TerritoryID) ? request.query.TerritoryID[0] : request.query.TerritoryID;
-    const streetdAdParam = Array.isArray(request.query.StreetAd) ? request.query.StreetAd[0] : request.query.StreetAd;
-    const territoryID = idParam ? parseInt(idParam) : undefined;
-    const body = request.body;
+export async function PATCH(request: NextRequest):Promise<NextResponse<House | ErrorResponse | ZodIssue[]>>{
+    const idParam = request.nextUrl.searchParams.get("TerritoryID")
+    const streetdAdParam = request.nextUrl.searchParams.get("StreetAd")
+    const streetAd = streetdAdParam ? streetdAdParam : undefined
+    const territoryID = idParam ? parseInt(idParam) : undefined
+    const body = await request.json();
     const validation = updateHouseSchema.safeParse(body);
     if (!validation.success){
         return NextResponse.json(validation.error.errors, {status: 400})
     }
-    const updateData: { [key: string]: any} = {};
+    const updateData: { [key: string]: any} = {}
     for (const [key,value] of Object.entries(body)){
         if(value!==undefined){
             updateData[key] = value;
@@ -94,44 +96,32 @@ export async function PATCH(request: NextApiRequest,response: NextApiResponse){
         const updatedHouse = await prisma.house.update({
             where: {
                 territoryID: territoryID?? undefined,
-                StreetAd: streetdAdParam?? undefined
+                StreetAd: streetAd?? undefined
             },
             data: updateData
         });
-        return response.status(201).json(updatedHouse);
+        return NextResponse.json(updatedHouse,{status:201})
     } catch (e){
-        return response.status(404).json({message:`House Update Transaction failed:\n ${e}`});
+        return NextResponse.json({message:`House Update Transaction failed:\n ${e}`},{status: 201})
     }
    
 }
 
-export async function DELETE(request: NextApiRequest,response: NextApiResponse){
-    const idParam = Array.isArray(request.query.TerritoryID) ? request.query.TerritoryID[0] : request.query.TerritoryID;
-    const streetdAdParam = Array.isArray(request.query.streetAd) ? request.query.streetAd[0] : request.query.streetAd;
-    const territoryID = idParam ? parseInt(idParam) : undefined;
+export async function DELETE(request: NextRequest):Promise<NextResponse<House | ErrorResponse>>{
+    const idParam = request.nextUrl.searchParams.get("terrId")
+    const streetdAdParam = request.nextUrl.searchParams.get("streetAd")
+    const streetAd = streetdAdParam ? streetdAdParam : undefined
+    const territoryID = idParam ? parseInt(idParam) : undefined
     try{
         const deletedHouse = await prisma.house.delete({
             where: {
                 territoryID: territoryID?? undefined,
-                StreetAd: streetdAdParam?? undefined
+                StreetAd: streetAd?? undefined
             }
         });
-        return response.status(201).json(deletedHouse);
+        return NextResponse.json(deletedHouse,{status:201})
     } catch(e) {
-        return response.status(404).json({message: `House DELETE Transaction failed:\n ${e}`});
+        return NextResponse.json({message: `House DELETE Transaction failed:\n ${e}`})
     }
    
-}
-
-export default async function handler(req:NextApiRequest,res:NextApiResponse){
-    switch(req.method){
-        case 'POST':
-            POST(req,res);
-        case 'GET':
-            GET(req,res);
-        case 'PATCH':
-            PATCH(req,res);
-        case 'DELETE':
-            DELETE(req,res);
-    }
 }

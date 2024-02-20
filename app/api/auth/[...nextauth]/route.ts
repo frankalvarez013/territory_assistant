@@ -38,13 +38,44 @@ export const authOptions:NextAuthOptions= {
         return {
           id: user.id + '',
           email: user.email,
-          name:user.name
+          name:user.name,
+          randomKey: 'Hey'
         }
         // const user = { id: '1', name: 'ethan', email: 'test@test.com'}
         // return user
       }
     })
-  ]
+  ],
+  //session handles creation and maangemt of jwt, and other handlers session object that is passed around andu seud whten you fetch the sesion
+  // first jwt callback is called and it passes thru the token, and then the session calllbcak is called when you have to get the session and it uses that otken
+  //so in order to pass something thru we have to return it from the auth function , apss it thru the jWT function and then use it in the session
+  callbacks:{
+    session:({session,token})=>{
+      console.log('Session Callback', {session,token})
+      return {
+        ...session,
+        user:{
+          ...session.user,
+          id: token.id,
+          randomKey: token.randomKey,
+        }
+      }
+    },
+    //user is only passed in the first time user logs in thru Oauth/ or credential
+    jwt: ({ token, user}) => {
+      console.log('JWT Callback', {token,user})
+      if (user){
+        const u = user as unknown as any //user in user.randomKey is not our USER, its the one in next/auth and since we want to access randomKey, so
+        //we have to cast it. We can use it as a prisma user but since we use randomkey we use 'any'
+        return {
+          ...token,
+          id: u.id,
+          randomKey: u.randomKey
+        }
+      }
+      return token;
+    }
+  }
 }
 
 const handler = NextAuth(authOptions)

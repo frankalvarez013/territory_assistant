@@ -3,6 +3,7 @@ import { getCsrfToken,signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { User } from "./users";
+import { LoginButton, LogoutButton } from "./auth";
 // async function signIn(username, password,token) {
 //   console.log("oi",username,password,token);
 //   const res = await fetch('/api/auth/callback/credentials', {
@@ -53,6 +54,8 @@ export default async function SignInForm(){
   // }
   return (
     <main className="text-lg text-black">
+      <LoginButton></LoginButton>
+      <LogoutButton></LogoutButton>
       {/* <form onSubmit={handleSignIn}>
       hi
       <label htmlFor="username">Username</label>

@@ -1,6 +1,8 @@
-'use client'
-import { useState,useEffect } from "react"
+
 import { getCsrfToken,signIn } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { User } from "./users";
 // async function signIn(username, password,token) {
 //   console.log("oi",username,password,token);
 //   const res = await fetch('/api/auth/callback/credentials', {
@@ -26,32 +28,32 @@ import { getCsrfToken,signIn } from "next-auth/react";
 //   if (data.url) window.location.href = data.url; // Redirects the user to callbackUrl or the default URL.
 //   else console.error('Failed to sign in', data.error);
 // }
-export default function SignInForm(){
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [token, setToken] = useState('');
-  useEffect(()=>{
-    getCsrfToken().then((csrfToken) =>{
-      setToken(csrfToken || '');
-    })
-  },[])
-  async function handleSignIn(e){
-    e.preventDefault();
-    const result = await signIn('credentials',{
-      username,
-      password,
-      callbackUrl: '/dashboard'
-    })
-    if(result?.error){
-      console.error(result.error);
-    } else {
-      if(result?.url) window.location.href = result?.url;
-    }
-  }
+export default async function SignInForm(){
+  const session = await getServerSession(authOptions)
+  // const [username, setUsername] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [token, setToken] = useState('');
+  // useEffect(()=>{
+  //   getCsrfToken().then((csrfToken) =>{
+  //     setToken(csrfToken || '');
+  //   })
+  // },[])
+  // async function handleSignIn(e){
+  //   e.preventDefault();
+  //   const result = await signIn('credentials',{
+  //     username,
+  //     password,
+  //     callbackUrl: '/dashboard'
+  //   })
+  //   if(result?.error){
+  //     console.error(result.error);
+  //   } else {
+  //     if(result?.url) window.location.href = result?.url;
+  //   }
+  // }
   return (
-    <h1 className="text-lg text-black">
-      yo
-      <form onSubmit={handleSignIn}>
+    <main className="text-lg text-black">
+      {/* <form onSubmit={handleSignIn}>
       hi
       <label htmlFor="username">Username</label>
       <input
@@ -70,8 +72,12 @@ export default function SignInForm(){
       />
       
       <button type="submit">Sign In</button>
-    </form>
-    </h1>
+    </form> */}
+    <h2>Server Session</h2>
+    <pre>{JSON.stringify(session)}</pre>
+    <h2>Client Call</h2>
+    <User></User>
+    </main>
     
   );
 }

@@ -54,18 +54,32 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Authenticator {
+  id                   String  @id @default(cuid())
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
-  id             String       @unique @default(uuid())
-  fName          String       @db.VarChar(255)
-  lName          String       @db.VarChar(255)
-  email          String       @unique @db.VarChar(255)
-  password       String       @db.VarChar(255)
-  isAdmin        Boolean      @default(false)
+  id             String          @unique @default(uuid())
+  name           String          @db.VarChar(255)
+  email          String          @unique @db.VarChar(255)
+  password       String          @db.VarChar(255)
+  isAdmin        Boolean         @default(false)
   congregationID String
-  congregation   Congregation @relation(fields: [congregationID], references: [id])
+  congregation   Congregation    @relation(fields: [congregationID], references: [id])
   Territory      Territory[]
   Account        Account[]
   Session        Session[]
+  Authenticator  Authenticator[]
 
   @@id([id, congregationID])
 }

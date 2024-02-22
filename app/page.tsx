@@ -29,8 +29,8 @@ import { LoginButton, LogoutButton } from "./auth";
 //   if (data.url) window.location.href = data.url; // Redirects the user to callbackUrl or the default URL.
 //   else console.error('Failed to sign in', data.error);
 // }
-export default async function SignInForm(){
-  const session = await getServerSession(authOptions)
+export default function homePage(){
+  // const session = await getServerSession(authOptions)
   // const [username, setUsername] = useState('');
   // const [password, setPassword] = useState('');
   // const [token, setToken] = useState('');
@@ -53,7 +53,9 @@ export default async function SignInForm(){
   //   }
   // }
   return (
-    <main className="text-lg text-black">
+
+    <main className="text-2xl text h-full bg-[url('./assets/images/mountains.jpg')] bg-cover pt-20 text-fuchsia-700">
+      
       <LoginButton></LoginButton>
       <LogoutButton></LogoutButton>
       {/* <form onSubmit={handleSignIn}>
@@ -76,10 +78,11 @@ export default async function SignInForm(){
       
       <button type="submit">Sign In</button>
     </form> */}
-    <h2>Server Session</h2>
+    {/* <h2>Server Session</h2>
     <pre>{JSON.stringify(session)}</pre>
     <h2>Client Call</h2>
-    <User></User>
+    <User></User> */}
+  
     </main>
     
   );

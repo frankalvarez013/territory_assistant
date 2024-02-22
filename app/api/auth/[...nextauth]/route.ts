@@ -1,4 +1,3 @@
-import { PrismaAdapter } from "@auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import NextAuth, { type NextAuthOptions} from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
@@ -39,7 +38,7 @@ export const authOptions:NextAuthOptions= {
           id: user.id + '',
           email: user.email,
           name:user.name,
-          randomKey: 'Hey'
+          isAdmin: user.isAdmin
         }
         // const user = { id: '1', name: 'ethan', email: 'test@test.com'}
         // return user
@@ -57,7 +56,7 @@ export const authOptions:NextAuthOptions= {
         user:{
           ...session.user,
           id: token.id,
-          randomKey: token.randomKey,
+          isAdmin: token.isAdmin,
         }
       }
     },

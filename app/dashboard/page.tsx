@@ -6,5 +6,8 @@ export default async function Page(){
     if(!session){
         redirect('/api/auth/signin');
     }
-    return <p>Dashboard Page</p>
+    return <main>
+        Dashboard Page
+        <h4>{session.user && session.user.name}</h4>
+        </main>
 }

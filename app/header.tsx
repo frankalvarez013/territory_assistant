@@ -2,7 +2,7 @@ import Image from "next/image"
 import logo from './assets/images/logo.png'
 export default function Header(){
     return (
-        <header className=" bg-slate-100 bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10">
+        <header className=" bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white">
                 <div className=" flex justify-center items-center gap-2">
                     <Image alt="NA" src={logo} width={50} height={50}>
                     </Image>

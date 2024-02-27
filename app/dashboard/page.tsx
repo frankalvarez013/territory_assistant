@@ -26,18 +26,23 @@ export default async function Page() {
   ];
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="text-5xl ">Hi {session.user.name}</div>
-      <div>
-        These are your assigned territories from INSERT TIME FRAME - INSERT TIME
-        FRAME
-      </div>
-      <div className=" m-auto w-[90%] h-1/2 p-10 border-greye border-2 rounded-2xl">
-        <div className=" text-darkgrey mb-7 text-xl font-semibold">
-          Assigned Territories
+    <div className="h-full flex flex-col justify-center items-center">
+      <div className=" w-10/12 h-5/6 flex flex-col">
+        <div>
+          <div className="text-5xl">Hi {session.user.name}</div>
+          <div className="">
+            These are your assigned territories from INSERT TIME FRAME - INSERT
+            TIME FRAME
+          </div>
         </div>
-        <TerritoryPreview terrList={terrList}></TerritoryPreview>
+        <div className=" m-auto w-[90%] h-full mt-16 p-10 border-greye border-2 rounded-2xl">
+          <div className=" text-darkgrey mb-7 text-xl font-semibold">
+            Assigned Territories
+          </div>
+          <TerritoryPreview terrList={terrList}></TerritoryPreview>
+        </div>
       </div>
+
       {/* <LoginButton></LoginButton>
             <LogoutButton></LogoutButton> */}
     </div>

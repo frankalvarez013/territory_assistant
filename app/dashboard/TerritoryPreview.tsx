@@ -1,6 +1,26 @@
-import { table } from "console";
+"use client";
+import { useEffect, useState } from "react";
 
-export default function TerritoryPreview({ terrList }) {
+export default function TerritoryPreview(props) {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    async function fetchUserData() {
+      console.log("um");
+      const response = await fetch(`/api/user?id=${props.userID}`);
+      if (!response.ok) {
+        console.error("Failed to fetch user data");
+        return;
+      }
+      console.log("userid", props.userID);
+      const userData = await response.json();
+      console.log(userData);
+      setUser(userData);
+    }
+    fetchUserData();
+  }, [props.terrList]);
+  if (!user) return <div>Loading user data...</div>;
   return (
     <table className="w-full m-auto border-collapse text-center">
       <thead>
@@ -14,17 +34,19 @@ export default function TerritoryPreview({ terrList }) {
         </tr>
       </thead>
       <tbody>
-        {terrList.map((element) => (
-          <tr key={element.id}>
-            <td className="border-t border-gray-200 py-4 px-4">{element.id}</td>
+        {user[1].map((element) => (
+          <tr key={element.territoryID}>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.address}
+              {element.territoryID}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.initial}
+              {element.location}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.expiration}
+              {element.AssignedDate}
+            </td>
+            <td className="border-t border-gray-200 py-4 px-4">
+              {element.ExperiationDate}
             </td>
           </tr>
         ))}

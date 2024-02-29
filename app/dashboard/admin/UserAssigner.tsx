@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export default function TerritoryPreview(props) {
+export default function UserAssigner(props) {
   const [user, setUser] = useState(null);
   useEffect(() => {
     async function fetchUserData() {

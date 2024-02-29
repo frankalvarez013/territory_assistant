@@ -43,12 +43,13 @@ async function main() {
     },
     update: {
       // Fields to update if the record exists
+      AssignedDate: date,
+      ExperiationDate: endDate,
     },
     create: {
       territoryID: 1,
       location: "Fishburn 123",
-      AssignedDate: date,
-      ExperiationDate: endDate,
+
       congregationID: congo.id,
       currentUserID: tester.id,
     },
@@ -63,17 +64,20 @@ async function main() {
     },
     update: {
       // Fields to update if the record exists
+      AssignedDate: date,
+      ExperiationDate: endDate,
     },
     create: {
       territoryID: 2,
       location: "Park Avenue 456",
-      AssignedDate: date,
-      ExperiationDate: endDate,
+
       congregationID: congo.id,
       currentUserID: tester.id,
     },
   });
   console.log({ tester });
+  console.log({ territory });
+  console.log({ territory2 });
 }
 
 main()

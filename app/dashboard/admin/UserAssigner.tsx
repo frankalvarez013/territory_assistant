@@ -1,12 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export default function UserAssigner(props) {
+export default function TerritoryPreview(props) {
   const [user, setUser] = useState(null);
   useEffect(() => {
     async function fetchUserData() {
-      console.log("um");
-      const response = await fetch(`/api/user?id=${props.userID}`);
+      const response = await fetch(`/api/user`);
       if (!response.ok) {
         console.error("Failed to fetch user data");
         return;
@@ -16,37 +15,29 @@ export default function UserAssigner(props) {
     }
     fetchUserData();
   }, [props.terrList]);
-  const date = new Date();
-  const normalDate = date.toLocaleDateString("en-US", {
-    weekday: "long", // "Monday"
-    year: "numeric", // "2024"
-    month: "long", // "February"
-    day: "numeric", // "27"
-  });
-
-  console.log(normalDate);
   if (!user) return <div>Loading user data...</div>;
-  console.log(user[1][0]);
+  console.log(user);
   return (
     <table className="w-full m-auto border-collapse text-center">
       <thead>
         <tr>
           <th className="border-b border-gray-200 py-4 px-4">Territory</th>
-          <th className="border-b border-gray-200 py-4 px-4">Location</th>
+          <th className="border-b border-gray-200 py-4 px-4">Publisher</th>
           <th className="border-b border-gray-200 py-4 px-4">Assigned Date</th>
           <th className="border-b border-gray-200 py-4 px-4">
             Expiration Date
           </th>
+          <th className="border-b border-gray-200 py-4 px-4">Comments</th>
         </tr>
       </thead>
       <tbody>
-        {user[1].map((element) => (
+        {user.map((element) => (
           <tr key={element.territoryID}>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.territoryID}
+              {element.user}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.location}
+              {element.user}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
               {new Date(element.AssignedDate).toLocaleDateString("en-US")}

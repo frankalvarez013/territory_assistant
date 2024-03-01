@@ -19,6 +19,7 @@ async function main() {
     update: {
       name: "Frank Alvarez", // Update name on rerun
       // Add any other fields you want to update here
+      isAdmin: true,
     },
     create: {
       email: "tester@prisma.io",

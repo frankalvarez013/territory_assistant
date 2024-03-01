@@ -16,17 +16,8 @@ export default function TerritoryPreview(props) {
     }
     fetchUserData();
   }, [props.terrList]);
-  const date = new Date();
-  const normalDate = date.toLocaleDateString("en-US", {
-    weekday: "long", // "Monday"
-    year: "numeric", // "2024"
-    month: "long", // "February"
-    day: "numeric", // "27"
-  });
-
-  console.log(normalDate);
   if (!user) return <div>Loading user data...</div>;
-  console.log(user[1][0]);
+  // console.log("check", user);
   return (
     <table className="w-full m-auto border-collapse text-center">
       <thead>

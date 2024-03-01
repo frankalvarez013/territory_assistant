@@ -43,28 +43,27 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           isAdmin: user.isAdmin,
+          congID: user.congregationID,
         };
-        // const user = { id: '1', name: 'ethan', email: 'test@test.com'}
-        // return user
       },
     }),
   ],
-  //session handles creation and maangemt of jwt, and other handlers session object that is passed around andu seud whten you fetch the sesion
-  // first jwt callback is called and it passes thru the token, and then the session calllbcak is called when you have to get the session and it uses that otken
-  //so in order to pass something thru we have to return it from the auth function , apss it thru the jWT function and then use it in the session
+  //JWT is called first (with token & user), then the callbacks
+  //ORDER - auth - jwt - session
   callbacks: {
     session: ({ session, token }) => {
-      // console.log('Session Callback', {session,token})
+      // console.log("Session Callback", { session, token });
       return {
         ...session,
         user: {
           ...session.user,
           id: token.id,
           isAdmin: token.isAdmin,
+          congID: token.congregationID,
         },
       };
     },
-    //user is only passed in the first time user logs in thru Oauth/ or credential
+    //user is only passed in this function the first time user logs in credential
     jwt: ({ token, user }) => {
       // console.log("JWT Callback", { token, user });
       if (user) {
@@ -73,7 +72,8 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           id: u.id,
-          randomKey: u.randomKey,
+          isAdmin: u.isAdmin,
+          congregationID: u.congID,
         };
       }
       return token;
@@ -81,5 +81,5 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-const handler = NextAuth(authOptions);
+export const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

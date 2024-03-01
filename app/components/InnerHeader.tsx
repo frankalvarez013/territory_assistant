@@ -1,6 +1,6 @@
 import Image from "next/image";
 import logo from "../public/images/logo.png";
-import { LogoutButton } from "./auth";
+import { LogoutButton } from "@/app/components/auth";
 export default function InnerHeader() {
   return (
     <header className=" bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white">

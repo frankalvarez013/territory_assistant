@@ -10,14 +10,12 @@ const createTerritorySchema = z.object({
   dateLength: z.string().min(1).max(255),
   congregationID: z.string().min(1).max(255),
   currentUserID: z.string().min(1).max(255),
-  isAdmin: z.boolean().optional(),
 });
 const updateTerritorySchema = z.object({
-  location: z.string().min(1).max(255).optional(),
+  territoryID: z.string().min(1).max(255).optional(),
   dateLength: z.string().min(1).max(255).optional(),
-  congregationID: z.string().min(1).max(255).optional(),
   currentUserID: z.string().min(1).max(255).optional(),
-  isAdmin: z.boolean().optional(),
+  location: z.string().min(1).max(255).optional(),
 });
 export async function POST(
   request: NextRequest
@@ -108,15 +106,17 @@ export async function GET(request: NextRequest) {
 export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
-  const terrId = request.nextUrl.searchParams.get("terrId");
-  const terrIdCheck = terrId ? parseInt(terrId) : undefined;
-  const congId = request.nextUrl.searchParams.get("congId");
-  const congIdCheck = congId ? congId : undefined;
+  console.log("inside patch");
   const body = await request.json();
+  console.log("oi");
   const validation = updateTerritorySchema.safeParse(body);
+  console.log("oi1");
+
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
+  console.log("oi2");
+
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {
@@ -132,13 +132,14 @@ export async function PATCH(
       }
     }
   }
-  if (terrIdCheck && congIdCheck) {
+  if (body.territoryID && body.congregationID) {
+    console.log("trying to update...");
     try {
       const updatedTerritory = await prisma.territory.update({
         where: {
           territoryID_congregationID: {
-            territoryID: terrIdCheck,
-            congregationID: congIdCheck.toString(),
+            territoryID: body.territoryID,
+            congregationID: body.congregationID.toString(),
           },
         },
         data: updateData,

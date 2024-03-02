@@ -61,6 +61,7 @@ export default function TerritoryPreview(props) {
               <SelectComponent
                 uniqueOption={element.currentUser}
                 options={users}
+                territoryId={element.territoryID}
               ></SelectComponent>
             </td>
             <td className="border-t border-gray-200 py-4 px-4">

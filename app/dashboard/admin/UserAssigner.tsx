@@ -1,22 +1,38 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import SelectComponent from "./selectComponent";
+enum ActivityStatus {
+  Assigned = "Assigned",
+  Unassigned = "Unassigned",
+  // other statuses
+}
 export default function TerritoryPreview(props) {
-  const [user, setUser] = useState(null);
+  const [territories, setTerritories] = useState(null);
+  const [users, setUsers] = useState(null);
+
   useEffect(() => {
     async function fetchUserData() {
-      const response = await fetch(`/api/user`);
+      const response = await fetch(`/api/territory`);
       if (!response.ok) {
+        console.error("Failed to fetch territories data");
+        return;
+      }
+      const terrData = await response.json();
+      setTerritories(terrData);
+      const resUsers = await fetch("/api/user");
+      if (!resUsers.ok) {
         console.error("Failed to fetch user data");
         return;
       }
-      const userData = await response.json();
-      setUser(userData);
+      const usersData = await resUsers.json();
+      console.log(usersData);
+      setUsers(usersData);
+      console.log("", users);
     }
     fetchUserData();
-  }, [props.terrList]);
-  if (!user) return <div>Loading user data...</div>;
-  console.log(user);
+  }, []);
+  if (!territories || !users) return <div>Loading territories data...</div>;
+  console.log(territories, users);
   return (
     <table className="w-full m-auto border-collapse text-center">
       <thead>
@@ -31,19 +47,30 @@ export default function TerritoryPreview(props) {
         </tr>
       </thead>
       <tbody>
-        {user.map((element) => (
-          <tr key={element.territoryID}>
+        {territories.map((element) => (
+          <tr
+            key={element.territoryID}
+            className={`border-t border-gray-200 ${
+              element.activity == ActivityStatus.Unassigned ? "bg-red-100" : ""
+            }`}
+          >
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.user}
+              {element.territoryID}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.user}
+              <SelectComponent
+                uniqueOption={element.currentUser}
+                options={users}
+              ></SelectComponent>
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
               {new Date(element.AssignedDate).toLocaleDateString("en-US")}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
               {new Date(element.ExperiationDate).toLocaleDateString("en-US")}
+            </td>
+            <td className="border-t border-gray-200 py-4 px-4">
+              {element.activity}
             </td>
           </tr>
         ))}

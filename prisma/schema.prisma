@@ -89,16 +89,23 @@ model TerritoryCounter {
   nextTerritoryID Int
 }
 
+enum TerritoryComment {
+  Expired
+  Unassigned
+  Assigned
+}
+
 model Territory {
   territoryID     Int
-  location        String       @unique @db.VarChar(255)
+  location        String           @unique @db.VarChar(255)
   houses          House[]
   AssignedDate    DateTime?
   ExperiationDate DateTime?
   congregationID  String
   currentUserID   String?
-  currentUser     User?        @relation(fields: [currentUserID], references: [id])
-  Congregation    Congregation @relation(fields: [congregationID], references: [id])
+  activity        TerritoryComment @default(Unassigned)
+  currentUser     User?            @relation(fields: [currentUserID], references: [id])
+  Congregation    Congregation     @relation(fields: [congregationID], references: [id])
 
   @@id([territoryID, congregationID])
   @@unique([territoryID, congregationID])

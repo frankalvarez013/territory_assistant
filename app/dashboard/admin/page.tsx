@@ -8,22 +8,6 @@ export default async function Page() {
   if (!session) {
     redirect("/api/auth/signin");
   }
-  const terrList = [
-    {
-      id: "1",
-      lastDate: "03-01-2024",
-      address: "Walnut Street",
-      initial: "02-26-2024",
-      expiration: "03-24-2024",
-    },
-    {
-      id: "2",
-      lastDate: "03-01-2024",
-      address: "Walnut Street",
-      initial: "02-26-2024",
-      expiration: "03-24-2024",
-    },
-  ];
   return (
     <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
@@ -66,10 +50,7 @@ export default async function Page() {
             <div className=" text-darkgrey mb-7 text-xl font-semibold">
               Assigned Territories
             </div>
-            <UserAssigner
-              terrList={terrList}
-              userID={session.user.id}
-            ></UserAssigner>
+            <UserAssigner userID={session.user.id}></UserAssigner>
           </div>
         </div>
       </div>

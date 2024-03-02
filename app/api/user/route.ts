@@ -5,8 +5,6 @@ import { User } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { getToken } from "next-auth/jwt";
-import { NextApiRequest } from "next";
 const createUserSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().min(1).max(255),
@@ -50,7 +48,7 @@ export async function POST(
 export async function GET(request: NextRequest, response: NextResponse) {
   const idParams = request.nextUrl.searchParams.get("id");
   const session = await getServerSession(authOptions);
-  console.log("inside", session);
+  // console.log("inside", session);
   let getUser: User | User[] | null = null;
   try {
     if (idParams) {
@@ -73,13 +71,14 @@ export async function GET(request: NextRequest, response: NextResponse) {
     } else {
       console.log("Checking Admin Status...");
       if (session?.user.isAdmin) {
-        console.log("is admin");
+        console.log("Is admin");
+        console.log(session.user.congID);
         const getAdminUsers = await prisma.user.findMany({
           where: {
             congregationID: session.user.congID,
           },
         });
-        console.log("HEY");
+        console.log("returning...", getAdminUsers);
         return NextResponse.json(getAdminUsers, { status: 201 });
       }
     }
@@ -93,15 +92,6 @@ export async function GET(request: NextRequest, response: NextResponse) {
     });
   }
 }
-// export async function GET(req: NextRequest, response: NextResponse) {
-//   console.log("OIII");
-//   const session = await getServerSession(authOptions);
-//   console.log("inside", session);
-//   if (!session) {
-//     return NextResponse.json({ session }, { status: 401 });
-//   }
-//   return NextResponse.json({ session }, { status: 201 });
-// }
 export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<User | ZodIssue[] | ErrorResponse>> {

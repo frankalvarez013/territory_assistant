@@ -3,6 +3,8 @@ import { ZodIssue, z } from "zod";
 import prisma from "@/prisma/client";
 import type { Territory } from "@prisma/client";
 import { ErrorResponse, territoryJSON } from "@/app/types/api";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 const createTerritorySchema = z.object({
   location: z.string().min(1).max(255),
   dateLength: z.string().min(1).max(255),
@@ -60,16 +62,15 @@ export async function POST(
   }
 }
 
-export async function GET(
-  request: NextRequest
-): Promise<NextResponse<Territory | Territory[] | ErrorResponse>> {
+export async function GET(request: NextRequest) {
   const terrId = request.nextUrl.searchParams.get("terrId");
   const terrIdCheck = terrId ? parseInt(terrId) : undefined;
   const congId = request.nextUrl.searchParams.get("congId");
   const congIdCheck = congId ? congId : undefined;
+  const session = await getServerSession(authOptions);
   let getTerritory: Territory | Territory[] | null = null;
   try {
-    if (typeof terrIdCheck === "number" && congIdCheck) {
+    if (congIdCheck && typeof terrIdCheck === "number") {
       getTerritory = await prisma.territory.findUnique({
         where: {
           territoryID_congregationID: {
@@ -79,7 +80,18 @@ export async function GET(
         },
       });
     } else {
-      getTerritory = await prisma.territory.findMany({});
+      // console.log("Checking Admin Status...");
+      if (session?.user.isAdmin) {
+        const getTerritories = await prisma.territory.findMany({
+          where: {
+            congregationID: session.user.congID,
+          },
+          include: {
+            currentUser: true,
+          },
+        });
+        return NextResponse.json(getTerritories, { status: 201 });
+      }
     }
     if (!getTerritory) {
       return NextResponse.json({ message: "Territory Record not found" });

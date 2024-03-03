@@ -12,9 +12,10 @@ const createTerritorySchema = z.object({
   currentUserID: z.string().min(1).max(255),
 });
 const updateTerritorySchema = z.object({
-  territoryID: z.string().min(1).max(255).optional(),
+  territoryID: z.number().positive().finite(),
+  congregationID: z.string().min(1).max(255),
+  currentUserID: z.string().min(1).max(255),
   dateLength: z.string().min(1).max(255).optional(),
-  currentUserID: z.string().min(1).max(255).optional(),
   location: z.string().min(1).max(255).optional(),
 });
 export async function POST(
@@ -108,15 +109,14 @@ export async function PATCH(
 ): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
   console.log("inside patch");
   const body = await request.json();
-  console.log("oi");
+  console.log(body);
   const validation = updateTerritorySchema.safeParse(body);
-  console.log("oi1");
+  console.log("OI");
 
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  console.log("oi2");
-
+  console.log("OI");
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {
@@ -132,6 +132,7 @@ export async function PATCH(
       }
     }
   }
+  console.log(body.territoryID, body.congregationID);
   if (body.territoryID && body.congregationID) {
     console.log("trying to update...");
     try {
@@ -147,6 +148,7 @@ export async function PATCH(
       if (!updatedTerritory) {
         return NextResponse.json({ message: "Territory Record was not found" });
       }
+      console.log("UPDATED VERSION - ", updatedTerritory);
       return NextResponse.json(updatedTerritory, { status: 201 });
     } catch (e) {
       console.error("Error creating new territory:\n", e);

@@ -1,11 +1,19 @@
-export default async function handleUserChange(territoryId, userId) {
+export default async function handleUserChange(
+  territoryID,
+  userID,
+  congregationID
+) {
   try {
     const response = await fetch("/api/territory", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ territoryID: territoryId, currentUserID: userId }),
+      body: JSON.stringify({
+        territoryID: territoryID,
+        currentUserID: userID,
+        congregationID: congregationID,
+      }),
     });
 
     if (!response.ok) {

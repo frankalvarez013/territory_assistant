@@ -1,9 +1,16 @@
 import onUserChange from "./handleUserChange";
-function SelectComponent({ uniqueOption, options, territoryId }) {
+function SelectComponent({
+  uniqueOption,
+  options,
+  territoryId,
+  congregationId,
+}) {
   return (
     <select
       className=" bg-white  border-2 rounded-xl px-3"
-      onChange={(e) => onUserChange(territoryId, e.target.value)}
+      onChange={(e) =>
+        onUserChange(territoryId, e.target.value, congregationId)
+      }
     >
       <option value={uniqueOption.id}>{uniqueOption.name}</option>
       {options.map((option, index) => {

@@ -25,14 +25,14 @@ export default function TerritoryPreview(props) {
         return;
       }
       const usersData = await resUsers.json();
-      console.log(usersData);
+      // console.log(usersData);
       setUsers(usersData);
-      console.log("", users);
+      // console.log("", users);
     }
     fetchUserData();
   }, []);
   if (!territories || !users) return <div>Loading territories data...</div>;
-  console.log(territories, users);
+  // console.log(territories, users);
   return (
     <table className="w-full m-auto border-collapse text-center">
       <thead>
@@ -62,6 +62,7 @@ export default function TerritoryPreview(props) {
                 uniqueOption={element.currentUser}
                 options={users}
                 territoryId={element.territoryID}
+                congregationId={element.congregationID}
               ></SelectComponent>
             </td>
             <td className="border-t border-gray-200 py-4 px-4">

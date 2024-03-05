@@ -6,23 +6,31 @@ import TerritoryView from "./TerritoryView";
 export default function Page({ params }) {
   return (
     <DashboardLayout>
-      <header className="text-6xl">Territory {params.territoryID}</header>
-      <button>
+      <main className="flex flex-col mt-10 justify-center items-center">
+        <div className="flex justify-evenly mb-10 items-center gap-20">
+          <header className="text-6xl text-center">
+            Territory {params.territoryID}
+          </header>
+          <button className="">
+            <Image
+              src={qrcode}
+              alt="Picture of QR Code Icon"
+              width={100}
+              height={100}
+            ></Image>
+          </button>
+        </div>
+
         <Image
-          src={qrcode}
-          alt="Picture of QR Code Icon"
-          width={100}
-          height={100}
+          src={territory}
+          alt="Picture of Territory"
+          width={600}
+          height={600}
+          className=" m-auto"
         ></Image>
-      </button>
-      <Image
-        src={territory}
-        alt="Picture of Territory"
-        width={100}
-        height={100}
-      ></Image>
-      <main>
-        <TerritoryView></TerritoryView>
+        <div className="mt-28 mb-28">
+          <TerritoryView></TerritoryView>
+        </div>
       </main>
     </DashboardLayout>
   );

@@ -130,7 +130,6 @@ model HouseCounter {
   territoryID    Int
   congregationID String
   nextHouseID    Int
-
   @@id([territoryID, congregationID])
   @@unique([territoryID, congregationID])
 }

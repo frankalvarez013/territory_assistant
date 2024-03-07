@@ -7,16 +7,25 @@ import { ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 const createHouseSchema = z.object({
-  territoryID: z
-    .string()
-    .refine((value) => !isNaN(parseInt(value)) && isFinite(parseInt(value)), {
-      message: "The string is not a valid number",
-    }),
+  territoryID: z.number(),
   StreetAd: z.string().min(1).max(255),
   dateVisited: z.date().optional(),
   comment: z.string().min(1).max(255).optional(),
   observation: z
-    .enum(["EMPTY", "VISITED", "DONTVISIT", "DOG", "NIGHT"])
+    .enum([
+      "EMPTY",
+      "NO_LLEGAR",
+      "INGLES",
+      "OTRO_IDIOMA",
+      "DUERME_DE_DIA",
+      "VARON_VISITA",
+      "PERRO_AFUERA",
+      "PERRO_EN_CASA",
+      "TESTIGOS",
+      "VIOLENTO",
+      "NO_TRASPASAR",
+      "CANDADO",
+    ])
     .optional(),
 });
 const updateHouseSchema = z.object({
@@ -42,7 +51,7 @@ export async function POST(
     const newHouse = await prisma.house.create({
       data: {
         houseID: 1,
-        territoryID: parseInt(body.territoryID),
+        territoryID: body.territoryID,
         Direction: body.direction,
         congregationID: session?.user.congID,
         StreetAd: body.StreetAd,

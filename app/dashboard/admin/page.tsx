@@ -3,6 +3,7 @@ import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import UserAssigner from "./UserAssigner";
 import DashboardLayout from "../../components/DashboardLayout";
+import QuestionCard from "../../components/QuestionCard";
 export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -14,6 +15,9 @@ export default async function Page() {
         <div className="w-10/12 h-5/6 flex flex-col">
           <div className="mt-10">
             <div className="text-5xl mb-10">Welcome, {session.user.name}</div>
+            <div className="mb-10">
+              <QuestionCard Question="Create Territory Via Excel Sheet"></QuestionCard>
+            </div>
             <div className="pl-10 py-8 justify-center flex flex-col shadow-2xl rounded-[2rem] shadow-all-angles">
               <div className=" font-light text-slate-500 mb-3">
                 Welcome admin, this dashboard provides a view of all members who

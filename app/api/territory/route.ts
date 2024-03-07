@@ -7,9 +7,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 const createTerritorySchema = z.object({
   location: z.string().min(1).max(255),
-  dateLength: z.string().min(1).max(255),
-  congregationID: z.string().min(1).max(255),
-  currentUserID: z.string().min(1).max(255),
 });
 const updateTerritorySchema = z.object({
   territoryID: z.number().positive().finite(),
@@ -18,12 +15,10 @@ const updateTerritorySchema = z.object({
   dateLength: z.string().min(1).max(255).optional(),
   location: z.string().min(1).max(255).optional(),
 });
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<territoryJSON | ZodIssue[] | ErrorResponse>> {
+export async function POST(request: NextRequest) {
   const body = await request.json();
   const validation = createTerritorySchema.safeParse(body);
-  const timeUserKeepsTerritory = parseInt(body.dateLength);
+  const timeUserKeepsTerritory = 30;
   const defaultVal = 1;
   const date = new Date();
   if (!validation.success) {
@@ -31,24 +26,28 @@ export async function POST(
   }
   const endDate = ExperiationDateCalculator(date, timeUserKeepsTerritory);
   try {
-    const newTerritory = await prisma.territory.create({
-      data: {
-        territoryID: defaultVal,
-        location: body.location,
-        AssignedDate: date,
-        ExperiationDate: endDate,
-        congregationID: body.congregationID,
-        currentUserID: body.currentUserID,
-      },
-    });
-    return NextResponse.json(
-      {
-        ...newTerritory,
-        AssignedDate: date.toISOString(),
-        ExperiationDate: endDate.toISOString(),
-      },
-      { status: 201 }
-    );
+    const session = await getServerSession(authOptions);
+    console.log("Check");
+    if (session?.user.isAdmin) {
+      const newTerritory = await prisma.territory.create({
+        data: {
+          territoryID: defaultVal,
+          location: body.location,
+          AssignedDate: date,
+          ExperiationDate: endDate,
+          congregationID: session.user.congID,
+          currentUserID: session.user.id,
+        },
+      });
+      return NextResponse.json(
+        {
+          ...newTerritory,
+          AssignedDate: date.toISOString(),
+          ExperiationDate: endDate.toISOString(),
+        },
+        { status: 201 }
+      );
+    }
   } catch (e) {
     // Log any error that occurs during the database operation
     console.error("Error creating new territory:\n", e);

@@ -113,10 +113,17 @@ model Territory {
 
 enum Observation {
   EMPTY
-  VISITED
-  DONTVISIT
-  DOG
-  NIGHT
+  NO_LLEGAR
+  INGLES
+  OTRO_IDIOMA
+  DUERME_DE_DIA
+  VARON_VISITA
+  PERRO_AFUERA
+  PERRO_EN_CASA
+  TESTIGOS
+  VIOLENTO
+  NO_TRASPASAR
+  CANDADO
 }
 
 model HouseCounter {
@@ -132,6 +139,7 @@ model House {
   houseID        Int
   territoryID    Int
   congregationID String
+  Direction      String
   StreetAd       String       @unique @db.VarChar(255)
   observation    Observation  @default(EMPTY)
   comment        String?      @db.VarChar(255)

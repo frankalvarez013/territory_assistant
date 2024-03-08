@@ -27,7 +27,6 @@ export async function POST(request: NextRequest) {
   const endDate = ExperiationDateCalculator(date, timeUserKeepsTerritory);
   try {
     const session = await getServerSession(authOptions);
-    console.log("Check");
     if (session?.user.isAdmin) {
       const newTerritory = await prisma.territory.create({
         data: {
@@ -61,20 +60,22 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  console.log("Calling GET - Territory...");
   const terrId = request.nextUrl.searchParams.get("terrId");
   const terrIdCheck = terrId ? parseInt(terrId) : undefined;
-  const congId = request.nextUrl.searchParams.get("congId");
-  const congIdCheck = congId ? congId : undefined;
   const session = await getServerSession(authOptions);
   let getTerritory: Territory | Territory[] | null = null;
   try {
-    if (congIdCheck && typeof terrIdCheck === "number") {
+    if (typeof terrIdCheck === "number") {
       getTerritory = await prisma.territory.findUnique({
         where: {
           territoryID_congregationID: {
             territoryID: terrIdCheck,
-            congregationID: congIdCheck,
+            congregationID: session?.user.congID,
           },
+        },
+        include: {
+          houses: true,
         },
       });
     } else {
@@ -106,16 +107,14 @@ export async function GET(request: NextRequest) {
 export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
-  console.log("inside patch");
   const body = await request.json();
   console.log(body);
   const validation = updateTerritorySchema.safeParse(body);
-  console.log("OI");
 
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  console.log("OI");
+
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {

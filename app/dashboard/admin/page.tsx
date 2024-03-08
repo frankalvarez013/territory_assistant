@@ -18,7 +18,7 @@ export default async function Page() {
             <div className="mb-10">
               <QuestionCard Question="Create Territory Via Excel Sheet"></QuestionCard>
             </div>
-            <div className="pl-10 py-8 justify-center flex flex-col shadow-2xl rounded-[2rem] shadow-all-angles">
+            <div className="pl-10 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
               <div className=" font-light text-slate-500 mb-3">
                 Welcome admin, this dashboard provides a view of all members who
                 receive territory card assignments.

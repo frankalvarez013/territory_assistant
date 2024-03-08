@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
   //ORDER - auth - jwt - session
   callbacks: {
     session: ({ session, token }) => {
-      // console.log("Session Callback", { session, token });
+      console.log("Session Callback", { session, token });
       return {
         ...session,
         user: {

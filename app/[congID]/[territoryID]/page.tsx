@@ -1,20 +1,23 @@
 "use client";
 import DashboardLayout from "@/app/components/DashboardLayout";
-import qrcode from "../../../public/images/qrCode.png";
-import territory from "../../../public/images/defaultMap.png";
+import qrcode from "@/app/public/images/qrCode.png";
+import territory from "@/app/public/images/defaultMap.png";
 import Image from "next/image";
-import TerritoryView from "../../../components/TerritoryView";
+import TerritoryView from "../../components/TerritoryView";
 import { useEffect, useState } from "react";
 export default function Page({ params }) {
   const [val, setVal] = useState(null);
   useEffect(() => {
     async function brv() {
-      const res = await fetch(`/api/territory?terrId=${params.territoryID}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `/api/territory?terrId=${params.territoryID}&congName=${params.congID}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const res1 = await res.json();
       setVal(res1);
       return res1;

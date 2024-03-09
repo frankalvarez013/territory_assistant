@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
 import prisma from "@/prisma/client";
-import type { Territory } from "@prisma/client";
+import type { Congregation, Territory } from "@prisma/client";
 import { ErrorResponse, territoryJSON } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -62,40 +62,50 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   console.log("Calling GET - Territory...");
   const terrId = request.nextUrl.searchParams.get("terrId");
+  const congId = request.nextUrl.searchParams.get("congName");
+  // console.log(request.nextUrl.searchParams.toString());
+  // console.log("terr", terrId, "congName", congId);
   const terrIdCheck = terrId ? parseInt(terrId) : undefined;
   const session = await getServerSession(authOptions);
   let getTerritory: Territory | Territory[] | null = null;
+  let getCong: Congregation | null = null;
   try {
-    if (typeof terrIdCheck === "number") {
-      getTerritory = await prisma.territory.findUnique({
+    // console.log("bruh", congId && terrId);
+    if (congId && terrId) {
+      getCong = await prisma.congregation.findUnique({
         where: {
-          territoryID_congregationID: {
-            territoryID: terrIdCheck,
-            congregationID: session?.user.congID,
-          },
-        },
-        include: {
-          houses: true,
+          congregationName: congId,
         },
       });
-    } else {
-      // console.log("Checking Admin Status...");
-      if (session?.user.isAdmin) {
-        const getTerritories = await prisma.territory.findMany({
+      if (typeof terrIdCheck === "number" && getCong) {
+        getTerritory = await prisma.territory.findUnique({
           where: {
-            congregationID: session.user.congID,
+            territoryID_congregationID: {
+              territoryID: terrIdCheck,
+              congregationID: getCong?.id,
+            },
           },
           include: {
-            currentUser: true,
+            houses: true,
           },
         });
-        return NextResponse.json(getTerritories, { status: 201 });
+      } else {
+        if (session?.user.isAdmin) {
+          getTerritory = await prisma.territory.findMany({
+            where: {
+              congregationID: session.user.congID,
+            },
+            include: {
+              currentUser: true,
+            },
+          });
+        }
       }
+      if (!getTerritory) {
+        return NextResponse.json({ message: "Territory Record not found" });
+      }
+      return NextResponse.json(getTerritory, { status: 201 });
     }
-    if (!getTerritory) {
-      return NextResponse.json({ message: "Territory Record not found" });
-    }
-    return NextResponse.json(getTerritory, { status: 201 });
   } catch (e) {
     return NextResponse.json(
       { message: `Territory GET Transaction failed:\n ${e}` },

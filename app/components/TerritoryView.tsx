@@ -4,7 +4,6 @@ export default function TerritoryPreview(props) {
   const { data: session, status } = useSession();
   return (
     <div className="overflow-x-auto">
-      update{" "}
       <table className="table-auto">
         <thead>
           <tr>

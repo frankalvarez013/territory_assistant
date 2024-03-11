@@ -1,7 +1,13 @@
+import { Observation, Territory } from "@prisma/client";
 import { useSession } from "next-auth/react";
-export default function TerritoryPreview(props) {
-  // const session = await getServerSession(authOptions);
+import { House } from "@prisma/client";
+import { TerritoryProps } from "../types/common";
+import SelectObservation from "../components/selectObservation";
+import { Prisma } from "@prisma/client";
+export default function TerritoryPreview(props: TerritoryProps) {
   const { data: session, status } = useSession();
+  const observationValues: Observation[] = Object.values(Observation);
+  console.log(observationValues);
   return (
     <div className="overflow-x-auto">
       <table className="table-auto">
@@ -31,9 +37,11 @@ export default function TerritoryPreview(props) {
 
             <th className="py-1 px-2 border-r border-gray-200">Expira:</th>
             <th className="py-1 px-2">
-              {new Date(props.territory.ExperiationDate).toLocaleDateString(
-                "en-US"
-              )}
+              {props.territory.ExperiationDate
+                ? new Date(props.territory.ExperiationDate).toLocaleDateString(
+                    "en-US"
+                  )
+                : "No Expiration Date"}
             </th>
           </tr>
           <tr className="bg-blue-200">
@@ -61,12 +69,26 @@ export default function TerritoryPreview(props) {
                   {element.Direction}
                 </td>
                 <td className="py-1 px-2 border-r border-gray-200">
-                  {element.observation}
+                  <SelectObservation
+                    uniqueOption={element.observation}
+                    options={observationValues}
+                    territoryId={props.territory.territoryID.toString()}
+                    congregationId={session?.user.congID}
+                  />
                 </td>
                 <td className="py-1 px-2 border-r border-gray-200">
                   {element.comment}
                 </td>
-                <td className="py-1 px-2">{element.dateVisited}</td>
+                <td className="py-1 px-2">
+                  {element.dateVisited
+                    ? new Date(element.dateVisited).toLocaleDateString(
+                        "en-US",
+                        {
+                          /* formatting options here */
+                        }
+                      )
+                    : ""}
+                </td>
               </tr>
             );
           })}
@@ -75,3 +97,18 @@ export default function TerritoryPreview(props) {
     </div>
   );
 }
+const invertedObservationMapping: { [key in Observation]: string } = {
+  [Observation.EMPTY]: "",
+  [Observation.NO_LLEGAR]: "No llegar",
+  [Observation.INGLES]: "Ingles",
+  [Observation.OTRO_IDIOMA]: "Otro Idioma",
+  [Observation.DUERME_DE_DIA]: "Duerme de dia",
+  [Observation.VARON_VISITA]: "Varon visita",
+  [Observation.PERRO_AFUERA]: "Perro afuera",
+  [Observation.PERRO_EN_CASA]: "Perro en casa",
+  [Observation.TESTIGOS]: "Testigos",
+  [Observation.VIOLENTO]: "Violento",
+  [Observation.NO_TRASPASAR]: "No traspasar",
+  [Observation.CANDADO]: "Candado",
+  // Add other mappings as necessary
+};

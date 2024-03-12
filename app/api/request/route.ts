@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
 import prisma from "@/prisma/client";
-import { User } from "@prisma/client";
+import { Territory } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
   try {
-    const newUser = await prisma.request.create({
+    const newRequest = await prisma.request.create({
       data: {
         id: body.id,
         territoryID: body.territoryID,
@@ -41,89 +41,97 @@ export async function POST(request: NextRequest) {
         comment: body.comment,
       },
     });
-    return NextResponse.json(newUser, { status: 201 });
+    return NextResponse.json(newRequest, { status: 201 });
   } catch (e) {
-    return NextResponse.json({ message: `User POST failed:\n ${e}` });
+    return NextResponse.json({ message: `Request POST failed:\n ${e}` });
   }
 }
 
 export async function GET(request: NextRequest, response: NextResponse) {
-  const idParams = request.nextUrl.searchParams.get("id");
+  const idParams = request.nextUrl.searchParams.get("territoryID");
+  const congId = request.nextUrl.searchParams.get("congName");
   const session = await getServerSession(authOptions);
   // console.log("inside", session);
-  let getUser: User | User[] | null = null;
+  let getTerritory: Territory | Territory[] | null = null;
   try {
-    if (idParams) {
-      getUser = await prisma.user.findUnique({
+    if (idParams && congId) {
+      const getCong = await prisma.congregation.findUnique({
         where: {
-          id: request.nextUrl.searchParams.get("id") ?? undefined,
+          congregationName: congId,
         },
       });
-      if (getUser) {
-        //attaches territories from users to result array.
-        const territories = await prisma.territory.findMany({
+      if (getCong) {
+        getTerritory = await prisma.territory.findUnique({
           where: {
-            currentUserID: getUser.id,
+            territoryID_congregationID: {
+              territoryID: parseInt(idParams) ?? undefined,
+              congregationID: getCong.id,
+            },
+          },
+          include: {
+            Request: true,
           },
         });
-        const total = [];
-        total.push(getUser, territories);
-        return NextResponse.json(total, { status: 201 });
-      }
-    } else {
-      console.log("Checking Admin Status...");
-      if (session?.user.isAdmin) {
-        console.log("Is admin");
-        console.log(session.user.congID);
-        const getAdminUsers = await prisma.user.findMany({
-          where: {
-            congregationID: session.user.congID,
-          },
-        });
-        console.log("returning...", getAdminUsers);
-        return NextResponse.json(getAdminUsers, { status: 201 });
       }
     }
-    if (!getUser) {
+    if (!getTerritory) {
       return NextResponse.json({ message: "User Record not found" });
     }
-    return NextResponse.json(getUser, { status: 201 });
+    console.log("Inside Request: ", getTerritory);
+
+    return NextResponse.json(getTerritory, { status: 201 });
   } catch (e) {
     return NextResponse.json({
       message: `USER GET transaction failed:\n ${e}`,
     });
   }
 }
-export async function PATCH(
-  request: NextRequest
-): Promise<NextResponse<User | ZodIssue[] | ErrorResponse>> {
+export async function PATCH(request: NextRequest) {
   const body = await request.json();
-  const validation = updateUserSchema.safeParse(body);
+  const validation = updateRequestSchema.safeParse(body);
+  let updatedHouse = {};
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
   const updateData: { [key: string]: any } = {};
-  for (const [key, value] of Object.entries(body)) {
+  for (const [key, value] of Object.entries(validation.data)) {
     if (value !== undefined) {
-      if (key === "isAdmin") {
-        let isAdmin = false;
-        if (String(value).toLowerCase() === "true") {
-          isAdmin = true;
+      if ((key === "approval" && value === true) || key) {
+        try {
+          updatedHouse = await prisma.house.update({
+            where: {
+              territoryID_houseID_congregationID: {
+                territoryID: validation.data.territoryID,
+                congregationID: validation.data.congregationID.toString(),
+                houseID: validation.data.houseID,
+              },
+            },
+            data: {
+              observation: validation.data.observation,
+              comment: validation.data.comment,
+            },
+          });
+        } catch {
+          console.log("OI");
         }
-        updateData[key] = isAdmin;
-      } else {
-        updateData[key] = value;
       }
+      updateData[key] = value;
     }
   }
   try {
-    const updatedUser = await prisma.user.update({
+    const updatedTerritory = await prisma.territory.update({
       where: {
-        id: request.nextUrl.searchParams.get("id") ?? undefined,
+        territoryID_congregationID: {
+          territoryID: validation.data.territoryID,
+          congregationID: validation.data.congregationID.toString(),
+        },
       },
       data: updateData,
     });
-    return NextResponse.json(updatedUser, { status: 201 });
+    return NextResponse.json(
+      { updatedTerritory, updatedHouse },
+      { status: 201 }
+    );
   } catch (e) {
     return NextResponse.json({
       message: `User UPDATE Transaction Failed\n: ${e}`,
@@ -131,13 +139,13 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  request: NextRequest
-): Promise<NextResponse<User | ErrorResponse>> {
+export async function DELETE(request: NextRequest) {
+  const idParam = request.nextUrl.searchParams.get("id");
+  const id = idParam ? parseInt(idParam, 10) : undefined;
   try {
-    const deletedUser = await prisma.user.delete({
+    const deletedUser = await prisma.request.delete({
       where: {
-        id: request.nextUrl.searchParams.get("id") ?? undefined,
+        id: id,
       },
     });
     return NextResponse.json(deletedUser, { status: 201 });

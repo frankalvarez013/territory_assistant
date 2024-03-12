@@ -1,13 +1,10 @@
 import { Observation, Territory } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { House } from "@prisma/client";
 import { TerritoryProps } from "../types/common";
 import SelectObservation from "../components/selectObservation";
-import { Prisma } from "@prisma/client";
 export default function TerritoryPreview(props: TerritoryProps) {
   const { data: session, status } = useSession();
   const observationValues: Observation[] = Object.values(Observation);
-  console.log(observationValues);
   return (
     <div className="overflow-x-auto">
       <table className="table-auto">
@@ -97,18 +94,3 @@ export default function TerritoryPreview(props: TerritoryProps) {
     </div>
   );
 }
-const invertedObservationMapping: { [key in Observation]: string } = {
-  [Observation.EMPTY]: "",
-  [Observation.NO_LLEGAR]: "No llegar",
-  [Observation.INGLES]: "Ingles",
-  [Observation.OTRO_IDIOMA]: "Otro Idioma",
-  [Observation.DUERME_DE_DIA]: "Duerme de dia",
-  [Observation.VARON_VISITA]: "Varon visita",
-  [Observation.PERRO_AFUERA]: "Perro afuera",
-  [Observation.PERRO_EN_CASA]: "Perro en casa",
-  [Observation.TESTIGOS]: "Testigos",
-  [Observation.VIOLENTO]: "Violento",
-  [Observation.NO_TRASPASAR]: "No traspasar",
-  [Observation.CANDADO]: "Candado",
-  // Add other mappings as necessary
-};

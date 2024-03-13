@@ -13,6 +13,8 @@ interface TerritoryProps {
 interface SelectObservationProps {
   uniqueOption: Observation;
   options: Observation[];
-  territoryId: string;
-  congregationId: string;
+  territoryID: string;
+  congregationID: string;
+  userID: string;
+  houseID: string;
 }

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../public/images/logo.png";
+import logo from "../../public/images/logo.png";
 export default function Header() {
   return (
     <header className=" bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white">

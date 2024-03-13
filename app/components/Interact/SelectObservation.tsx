@@ -1,14 +1,23 @@
 import { Observation } from "@prisma/client";
-import onUserChange from "../dashboard/admin/handleUserChange";
-import { SelectObservationProps } from "../types/common.d";
+import onUserChange from "../fetch/postRequest";
+import { SelectObservationProps } from "../../types/common";
 import React from "react";
-function SelectComponent(props: SelectObservationProps) {
+function SelectObservation(props: SelectObservationProps) {
   return (
     <select
       className=" bg-white  border-2 rounded-xl px-3"
-      onChange={(e) =>
-        onUserChange(props.territoryId, e.target.value, props.congregationId)
-      }
+      onChange={(e) => {
+        const houseID = e.target.id;
+        onUserChange(
+          parseInt(houseID, 10),
+          parseInt(props.territoryID, 10),
+          parseInt(props.congregationID, 10),
+          props.userID,
+          e.target.value,
+          "1"
+        );
+      }}
+      id={props.houseID}
     >
       <option value={props.uniqueOption}>
         {invertedObservationMapping[props.uniqueOption] || ""}
@@ -41,4 +50,5 @@ const invertedObservationMapping: { [key in Observation]: string } = {
   [Observation.CANDADO]: "Candado",
   // Add other mappings as necessary
 };
-export default SelectComponent;
+
+export default SelectObservation;

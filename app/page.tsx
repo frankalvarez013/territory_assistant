@@ -1,5 +1,5 @@
-import Card from "./components/card";
-import HomepageLayout from "./components/HomepageLayout";
+import Card from "./components/General/card";
+import HomepageLayout from "./components/Layout/HomepageLayout";
 export default async function homePage() {
   return (
     <HomepageLayout>

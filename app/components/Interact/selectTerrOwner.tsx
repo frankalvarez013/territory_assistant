@@ -1,4 +1,4 @@
-import onUserChange from "./handleUserChange";
+import onUserChange from "../fetch/patchTerrOwner";
 function SelectComponent({
   uniqueOption,
   options,

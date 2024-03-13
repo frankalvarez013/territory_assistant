@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import UserAssigner from "./UserAssigner";
-import DashboardLayout from "../../components/DashboardLayout";
-import QuestionCard from "../../components/QuestionCard";
+import TerritoryTransfer from "./TerritoryTransfer";
+import DashboardLayout from "../../components/Layout/DashboardLayout";
+import QuestionCard from "../../components/General/QuestionCard";
 export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -54,7 +54,7 @@ export default async function Page() {
             <div className=" text-darkgrey mb-7 text-xl font-semibold">
               Assigned Territories
             </div>
-            <UserAssigner userID={session.user.id}></UserAssigner>
+            <TerritoryTransfer userID={session.user.id}></TerritoryTransfer>
           </div>
         </div>
       </div>

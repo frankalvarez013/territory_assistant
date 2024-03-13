@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../public/images/logo.png";
+import logo from "../../public/images/logo.png";
 import { LogoutButton } from "@/app/components/auth";
 export default function InnerHeader() {
   return (

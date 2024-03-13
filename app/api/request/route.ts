@@ -1,25 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ZodIssue, z } from "zod";
+import { z } from "zod";
 import prisma from "@/prisma/client";
 import { Territory } from "@prisma/client";
-import { ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { Observation } from "@prisma/client";
 const createRequestSchema = z.object({
-  id: z.string().min(1).max(255),
   territoryID: z.number().positive().finite(),
   houseID: z.number().positive().finite(),
-  congregationID: z.number().positive().finite(),
+  congregationID: z.string().min(1).max(255),
   observation: z.nativeEnum(Observation).optional(),
   comment: z.string().min(1).max(255).optional(),
   //use zode to check if the isAdmin is true or false "strings"
 });
 const updateRequestSchema = z.object({
-  id: z.string().min(1).max(255),
   territoryID: z.number().positive().finite(),
   houseID: z.number().positive().finite(),
-  congregationID: z.number().positive().finite(),
+  congregationID: z.string().min(1).max(255),
   observation: z.nativeEnum(Observation).optional(),
   comment: z.string().min(1).max(255).optional(),
   approval: z.boolean(),
@@ -27,18 +24,20 @@ const updateRequestSchema = z.object({
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const validation = createRequestSchema.safeParse(body);
+
   if (!validation.success) {
+    console.log("BRUh");
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
+  console.log("Went thru2");
   try {
     const newRequest = await prisma.request.create({
       data: {
-        id: body.id,
-        territoryID: body.territoryID,
-        houseID: body.houseID,
-        congregationID: body.congregationID,
-        observation: body.observation,
-        comment: body.comment,
+        territoryID: validation.data.territoryID,
+        houseID: validation.data.houseID,
+        congregationID: validation.data.congregationID.toString(),
+        observation: validation.data.observation,
+        comment: validation.data.comment,
       },
     });
     return NextResponse.json(newRequest, { status: 201 });

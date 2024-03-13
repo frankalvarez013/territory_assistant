@@ -1,15 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import SelectComponent from "./selectComponent";
+import SelectComponent from "../../components/Interact/selectTerrOwner";
+import { useSession } from "next-auth/react";
 enum ActivityStatus {
   Assigned = "Assigned",
   Unassigned = "Unassigned",
   // other statuses
 }
-export default function TerritoryPreview(props) {
+export default function TerritoryTransfer(props) {
   const [territories, setTerritories] = useState(null);
   const [users, setUsers] = useState(null);
-
+  const { data: session, status } = useSession();
   useEffect(() => {
     async function fetchUserData() {
       const response = await fetch(`/api/territory`);

@@ -4,7 +4,7 @@ import { useSession, getCsrfToken, signIn } from "next-auth/react";
 import { User } from "../components/users";
 import { LoginButton, LogoutButton } from "../components/auth";
 import SignInForm from "./SignInForm";
-import HomepageLayout from "../components/HomepageLayout";
+import HomepageLayout from "../components/Layout/HomepageLayout";
 export default function SignInPage() {
   return (
     <HomepageLayout>

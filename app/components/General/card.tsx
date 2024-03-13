@@ -1,6 +1,6 @@
 // components/Card.js
 import Image from "next/image";
-import map from "../public/images/map.jpg";
+import map from "../../public/images/map.jpg";
 
 const Card = () => {
   return (

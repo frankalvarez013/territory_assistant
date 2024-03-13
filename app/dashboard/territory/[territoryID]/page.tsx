@@ -1,9 +1,9 @@
 "use client";
-import DashboardLayout from "@/app/components/DashboardLayout";
+import DashboardLayout from "@/app/components/Layout/DashboardLayout";
 import qrcode from "../../../public/images/qrCode.png";
 import territory from "../../../public/images/defaultMap.png";
 import Image from "next/image";
-import TerritoryView from "../../../components/TerritoryView";
+import TerritoryView from "../../../components/General/TerritoryView";
 import { useEffect, useState } from "react";
 export default function Page({ params }) {
   const [val, setVal] = useState(null);

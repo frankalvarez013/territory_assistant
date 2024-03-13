@@ -89,23 +89,26 @@ export async function GET(request: NextRequest) {
             houses: true,
           },
         });
-      } else {
-        if (session?.user.isAdmin) {
-          getTerritory = await prisma.territory.findMany({
-            where: {
-              congregationID: session.user.congID,
-            },
-            include: {
-              currentUser: true,
-            },
-          });
-        }
       }
       if (!getTerritory) {
         return NextResponse.json({ message: "Territory Record not found" });
       }
       return NextResponse.json(getTerritory, { status: 201 });
     }
+    if (session?.user.isAdmin) {
+      getTerritory = await prisma.territory.findMany({
+        where: {
+          congregationID: session.user.congID,
+        },
+        include: {
+          currentUser: true,
+        },
+      });
+    }
+    if (!getTerritory) {
+      return NextResponse.json({ message: "Territory Record not found" });
+    }
+    return NextResponse.json(getTerritory, { status: 201 });
   } catch (e) {
     return NextResponse.json(
       { message: `Territory GET Transaction failed:\n ${e}` },
@@ -118,7 +121,6 @@ export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
-  console.log(body);
   const validation = updateTerritorySchema.safeParse(body);
 
   if (!validation.success) {
@@ -140,9 +142,7 @@ export async function PATCH(
       }
     }
   }
-  console.log(body.territoryID, body.congregationID);
   if (body.territoryID && body.congregationID) {
-    console.log("trying to update...");
     try {
       const updatedTerritory = await prisma.territory.update({
         where: {
@@ -156,7 +156,6 @@ export async function PATCH(
       if (!updatedTerritory) {
         return NextResponse.json({ message: "Territory Record was not found" });
       }
-      console.log("UPDATED VERSION - ", updatedTerritory);
       return NextResponse.json(updatedTerritory, { status: 201 });
     } catch (e) {
       console.error("Error creating new territory:\n", e);

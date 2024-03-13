@@ -1,7 +1,7 @@
 import { Observation, Territory } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { TerritoryProps } from "../types/common";
-import SelectObservation from "../components/selectObservation";
+import { TerritoryProps } from "../../types/common";
+import SelectObservation from "../Interact/SelectObservation";
 export default function TerritoryPreview(props: TerritoryProps) {
   const { data: session, status } = useSession();
   const observationValues: Observation[] = Object.values(Observation);
@@ -69,8 +69,10 @@ export default function TerritoryPreview(props: TerritoryProps) {
                   <SelectObservation
                     uniqueOption={element.observation}
                     options={observationValues}
-                    territoryId={props.territory.territoryID.toString()}
-                    congregationId={session?.user.congID}
+                    territoryID={props.territory.territoryID.toString()}
+                    congregationID={session?.user.congID}
+                    userID={session?.user.id}
+                    houseID={element.houseID.toString()}
                   />
                 </td>
                 <td className="py-1 px-2 border-r border-gray-200">

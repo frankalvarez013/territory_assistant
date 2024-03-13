@@ -1,7 +1,6 @@
-"use client";
 import { useEffect, useState } from "react";
 
-export default function TerritoryPreview(props) {
+export default function RequestView() {
   const [user, setUser] = useState(null);
   useEffect(() => {
     async function fetchUserData() {
@@ -15,7 +14,7 @@ export default function TerritoryPreview(props) {
       setUser(userData);
     }
     fetchUserData();
-  }, [props.terrList]);
+  }, []);
   if (!user) return <div>Loading user data...</div>;
   // console.log("check", user);
   return (

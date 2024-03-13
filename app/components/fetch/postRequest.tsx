@@ -1,19 +1,13 @@
+import { Observation } from "@prisma/client";
+
 export default async function postRequest(
   houseID: number,
   territoryID: number,
   congregationID: string,
-  userID:,
-  observation,
-  comment
+  observation: string,
+  comment: string
 ) {
-  console.log(
-    houseID,
-    territoryID,
-    congregationID,
-    userID,
-    observation,
-    comment
-  );
+  console.log(houseID, territoryID, congregationID, observation, comment);
   try {
     const response = await fetch("/api/request", {
       method: "POST",
@@ -22,7 +16,6 @@ export default async function postRequest(
       },
       body: JSON.stringify({
         territoryID: territoryID,
-        currentUserID: userID,
         congregationID: congregationID,
         houseID: houseID,
         observation: observation,

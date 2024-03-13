@@ -1,5 +1,5 @@
 "use client";
-import createExcelTerritory from "../../dashboard/admin/createExcelTerritory";
+import createExcelTerritory from "../../[user]/dashboard/createExcelTerritory";
 import { useState } from "react";
 const Question = ({ Question }) => {
   const [isHidden, setIsHidden] = useState(true);

@@ -3,7 +3,7 @@ import DashboardLayout from "@/app/components/Layout/DashboardLayout";
 import qrcode from "@/app/public/images/qrCode.png";
 import territory from "@/app/public/images/defaultMap.png";
 import Image from "next/image";
-import TerritoryView from "../../components/General/TerritoryView";
+import TerritoryView from "../../../components/General/TerritoryView";
 import { useEffect, useState } from "react";
 export default function Page({ params }) {
   const [val, setVal] = useState(null);

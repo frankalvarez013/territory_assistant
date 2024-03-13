@@ -11,8 +11,7 @@ function SelectObservation(props: SelectObservationProps) {
         onUserChange(
           parseInt(houseID, 10),
           parseInt(props.territoryID, 10),
-          parseInt(props.congregationID, 10),
-          props.userID,
+          props.congregationID,
           e.target.value,
           "1"
         );

@@ -70,7 +70,6 @@ export async function GET(request: NextRequest) {
   let getTerritory: Territory | Territory[] | null = null;
   let getCong: Congregation | null = null;
   try {
-    // console.log("bruh", congId && terrId);
     if (congId && terrId) {
       getCong = await prisma.congregation.findUnique({
         where: {

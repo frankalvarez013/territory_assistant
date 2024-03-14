@@ -1,55 +1,67 @@
 "use client";
 import { useEffect, useState } from "react";
 export default function RequestView(props) {
-  const [territory, setTerritory] = useState(null);
+  const [territories, setTerritories] = useState(null);
+  const [requests, setRequests] = useState(null);
   useEffect(() => {
     async function fetchUserData() {
-      const response = await fetch(`/api/user?id=${props.userID}`);
+      const response = await fetch(`/api/territory`);
       if (!response.ok) {
-        console.error("Failed to fetch territory data");
+        console.error("Failed to fetch territories data");
         return;
       }
-      const userData = await response.json();
-      setTerritory(userData);
-      console.log(territory);
-      console.log(props.congID);
-      if (territory) {
-        console.log("BRO");
-      }
+      const terrData = await response.json();
+      setTerritories(terrData);
+      const fetchPromises = terrData.map((territory) =>
+        fetch(
+          `/api/request?territoryID=${territory.territoryID}&congID=${territory.congregationID}`
+        ).then((response) => response.json())
+      );
+      const allData = await Promise.all(fetchPromises);
+      console.log(allData);
+      setRequests(allData);
     }
     fetchUserData();
   }, []);
-  if (!territory) return <div>Loading territory data...</div>;
-  return (
-    <table className="w-full m-auto border-collapse text-center">
+  if (!territories || !requests) {
+    console.log(requests);
+    return <div>Loading territory data...</div>;
+  }
+  return territories.map((element, index) => (
+    <table key={index} className="w-full m-auto border-collapse text-center">
       <thead>
         <tr>
-          <th className="border-b border-gray-200 py-4 px-4">Territory</th>
-          <th className="border-b border-gray-200 py-4 px-4">Location</th>
-          <th className="border-b border-gray-200 py-4 px-4">Assigned Date</th>
           <th className="border-b border-gray-200 py-4 px-4">
-            Expiration Date
+            Approval Status
           </th>
+          <th className="border-b border-gray-200 py-4 px-4">Territory ID</th>
+
+          <th className="border-b border-gray-200 py-4 px-4">House ID</th>
+          <th className="border-b border-gray-200 py-4 px-4">Observation</th>
+          <th className="border-b border-gray-200 py-4 px-4">Comment</th>
         </tr>
       </thead>
       <tbody>
-        {territory[1].map((element) => (
-          <tr key={element.territoryID}>
+        {requests[0].map((element) => (
+          <tr key={element.id}>
+            <td className="border-t border-gray-200 py-4 px-4">
+              {element.approval}
+            </td>
             <td className="border-t border-gray-200 py-4 px-4">
               {element.territoryID}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.location}
+              {element.houseID}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
-              {new Date(element.AssignedDate).toLocaleDateString("en-US")}
+              {element.observation}
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
-              {new Date(element.ExperiationDate).toLocaleDateString("en-US")}
+              {element.comment}
             </td>
           </tr>
         ))}
       </tbody>
     </table>
-  );
+  ));
 }

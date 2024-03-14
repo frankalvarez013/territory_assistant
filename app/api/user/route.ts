@@ -46,6 +46,7 @@ export async function POST(
 }
 
 export async function GET(request: NextRequest, response: NextResponse) {
+  console.log("GET - User");
   const idParams = request.nextUrl.searchParams.get("id");
   const session = await getServerSession(authOptions);
   let getUser: User | User[] | null = null;
@@ -70,14 +71,14 @@ export async function GET(request: NextRequest, response: NextResponse) {
     } else {
       console.log("Checking Admin Status...");
       if (session?.user.isAdmin) {
-        console.log("Is admin");
-        console.log(session.user.congID);
+        // console.log("Is admin");
+        // console.log(session.user.congID);
         const getAdminUsers = await prisma.user.findMany({
           where: {
             congregationID: session.user.congID,
           },
         });
-        console.log("returning...", getAdminUsers);
+        // console.log("returning...", getAdminUsers);
         return NextResponse.json(getAdminUsers, { status: 201 });
       }
     }

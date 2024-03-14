@@ -13,7 +13,7 @@ function SelectObservation(props: SelectObservationProps) {
           parseInt(props.territoryID, 10),
           props.congregationID,
           e.target.value,
-          "1"
+          ""
         );
       }}
       id={props.houseID}

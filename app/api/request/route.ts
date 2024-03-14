@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/prisma/client";
-import { Territory } from "@prisma/client";
+import { Territory, Request } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { Observation } from "@prisma/client";
@@ -47,37 +47,30 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest, response: NextResponse) {
-  const idParams = request.nextUrl.searchParams.get("territoryID");
-  const congId = request.nextUrl.searchParams.get("congID");
-  const session = await getServerSession(authOptions);
-  let getTerritory: Territory | Territory[] | null = null;
+  const terrID = request.nextUrl.searchParams.get("territoryID");
+  const congID = request.nextUrl.searchParams.get("congID");
+  const terrIDCheck = terrID ? parseInt(terrID) : undefined;
+  let getRequest: Request | Request[] | null = null;
   try {
-    if (idParams && congId) {
+    if (terrIDCheck && congID) {
       const getCong = await prisma.congregation.findUnique({
         where: {
-          id: congId,
+          id: congID,
         },
       });
       if (getCong) {
-        getTerritory = await prisma.territory.findUnique({
+        getRequest = await prisma.request.findMany({
           where: {
-            territoryID_congregationID: {
-              territoryID: parseInt(idParams) ?? undefined,
-              congregationID: getCong.id,
-            },
-          },
-          include: {
-            Request: true,
+            territoryID: terrIDCheck,
           },
         });
       }
     }
-    if (!getTerritory) {
+    if (!getRequest) {
       return NextResponse.json({ message: "User Record not found" });
     }
-    console.log("Inside Request: ", getTerritory);
 
-    return NextResponse.json(getTerritory, { status: 201 });
+    return NextResponse.json(getRequest, { status: 201 });
   } catch (e) {
     return NextResponse.json({
       message: `USER GET transaction failed:\n ${e}`,

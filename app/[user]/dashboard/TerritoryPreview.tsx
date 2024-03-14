@@ -5,7 +5,6 @@ export default function TerritoryPreview(props) {
   const [user, setUser] = useState(null);
   useEffect(() => {
     async function fetchUserData() {
-      console.log("um");
       const response = await fetch(`/api/user?id=${props.userID}`);
       if (!response.ok) {
         console.error("Failed to fetch user data");

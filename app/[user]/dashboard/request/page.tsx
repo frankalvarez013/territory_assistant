@@ -3,11 +3,13 @@ import TerritoryPreview from "../TerritoryPreview";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import RequestView from "./RequestView";
 export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session) {
     redirect("/api/auth/signin");
   }
+
   return (
     <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
@@ -22,7 +24,10 @@ export default async function Page() {
             <div className=" text-darkgrey mb-7 text-xl font-semibold">
               Requests
             </div>
-            <TerritoryPreview userID={session.user.id}></TerritoryPreview>
+            <RequestView
+              userID={session.user.id}
+              congID={session.user.congID}
+            ></RequestView>
           </div>
         </div>
       </div>

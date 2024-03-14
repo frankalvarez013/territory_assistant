@@ -1,22 +1,25 @@
+"use client";
 import { useEffect, useState } from "react";
-
-export default function RequestView() {
-  const [user, setUser] = useState(null);
+export default function RequestView(props) {
+  const [territory, setTerritory] = useState(null);
   useEffect(() => {
     async function fetchUserData() {
-      console.log("um");
       const response = await fetch(`/api/user?id=${props.userID}`);
       if (!response.ok) {
-        console.error("Failed to fetch user data");
+        console.error("Failed to fetch territory data");
         return;
       }
       const userData = await response.json();
-      setUser(userData);
+      setTerritory(userData);
+      console.log(territory);
+      console.log(props.congID);
+      if (territory) {
+        console.log("BRO");
+      }
     }
     fetchUserData();
   }, []);
-  if (!user) return <div>Loading user data...</div>;
-  // console.log("check", user);
+  if (!territory) return <div>Loading territory data...</div>;
   return (
     <table className="w-full m-auto border-collapse text-center">
       <thead>
@@ -30,7 +33,7 @@ export default function RequestView() {
         </tr>
       </thead>
       <tbody>
-        {user[1].map((element) => (
+        {territory[1].map((element) => (
           <tr key={element.territoryID}>
             <td className="border-t border-gray-200 py-4 px-4">
               {element.territoryID}

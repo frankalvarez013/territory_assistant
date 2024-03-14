@@ -48,7 +48,6 @@ export async function POST(
 export async function GET(request: NextRequest, response: NextResponse) {
   const idParams = request.nextUrl.searchParams.get("id");
   const session = await getServerSession(authOptions);
-  // console.log("inside", session);
   let getUser: User | User[] | null = null;
   try {
     if (idParams) {

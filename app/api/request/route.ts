@@ -48,15 +48,14 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest, response: NextResponse) {
   const idParams = request.nextUrl.searchParams.get("territoryID");
-  const congId = request.nextUrl.searchParams.get("congName");
+  const congId = request.nextUrl.searchParams.get("congID");
   const session = await getServerSession(authOptions);
-  // console.log("inside", session);
   let getTerritory: Territory | Territory[] | null = null;
   try {
     if (idParams && congId) {
       const getCong = await prisma.congregation.findUnique({
         where: {
-          congregationName: congId,
+          id: congId,
         },
       });
       if (getCong) {

@@ -24,11 +24,11 @@ export default async function postRequest(
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update territory");
+      throw new Error("Failed to create Request");
     }
 
     // Optionally, refresh your local data to reflect the change
-    console.log("Territory updated successfully");
+    console.log("Request created successfully");
   } catch (error) {
     console.error(error);
   }

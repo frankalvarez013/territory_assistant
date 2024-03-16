@@ -1,10 +1,20 @@
 "use client";
+import { useStateContext } from "./StateContext";
 import fetchAcceptRequest from "./fetchAcceptRequest";
 import fetchDeleteRequest from "./fetchDeleteRequest";
 export default function Approval(props) {
-  const handleAcceptChange = (event) => {
+  const { updateItems } = useStateContext();
+  // console.log(
+  //   props.territoryID,
+  //   props.houseID,
+  //   props.congregationID,
+  //   props.observation,
+  //   props.comment,
+  //   props.reqID
+  // );
+  const handleAcceptChange = async (event) => {
     if (event.target.id === "accept") {
-      fetchAcceptRequest(
+      await fetchAcceptRequest(
         props.territoryID,
         props.houseID,
         props.congregationID,
@@ -13,8 +23,9 @@ export default function Approval(props) {
         props.reqID
       );
     } else {
-      fetchDeleteRequest(props.reqID);
+      await fetchDeleteRequest(props.reqID);
     }
+    updateItems();
   };
   return (
     <fieldset className="text-black flex justify-center">

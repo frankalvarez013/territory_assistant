@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import RequestView from "./RequestView";
+import { StateProvider } from "./StateContext";
 export default async function Page() {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -24,10 +25,12 @@ export default async function Page() {
             <div className=" text-darkgrey mb-7 text-xl font-semibold">
               Requests
             </div>
-            <RequestView
-              userID={session.user.id}
-              congID={session.user.congID}
-            ></RequestView>
+            <StateProvider>
+              <RequestView
+                userID={session.user.id}
+                congID={session.user.congID}
+              ></RequestView>
+            </StateProvider>
           </div>
         </div>
       </div>

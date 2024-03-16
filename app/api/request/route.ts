@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/prisma/client";
-import { Territory, Request } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { Request } from "@prisma/client";
 import { Observation } from "@prisma/client";
 const createRequestSchema = z.object({
   territoryID: z.number().positive().finite(),
   houseID: z.number().positive().finite(),
   congregationID: z.string().min(1).max(255),
   observation: z.nativeEnum(Observation).optional(),
-  comment: z.string().min(1).max(255).optional(),
+  comment: z.string().min(0).max(255).optional(),
   //use zode to check if the isAdmin is true or false "strings"
 });
 const updateRequestSchema = z.object({
@@ -18,11 +16,12 @@ const updateRequestSchema = z.object({
   houseID: z.number().positive().finite(),
   congregationID: z.string().min(1).max(255),
   observation: z.nativeEnum(Observation).optional(),
-  comment: z.string().min(1).max(255).optional(),
+  comment: z.string().min(0).max(255).optional(),
   approval: z.boolean(),
 });
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  console.log(body);
   const validation = createRequestSchema.safeParse(body);
 
   if (!validation.success) {
@@ -84,15 +83,6 @@ export async function PATCH(request: NextRequest) {
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  // const updateData: { [key: string]: any } = {};
-  // for (const [key, value] of Object.entries(validation.data)) {
-  //   if (value !== undefined) {
-  //     if ((key === "approval" && value === true) || key) {
-  //          inside was the try for updatedHouse
-  //     }
-  //     updateData[key] = value;
-  //   }
-  // }
   try {
     updatedHouse = await prisma.house.update({
       where: {
@@ -113,25 +103,6 @@ export async function PATCH(request: NextRequest) {
       message: `Request UPDATE Transaction Failed\n: ${e}`,
     });
   }
-  // try {
-  //   const updatedTerritory = await prisma.territory.update({
-  //     where: {
-  //       territoryID_congregationID: {
-  //         territoryID: validation.data.territoryID,
-  //         congregationID: validation.data.congregationID.toString(),
-  //       },
-  //     },
-  //     data: updateData,
-  //   });
-  //   return NextResponse.json(
-  //     { updatedTerritory, updatedHouse },
-  //     { status: 201 }
-  //   );
-  // } catch (e) {
-  //   return NextResponse.json({
-  //     message: `User UPDATE Transaction Failed\n: ${e}`,
-  //   });
-  // }
 }
 
 export async function DELETE(request: NextRequest) {

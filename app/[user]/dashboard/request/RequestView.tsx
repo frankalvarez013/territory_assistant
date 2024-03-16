@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Approval from "./Approval";
 export default function RequestView(props) {
   const [territories, setTerritories] = useState(null);
   const [requests, setRequests] = useState(null);
@@ -45,7 +46,14 @@ export default function RequestView(props) {
         {requests[0].map((element) => (
           <tr key={element.id}>
             <td className="border-t border-gray-200 py-4 px-4">
-              {element.approval}
+              <Approval
+                reqID={element.id}
+                territoryID={element.territoryID}
+                houseID={element.houseID}
+                congregationID={element.congregationID}
+                observation={element.observation}
+                comment={element.comment}
+              ></Approval>
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
               {element.territoryID}

@@ -84,50 +84,54 @@ export async function PATCH(request: NextRequest) {
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  const updateData: { [key: string]: any } = {};
-  for (const [key, value] of Object.entries(validation.data)) {
-    if (value !== undefined) {
-      if ((key === "approval" && value === true) || key) {
-        try {
-          updatedHouse = await prisma.house.update({
-            where: {
-              territoryID_houseID_congregationID: {
-                territoryID: validation.data.territoryID,
-                congregationID: validation.data.congregationID.toString(),
-                houseID: validation.data.houseID,
-              },
-            },
-            data: {
-              observation: validation.data.observation,
-              comment: validation.data.comment,
-            },
-          });
-        } catch {
-          console.log("OI");
-        }
-      }
-      updateData[key] = value;
-    }
-  }
+  // const updateData: { [key: string]: any } = {};
+  // for (const [key, value] of Object.entries(validation.data)) {
+  //   if (value !== undefined) {
+  //     if ((key === "approval" && value === true) || key) {
+  //          inside was the try for updatedHouse
+  //     }
+  //     updateData[key] = value;
+  //   }
+  // }
   try {
-    const updatedTerritory = await prisma.territory.update({
+    updatedHouse = await prisma.house.update({
       where: {
-        territoryID_congregationID: {
+        territoryID_houseID_congregationID: {
           territoryID: validation.data.territoryID,
-          congregationID: validation.data.congregationID.toString(),
+          congregationID: validation.data.congregationID,
+          houseID: validation.data.houseID,
         },
       },
-      data: updateData,
+      data: {
+        observation: validation.data.observation,
+        comment: validation.data.comment,
+      },
     });
-    return NextResponse.json(
-      { updatedTerritory, updatedHouse },
-      { status: 201 }
-    );
+    return NextResponse.json(updatedHouse, { status: 201 });
   } catch (e) {
     return NextResponse.json({
-      message: `User UPDATE Transaction Failed\n: ${e}`,
+      message: `Request UPDATE Transaction Failed\n: ${e}`,
     });
   }
+  // try {
+  //   const updatedTerritory = await prisma.territory.update({
+  //     where: {
+  //       territoryID_congregationID: {
+  //         territoryID: validation.data.territoryID,
+  //         congregationID: validation.data.congregationID.toString(),
+  //       },
+  //     },
+  //     data: updateData,
+  //   });
+  //   return NextResponse.json(
+  //     { updatedTerritory, updatedHouse },
+  //     { status: 201 }
+  //   );
+  // } catch (e) {
+  //   return NextResponse.json({
+  //     message: `User UPDATE Transaction Failed\n: ${e}`,
+  //   });
+  // }
 }
 
 export async function DELETE(request: NextRequest) {

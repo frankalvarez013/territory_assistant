@@ -4,14 +4,6 @@ import fetchAcceptRequest from "./fetchAcceptRequest";
 import fetchDeleteRequest from "./fetchDeleteRequest";
 export default function Approval(props) {
   const { updateItems } = useStateContext();
-  // console.log(
-  //   props.territoryID,
-  //   props.houseID,
-  //   props.congregationID,
-  //   props.observation,
-  //   props.comment,
-  //   props.reqID
-  // );
   const handleAcceptChange = async (event) => {
     if (event.target.id === "accept") {
       await fetchAcceptRequest(

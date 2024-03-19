@@ -75,6 +75,12 @@ enum Observation {
   CANDADO
 }
 
+enum Status {
+  LLEGA
+  VISITO
+  NO_LLEGAR
+}
+
 model Request {
   id             Int          @id @default(autoincrement())
   observation    Observation?
@@ -103,6 +109,7 @@ model House {
   Direction      String
   StreetAd       String       @unique @db.VarChar(255)
   observation    Observation  @default(EMPTY)
+  status         Status       @default(LLEGA)
   comment        String?      @db.VarChar(255)
   dateVisited    DateTime?
   Territory      Territory    @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID])

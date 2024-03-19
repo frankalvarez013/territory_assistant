@@ -61,19 +61,19 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   console.log("Calling GET - Territory...");
-  const terrId = request.nextUrl.searchParams.get("terrId");
-  const congId = request.nextUrl.searchParams.get("congName");
+  const terrID = request.nextUrl.searchParams.get("terrID");
+  const congID = request.nextUrl.searchParams.get("congID");
   // console.log(request.nextUrl.searchParams.toString());
   // console.log("terr", terrId, "congName", congId);
-  const terrIdCheck = terrId ? parseInt(terrId) : undefined;
+  const terrIdCheck = terrID ? parseInt(terrID) : undefined;
   const session = await getServerSession(authOptions);
   let getTerritory: Territory | Territory[] | null = null;
   let getCong: Congregation | null = null;
   try {
-    if (congId && terrId) {
+    if (congID && terrID) {
       getCong = await prisma.congregation.findUnique({
         where: {
-          congregationName: congId,
+          id: congID,
         },
       });
       if (typeof terrIdCheck === "number" && getCong) {
@@ -107,6 +107,7 @@ export async function GET(request: NextRequest) {
     if (!getTerritory) {
       return NextResponse.json({ message: "Territory Record not found" });
     }
+    console.log(getTerritory);
     return NextResponse.json(getTerritory, { status: 201 });
   } catch (e) {
     return NextResponse.json(

@@ -3,14 +3,14 @@ import DashboardLayout from "@/app/components/Layout/DashboardLayout";
 import qrcode from "@/app/public/images/qrCode.png";
 import territory from "@/app/public/images/defaultMap.png";
 import Image from "next/image";
-import TerritoryView from "../../../components/General/TerritoryView";
+import TerritoryGeneralView from "../../../components/General/TerritoryGeneralView";
 import { useEffect, useState } from "react";
 export default function Page({ params }) {
   const [val, setVal] = useState(null);
   useEffect(() => {
     async function brv() {
       const res = await fetch(
-        `/api/territory?terrId=${params.territoryID}&congName=${params.congID}`,
+        `/api/territory?congID=${params.congID}&terrID=${params.territoryID}`,
         {
           method: "GET",
           headers: {
@@ -21,6 +21,7 @@ export default function Page({ params }) {
       const res1 = await res.json();
       setVal(res1);
       return res1;
+      console.log(res1);
     }
     brv();
   }, []);
@@ -51,7 +52,7 @@ export default function Page({ params }) {
         ></Image>
         <div className="mt-28 mb-28">
           {val ? (
-            <TerritoryView territory={val}></TerritoryView>
+            <TerritoryGeneralView territory={val}></TerritoryGeneralView>
           ) : (
             <div>Loading territory data...</div>
           )}

@@ -26,14 +26,13 @@ export default function TerritoryTransfer(props) {
         return;
       }
       const usersData = await resUsers.json();
-      // console.log(usersData);
+
       setUsers(usersData);
-      // console.log("", users);
     }
     fetchUserData();
   }, []);
   if (!territories || !users) return <div>Loading territories data...</div>;
-  // console.log(territories, users);
+
   return (
     <table className="w-full m-auto border-collapse text-center">
       <thead>
@@ -55,8 +54,12 @@ export default function TerritoryTransfer(props) {
               element.activity == ActivityStatus.Unassigned ? "bg-red-100" : ""
             }`}
           >
-            <td className="border-t border-gray-200 py-4 px-4">
-              {element.territoryID}
+            <td className="border-t border-gray-200 py-4 px-4 hover:underline hover:to-blue-300">
+              <a
+                href={`/territory/${element.congregationID}/${element.territoryID}`}
+              >
+                {element.territoryID}
+              </a>
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
               <SelectComponent

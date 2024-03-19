@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import fetchDeleteRequest from "./fetchDeleteRequest";
 export default async function FetchAcceptRequest(
   territoryID,

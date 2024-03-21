@@ -26,9 +26,9 @@ export default async function InnerHeader() {
       <div className="hidden">burger</div>
       <nav className=" justify-end gap-10 flex basis-1/2">
         <a href={`/${check}/dashboard`}>Dashboard</a>
-        <a href={`dashboard/request`}>Requests</a>
-        <a href={`dashboard/createUser`}>Create Users</a>
-        <a href={`dashboard/createTerritory`}>Create Territories</a>
+        <a href={`/${check}/dashboard/request`}>Requests</a>
+        <a href={`/${check}/dashboard/manageUsers`}>Manage Users</a>
+        <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
 
         <LogoutButton></LogoutButton>
       </nav>

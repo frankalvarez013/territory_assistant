@@ -10,7 +10,6 @@ enum ActivityStatus {
 export default function TerritoryTransfer(props) {
   const [territories, setTerritories] = useState(null);
   const [users, setUsers] = useState(null);
-  const { data: session, status } = useSession();
   useEffect(() => {
     async function fetchUserData() {
       const response = await fetch(`/api/territory`);

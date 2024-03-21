@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import SelectComponent from "../../components/Interact/selectTerrOwner";
-import { useSession } from "next-auth/react";
 enum ActivityStatus {
   Assigned = "Assigned",
   Unassigned = "Unassigned",

@@ -4,28 +4,7 @@ import qrcode from "@/app/public/images/qrCode.png";
 import territory from "@/app/public/images/defaultMap.png";
 import Image from "next/image";
 import TerritoryGeneralView from "../../../components/General/TerritoryGeneralView";
-import { useEffect, useState } from "react";
 export default function Page({ params }) {
-  const [val, setVal] = useState(null);
-  useEffect(() => {
-    async function brv() {
-      const res = await fetch(
-        `/api/territory?congID=${params.congID}&terrID=${params.territoryID}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const res1 = await res.json();
-      setVal(res1);
-      return res1;
-      console.log(res1);
-    }
-    brv();
-  }, []);
-
   return (
     <DashboardLayout>
       <main className="flex flex-col mt-10 justify-center items-center">
@@ -42,7 +21,6 @@ export default function Page({ params }) {
             ></Image>
           </button>
         </div>
-
         <Image
           src={territory}
           alt="Picture of Territory"
@@ -51,11 +29,10 @@ export default function Page({ params }) {
           className=" m-auto"
         ></Image>
         <div className="mt-28 mb-28">
-          {val ? (
-            <TerritoryGeneralView territory={val}></TerritoryGeneralView>
-          ) : (
-            <div>Loading territory data...</div>
-          )}
+          <TerritoryGeneralView
+            congID={params.congID}
+            territoryID={params.territoryID}
+          ></TerritoryGeneralView>
         </div>
       </main>
     </DashboardLayout>

@@ -4,15 +4,16 @@ import { LogoutButton } from "@/app/components/auth";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export default async function InnerHeader() {
-  const res = await getServerSession(authOptions);
-  let check = undefined;
-  if (res && res.user) {
-    if (res.user.isAdmin) {
-      check = "admin";
-    } else {
-      check = "user";
-    }
-  }
+  // const res = await getServerSession(authOptions);
+  // let check = undefined;
+  // if (res && res.user) {
+  //   if (res.user.isAdmin) {
+  //     check = "admin";
+  //   } else {
+  //     check = "user";
+  //   }
+  // }
+  const check = "admin";
   return check === "admin" ? (
     <header className=" bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white">
       <a

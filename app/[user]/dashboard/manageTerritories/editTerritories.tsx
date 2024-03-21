@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import pinLocation from "../../../public/images/pinLocation.svg";
-import trash from "../../../public/images/trash.svg";
 import edit from "../../../public/images/edit.svg";
 
 export default function EditTerritories() {
@@ -33,17 +32,11 @@ export default function EditTerritories() {
             height={35}
           ></Image>
           <h1 className="inline w-full">Territory - {territory.territoryID}</h1>
-          <div className="w-28">
+          <div className="">
             <Image
               src={edit}
               alt="User Symbol"
               className="inline mr-5"
-              height={25}
-            ></Image>
-            <Image
-              src={trash}
-              alt="User Symbol"
-              className="inline"
               height={25}
             ></Image>
           </div>

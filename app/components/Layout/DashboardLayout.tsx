@@ -16,13 +16,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className=" h-screen">
-      <body className={`${inter.className} h-full`}>
-        <InnerHeader></InnerHeader>
-        <Providers>
-          <main className="pt-16 h-full">{children}</main>
-        </Providers>
-      </body>
-    </html>
+    <body className={`${inter.className} h-full`}>
+      <InnerHeader></InnerHeader>
+      <Providers>
+        <main className="pt-16 h-full">{children}</main>
+      </Providers>
+    </body>
   );
 }

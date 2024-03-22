@@ -16,7 +16,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <body className={`${inter.className} h-full`}>
+    <body className={`${inter.className} min-h-screen `}>
       <InnerHeader></InnerHeader>
       <Providers>
         <main className="pt-16 h-full">{children}</main>

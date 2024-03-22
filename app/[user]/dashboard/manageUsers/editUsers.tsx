@@ -4,9 +4,15 @@ import Image from "next/image";
 import userImg from "../../../public/images/user.svg";
 import trash from "../../../public/images/trash.svg";
 import edit from "../../../public/images/edit.svg";
-
+import EditUserModal from "./editUserModal";
+import deleteUserModal from "./deleteUserModal";
+import DeleteUserModal from "./deleteUserModal";
 export default function EditUsers() {
   const [users, setUsers] = useState(null);
+  const [user, setUser] = useState(false);
+  const [isEditOpen, setisEditOpen] = useState(false);
+  const [isDeleteOpen, setisDeleteOpen] = useState(false);
+
   useEffect(() => {
     async function duv() {
       const resUsers = await fetch("/api/user");
@@ -16,6 +22,7 @@ export default function EditUsers() {
       }
       const usersData = await resUsers.json();
       setUsers(usersData);
+      setUser(usersData[0]);
     }
     duv();
   }, []);
@@ -25,30 +32,56 @@ export default function EditUsers() {
   return (
     <div className="flex flex-col gap-10 mt-10">
       {users.map((user, index) => (
-        <div key={index} className="flex items-center justify-between">
-          <Image
-            src={userImg}
-            alt="User Symbol"
-            className="inline mr-5"
-            height={50}
-          ></Image>
-          <h1 className="inline w-full">{user.name}</h1>
-          <div className="w-28">
+        <div key={index} className="flex">
+          <button
+            onClick={() => {
+              setisEditOpen(true);
+              setUser(user);
+            }}
+            key={index}
+            className="flex flex-grow items-center justify-center"
+          >
             <Image
-              src={edit}
+              src={userImg}
               alt="User Symbol"
-              className="inline mr-5"
-              height={25}
+              className="inline"
+              height={50}
             ></Image>
+            <h1 className="inline w-full text-start mx-5">{user.name}</h1>
+            <div className="inline mr-5">
+              <Image
+                src={edit}
+                alt="User Symbol"
+                className="inline"
+                height={25}
+              ></Image>
+            </div>
+          </button>
+          <button className="inline">
+            {" "}
             <Image
               src={trash}
               alt="User Symbol"
-              className="inline"
+              className=" m-auto inline"
               height={25}
+              onClick={() => {
+                setUser(user);
+                setisDeleteOpen(true);
+              }}
             ></Image>
-          </div>
+          </button>
         </div>
       ))}
+      <EditUserModal
+        user={user}
+        isOpen={isEditOpen}
+        setIsOpen={setisEditOpen}
+      ></EditUserModal>
+      <DeleteUserModal
+        user={user}
+        isOpen={isDeleteOpen}
+        setIsOpen={setisDeleteOpen}
+      ></DeleteUserModal>
     </div>
   );
 }

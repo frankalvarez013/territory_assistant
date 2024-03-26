@@ -15,6 +15,7 @@ const updateUserSchema = z.object({
   name: z.string().min(1).max(255).optional(),
   email: z.string().min(1).max(255).optional(),
   congregationID: z.string().min(1).max(255).optional(),
+  password: z.string().min(1).max(255).optional(),
   //use zod to check if the isAdmin is true or false "strings"
 });
 export async function POST(
@@ -95,11 +96,14 @@ export async function GET(request: NextRequest, response: NextResponse) {
 export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<User | ZodIssue[] | ErrorResponse>> {
+  console.log("hi");
   const body = await request.json();
+  console.log(body);
   const validation = updateUserSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
+  console.log("INSIDE");
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {

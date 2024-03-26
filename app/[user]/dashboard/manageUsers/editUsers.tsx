@@ -5,10 +5,10 @@ import userImg from "../../../public/images/user.svg";
 import trash from "../../../public/images/trash.svg";
 import edit from "../../../public/images/edit.svg";
 import EditUserModal from "./editUserModal";
-import deleteUserModal from "./deleteUserModal";
 import DeleteUserModal from "./deleteUserModal";
 export default function EditUsers() {
   const [users, setUsers] = useState(null);
+  const [congregations, setcongregations] = useState(null);
   const [user, setUser] = useState(false);
   const [isEditOpen, setisEditOpen] = useState(false);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
@@ -23,10 +23,18 @@ export default function EditUsers() {
       const usersData = await resUsers.json();
       setUsers(usersData);
       setUser(usersData[0]);
+      const res = await fetch(`/api/congregation`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res1 = await res.json();
+      setcongregations(res1);
     }
     duv();
   }, []);
-  if (!users) {
+  if (!users || !congregations) {
     return <h1>...Checking</h1>;
   }
   return (
@@ -76,6 +84,7 @@ export default function EditUsers() {
         user={user}
         isOpen={isEditOpen}
         setIsOpen={setisEditOpen}
+        congregations={congregations}
       ></EditUserModal>
       <DeleteUserModal
         user={user}

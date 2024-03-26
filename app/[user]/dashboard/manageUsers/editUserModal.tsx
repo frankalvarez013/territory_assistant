@@ -1,26 +1,35 @@
-import { useEffect, useState, Fragment } from "react";
+import { useState, Fragment } from "react";
 import check from "../../../public/images/check.svg";
 import upDown from "../../../public/images/chevron-up-down.svg";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import userImg from "../../../public/images/user.svg";
 import Image from "next/image";
-const people = [
-  { name: "Wade Cooper" },
-  { name: "Arlene Mccoy" },
-  { name: "Devon Webb" },
-  { name: "Tom Cook" },
-  { name: "Tanya Fox" },
-  { name: "Hellen Schmidt" },
-];
+import fetchEditUser from "../../../components/fetch/fetchEditUser";
 
-export default function EditUserModal({ user, isOpen, setIsOpen }) {
-  //
-  const [selected, setSelected] = useState(people[0]);
+export default function EditUserModal({
+  user,
+  isOpen,
+  setIsOpen,
+  congregations,
+}) {
+  const congregation = congregations.find(
+    (congregation) => congregation.id === user.congregationID
+  );
+  const [selected, setSelected] = useState(congregation);
+  const [congregationID, setCongregationID] = useState(congregation.id);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  function setEm(e) {
+    setSelected(e);
+    setCongregationID(e.id);
+  }
   function closeEditModal() {
+    setIsOpen(false);
+  }
+  function patchEditModal() {
+    console.log("OOI");
+    fetchEditUser(user.id, { name, email, password, congregationID });
     setIsOpen(false);
   }
   return (
@@ -67,10 +76,12 @@ export default function EditUserModal({ user, isOpen, setIsOpen }) {
                 </div>
                 <div className="mt-2">
                   Change Congregations
-                  <Listbox value={selected} onChange={setSelected}>
+                  <Listbox value={selected} onChange={setEm}>
                     <div className="relative mt-1">
                       <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                        <span className="block truncate">{selected.name}</span>
+                        <span className="block truncate">
+                          {selected.congregationName}
+                        </span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                           <Image
                             src={upDown}
@@ -87,41 +98,43 @@ export default function EditUserModal({ user, isOpen, setIsOpen }) {
                         leaveTo="opacity-0"
                       >
                         <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                          {people.map((person, personIdx) => (
-                            <Listbox.Option
-                              key={personIdx}
-                              className={({ active }) =>
-                                `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                  active
-                                    ? "bg-amber-100 text-amber-900"
-                                    : "text-gray-900"
-                                }`
-                              }
-                              value={person}
-                            >
-                              {({ selected }) => (
-                                <>
-                                  <span
-                                    className={`block truncate ${
-                                      selected ? "font-medium" : "font-normal"
-                                    }`}
-                                  >
-                                    {person.name}
-                                  </span>
-                                  {selected ? (
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                      <Image
-                                        src={check}
-                                        alt="User Symbol"
-                                        className="inline mr-5"
-                                        height={23}
-                                      ></Image>
+                          {congregations.map(
+                            (congregation, congregationIdx) => (
+                              <Listbox.Option
+                                key={congregationIdx}
+                                className={({ active }) =>
+                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                    active
+                                      ? "bg-amber-100 text-amber-900"
+                                      : "text-gray-900"
+                                  }`
+                                }
+                                value={congregation}
+                              >
+                                {({ selected }) => (
+                                  <>
+                                    <span
+                                      className={`block truncate ${
+                                        selected ? "font-medium" : "font-normal"
+                                      }`}
+                                    >
+                                      {congregation.congregationName}
                                     </span>
-                                  ) : null}
-                                </>
-                              )}
-                            </Listbox.Option>
-                          ))}
+                                    {selected ? (
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                        <Image
+                                          src={check}
+                                          alt="User Symbol"
+                                          className="inline mr-5"
+                                          height={23}
+                                        ></Image>
+                                      </span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Listbox.Option>
+                            )
+                          )}
                         </Listbox.Options>
                       </Transition>
                     </div>
@@ -161,7 +174,7 @@ export default function EditUserModal({ user, isOpen, setIsOpen }) {
                   <button
                     type="button"
                     className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={closeEditModal}
+                    onClick={patchEditModal}
                   >
                     Save Changes
                   </button>

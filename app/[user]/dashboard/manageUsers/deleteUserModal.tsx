@@ -5,7 +5,7 @@ import Image from "next/image";
 import fetchDeleteUser from "../../../components/fetch/fetchDeleteUser";
 export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
   function deleteModal() {
-    console.log("delete");
+    fetchDeleteUser(user.id);
     setIsOpen(false);
   }
   function cancelModal() {

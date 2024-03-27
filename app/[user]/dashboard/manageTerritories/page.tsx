@@ -10,7 +10,6 @@ export default async function Page() {
   if (!session) {
     redirect("/api/auth/signin");
   }
-
   return (
     <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
@@ -83,7 +82,7 @@ export default async function Page() {
               Click on one of the territories to edit it
             </div>
             <div className=" text-darkgrey mb-7 text-xl font-semibold">
-              <EditTerritories></EditTerritories>
+              <EditTerritories session={session.user.congID}></EditTerritories>
             </div>
           </div>
         </div>

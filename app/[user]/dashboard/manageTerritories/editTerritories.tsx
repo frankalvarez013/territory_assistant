@@ -4,7 +4,7 @@ import Image from "next/image";
 import pinLocation from "../../../public/images/pinLocation.svg";
 import edit from "../../../public/images/edit.svg";
 
-export default function EditTerritories() {
+export default function EditTerritories(session) {
   const [territories, setTerritories] = useState(null);
   useEffect(() => {
     async function duv() {
@@ -24,10 +24,14 @@ export default function EditTerritories() {
   return (
     <div className="flex flex-col gap-10 mt-10">
       {territories.map((territory, index) => (
-        <div key={index} className="flex items-center justify-between">
+        <a
+          href={`manageTerritories/edit/${session.session}/${territory.territoryID}`}
+          key={index}
+          className="flex items-center justify-between"
+        >
           <Image
             src={pinLocation}
-            alt="User Symbol"
+            alt="Pin Location"
             className="inline mr-5"
             height={35}
           ></Image>
@@ -35,12 +39,12 @@ export default function EditTerritories() {
           <div className="">
             <Image
               src={edit}
-              alt="User Symbol"
+              alt="Edit Symbol"
               className="inline mr-5"
               height={25}
             ></Image>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   );

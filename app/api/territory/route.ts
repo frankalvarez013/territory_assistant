@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
     if (!getTerritory) {
       return NextResponse.json({ message: "Territory Record not found" });
     }
-    console.log(getTerritory);
+    // console.log(getTerritory);
     return NextResponse.json(getTerritory, { status: 201 });
   } catch (e) {
     return NextResponse.json(

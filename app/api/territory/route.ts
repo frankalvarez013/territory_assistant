@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  console.log("Calling GET - Territory...");
+  // console.log("Calling GET - Territory...");
   const terrID = request.nextUrl.searchParams.get("terrID");
   const congID = request.nextUrl.searchParams.get("congID");
   // console.log(request.nextUrl.searchParams.toString());

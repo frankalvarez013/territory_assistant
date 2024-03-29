@@ -1,14 +1,19 @@
 import { Observation, Territory, Status } from "@prisma/client";
-import SelectObservation from "../Interact/SelectObservationADMIN";
+
 import cancel from "../../public/images/cancel.svg";
 import check1 from "../../public/images/check1.svg";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Image from "next/image";
+import HouseRow from "./HouseRow";
+import AddHouseRow from "./AddHouseRow";
 export default function TerritoryGeneralView(props) {
-  const [focusedRow, setFocusedRow] = useState(null);
   const [val, setVal] = useState(null);
-  const focusedRowClass =
-    "focus:border-sky-500 focus:ring-1 focus:ring-sky-500 bg-black";
+  const [houses, setHouses] = useState(null);
+  const [editableHouseID, setEditableHouseID] = useState(null);
+  const [update, setUpdate] = useState(false);
+  const makeEditable = useCallback((houseID) => {
+    setEditableHouseID(houseID);
+  }, []);
   useEffect(() => {
     async function brv() {
       const res = await fetch(
@@ -22,14 +27,23 @@ export default function TerritoryGeneralView(props) {
       );
       const res1 = await res.json();
       setVal(res1);
+      const res2 = await fetch(
+        `/api/house?congID=${props.congID}&territoryID=${props.territoryID}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const res3 = await res2.json();
+      setHouses(res3);
     }
     brv();
-  }, []);
-  const observationValues = useMemo(() => Object.values(Observation), []);
-  if (!val) {
+  }, [update]);
+  if (!val || !houses) {
     return <h1>Checking Territory...</h1>;
   }
-
   return (
     <div className="overflow-x-auto">
       <table className="table-auto">
@@ -93,85 +107,25 @@ export default function TerritoryGeneralView(props) {
 
             <td className="py-1 px-2">Fecha de Visita</td>
           </tr>
-          {val.houses.map((element) => {
-            return (
-              <tr
+          {houses
+            .slice() // Create a shallow copy of the array to avoid mutating the original array
+            .sort((a, b) => a.houseID - b.houseID) // Sort the copy based on houseID
+            .map((element) => (
+              <HouseRow
                 key={element.houseID}
-                tabIndex={0}
-                className=" border-gray-200 focus-within:bg-slate-400 focus-within:outline-none"
-                onClick={() => {}}
-              >
-                <td className="py-1 px-2 border-r border-gray-200">
-                  {element.status === Status.LLEGA
-                    ? element.observation === Observation.CANDADO ||
-                      element.observation === Observation.EMPTY ||
-                      element.observation === Observation.PERRO_EN_CASA
-                      ? "🟢"
-                      : "🔴"
-                    : "🔴" || "🔴"}
-                </td>
-                <td className="py-1 px-2 border-r border-b border-gray-200">
-                  <label htmlFor="streetAd">
-                    {" "}
-                    <input
-                      name="streetAd"
-                      type="text"
-                      placeholder={element.StreetAd}
-                    />
-                  </label>
-                </td>
-                <td className="py-1 px-2 border-r border-b border-gray-200">
-                  <label htmlFor="direction">
-                    {" "}
-                    <input
-                      name="direction"
-                      type="text"
-                      placeholder={element.Direction}
-                    />
-                  </label>
-                </td>
-                <td className="py-1 px-2 border-r border-b border-gray-200 ">
-                  <SelectObservation
-                    uniqueOption={element.observation}
-                    options={observationValues}
-                    territoryID={val.territoryID.toString()}
-                    congregationID={val.congregationID}
-                    userID={val.currentUserID}
-                    houseID={element.houseID.toString()}
-                  />
-                </td>
-                <td className="py-1 px-2 border-r border-b border-gray-200">
-                  <label htmlFor="comment">
-                    {" "}
-                    <input
-                      name="comment"
-                      type="text"
-                      placeholder={element.comment}
-                    />
-                  </label>
-                </td>
-                <td className="py-1 px-2 border-b ">
-                  {element.dateVisited
-                    ? new Date(element.dateVisited).toLocaleDateString(
-                        "en-US",
-                        {
-                          /* formatting options here */
-                        }
-                      )
-                    : ""}
-                </td>
-
-                <td className="focus-within:bg-none focus:bg-none bg-none">
-                  <button
-                    className="border-black border-2 rounded-2xl px-1 "
-                    onClick={(e) => console.log("HEY")}
-                  >
-                    Save
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+                house={element}
+                makeEditable={makeEditable}
+                isEditable={editableHouseID === element.houseID}
+              />
+            ))}
+          <AddHouseRow
+            key={200}
+            makeEditable={makeEditable}
+            isEditable={editableHouseID === 200}
+            territoryID={props.territoryID}
+            update={update}
+            setUpdate={setUpdate}
+          ></AddHouseRow>
         </tbody>
       </table>
     </div>

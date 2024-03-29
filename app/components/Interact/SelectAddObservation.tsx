@@ -7,10 +7,11 @@ function SelectObservation(props) {
     props.handleChange(e);
   };
   useEffect(() => {
-    if (!props.isEditable || !props.localSave) {
+    console.log("OI");
+    if (!props.isEditable) {
       setSelectedOption(props.uniqueOption);
     }
-  }, [props.isEditable, props.localSave]);
+  }, [props.isEditable, props.uniqueOption]);
   return (
     <select
       className=" bg-white  border-2 rounded-xl px-3"

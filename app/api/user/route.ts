@@ -47,7 +47,7 @@ export async function POST(
 }
 
 export async function GET(request: NextRequest, response: NextResponse) {
-  console.log("GET - User");
+  // console.log("GET - User");
   const idParams = request.nextUrl.searchParams.get("id");
   const session = await getServerSession(authOptions);
   let getUser: User | User[] | null = null;
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
         return NextResponse.json(total, { status: 201 });
       }
     } else {
-      console.log("Checking Admin Status...");
+      // console.log("Checking Admin Status...");
       if (session?.user.isAdmin) {
         // console.log("Is admin");
         // console.log(session.user.congID);
@@ -96,14 +96,14 @@ export async function GET(request: NextRequest, response: NextResponse) {
 export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<User | ZodIssue[] | ErrorResponse>> {
-  console.log("hi");
+  // console.log("hi");
   const body = await request.json();
-  console.log(body);
+  // console.log(body);
   const validation = updateUserSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  console.log("INSIDE");
+  // console.log("INSIDE");
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {

@@ -7,6 +7,7 @@ import RequestView from "../request/RequestView";
 import { StateProvider } from "../request/StateContext";
 export default async function Page() {
   const session = await getServerSession(authOptions);
+  console.log(session);
   if (!session) {
     redirect("/api/auth/signin");
   }

@@ -24,7 +24,7 @@ export default async function Page() {
               <div>
                 <form action="/submit-form-endpoint" method="POST">
                   <div>
-                    <label htmlFor="name">Name:</label>
+                    <label htmlFor="name">Location:</label>
                     <input
                       className="block border-2 border-black"
                       type="text"

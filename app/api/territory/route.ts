@@ -60,11 +60,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  // console.log("Calling GET - Territory...");
   const terrID = request.nextUrl.searchParams.get("terrID");
   const congID = request.nextUrl.searchParams.get("congID");
-  // console.log(request.nextUrl.searchParams.toString());
-  // console.log("terr", terrId, "congName", congId);
   const terrIdCheck = terrID ? parseInt(terrID) : undefined;
   const session = await getServerSession(authOptions);
   let getTerritory: Territory | Territory[] | null = null;

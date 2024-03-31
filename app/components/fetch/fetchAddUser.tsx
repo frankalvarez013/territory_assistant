@@ -6,6 +6,7 @@ export default async function fetchAddUser(
   password,
   congregationID
 ) {
+  console.log(congregationID);
   let res1 = null;
   // const hashPassword = await hash(password, 12);
 

@@ -55,7 +55,6 @@ export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
                   ></Image>
                   <h1>{user.name}</h1>
                 </div>
-                <div className="mt-2">{user.congregationID}</div>
                 <div className="mt-4">
                   <button
                     type="button"

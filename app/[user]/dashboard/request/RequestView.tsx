@@ -78,7 +78,7 @@ export default function RequestView(props) {
   }, [updateItems]);
 
   // Check if territories or requests are not loaded or if requests array is empty
-  if (!territories || !requests || requests.length === 0) {
+  if (!territories || !requests) {
     return <div>Loading Request data...</div>;
   }
 

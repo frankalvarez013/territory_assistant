@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../../globals.css";
-import { Providers } from "../../providers";
+import { Providers } from "@/app/providers";
 import Header from "./header";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,13 +16,11 @@ export default function HomepageLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className=" h-screen">
-      <body className={`${inter.className} h-full`}>
+    <body className={`${inter.className} h-full`}>
+      <Providers>
         <Header></Header>
-        <Providers>
-          <main className="pt-16 h-full">{children}</main>
-        </Providers>
-      </body>
-    </html>
+        <main className="pt-16 h-full">{children}</main>
+      </Providers>
+    </body>
   );
 }

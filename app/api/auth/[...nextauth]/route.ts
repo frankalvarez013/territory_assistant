@@ -63,6 +63,15 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
+    async redirect({ url, baseUrl, session }) {
+      if (session) {
+        if (session.user.isAdmin) {
+          return baseUrl + "/admin/dashboard";
+        }
+        return baseUrl + "/user/dashboard";
+      }
+      return baseUrl + "/";
+    },
     //user is only passed in this function the first time user logs in credential
     jwt: ({ token, user }) => {
       // console.log("JWT Callback", { token, user });

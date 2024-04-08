@@ -1,6 +1,10 @@
+"use client";
 import Card from "./components/General/card";
 import HomepageLayout from "./components/Layout/HomepageLayout";
 export default async function homePage() {
+  const handleSignIn = () => {
+    window.location.href = "/signIn";
+  };
   return (
     <HomepageLayout>
       <div className="flex justify-evenly items-center text-2xl text-white text h-full bg-[url('./public/images/mountains.jpg')] bg-opacity-10 bg-cover pt-20">
@@ -12,7 +16,10 @@ export default async function homePage() {
             Your ultimate tool for territory management
           </h5>
           <h3>Efficiently manage and update access to your territories</h3>
-          <button className=" bg-white rounded-3xl text-black p-1 text-lg w-28">
+          <button
+            className=" bg-white rounded-3xl text-black p-1 text-lg w-28 hover:bg-black hover:text-white"
+            onClick={handleSignIn}
+          >
             Sign In
           </button>
         </div>

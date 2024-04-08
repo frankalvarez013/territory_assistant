@@ -4,16 +4,16 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 
 interface StateContextType {
-  territories: any[]; // Consider specifying a more precise type
-  requests: any[]; // Consider specifying a more precise type
+  territories: any[];
+  requests: any[];
   updateItems: () => Promise<void>;
 }
 
 const StateContext = createContext<StateContextType | null>(null);
 
 export const StateProvider = ({ children }) => {
-  const [territories, setTerritories] = useState<any[]>([]); // Consider specifying a more precise type
-  const [requests, setRequests] = useState<any[]>([]); // Consider specifying a more precise type
+  const [territories, setTerritories] = useState<any[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
 
   const updateItems = useCallback(async () => {
     const response = await fetch(`/api/territory`);

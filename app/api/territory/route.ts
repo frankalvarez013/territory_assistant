@@ -91,16 +91,16 @@ export async function GET(request: NextRequest) {
       }
       return NextResponse.json(getTerritory, { status: 201 });
     }
-    if (session?.user.isAdmin) {
-      getTerritory = await prisma.territory.findMany({
-        where: {
-          congregationID: session.user.congID,
-        },
-        include: {
-          currentUser: true,
-        },
-      });
-    }
+
+    getTerritory = await prisma.territory.findMany({
+      where: {
+        congregationID: session.user.congID,
+      },
+      include: {
+        currentUser: true,
+      },
+    });
+
     if (!getTerritory) {
       return NextResponse.json({ message: "Territory Record not found" });
     }

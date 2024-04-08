@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../../globals.css";
 import { Providers } from "../../providers";
-import InnerHeader from "./InnerHeader";
+import InnerHeader from "./InnerAdminHeader";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,8 +17,8 @@ export default function DashboardLayout({
 }) {
   return (
     <body className={`${inter.className} min-h-screen `}>
-      <InnerHeader></InnerHeader>
       <Providers>
+        <InnerHeader></InnerHeader>
         <main className="pt-16 h-full">{children}</main>
       </Providers>
     </body>

@@ -24,7 +24,7 @@ async function main() {
   const tester = await prisma.user.upsert({
     where: { email: "tester@prisma.io" },
     update: {
-      name: "Frank Alvarez", // Update name on rerun
+      name: "Franko Alvarez", // Update name on rerun
       // Add any other fields you want to update here
       isAdmin: true,
     },
@@ -37,6 +37,7 @@ async function main() {
           id: congo.id,
         },
       },
+      isAdmin: true,
     },
   });
   const tester2 = await prisma.user.upsert({
@@ -89,51 +90,6 @@ async function main() {
           id: congo.id,
         },
       },
-    },
-  });
-  const date = new Date();
-  const endDate = ExperiationDateCalculator(date, 30);
-  const territory = await prisma.territory.upsert({
-    where: {
-      // Assuming territoryID and congregationID form a compound unique identifier
-      territoryID_congregationID: {
-        territoryID: 1, // The territory ID
-        congregationID: congo.id, // The congregation ID
-      },
-    },
-    update: {
-      // Fields to update if the record exists
-      AssignedDate: date,
-      ExperiationDate: endDate,
-      currentUserID: "c9fb9260-85de-4ad1-8602-03419557858c",
-    },
-    create: {
-      territoryID: 1,
-      location: "Fishburn 123",
-      congregationID: congo.id,
-      currentUserID: tester.id,
-    },
-  });
-  const territory2 = await prisma.territory.upsert({
-    where: {
-      // Assuming territoryID and congregationID form a compound unique identifier
-      territoryID_congregationID: {
-        territoryID: 2, // The territory ID
-        congregationID: congo.id, // The congregation ID
-      },
-    },
-    update: {
-      // Fields to update if the record exists
-      AssignedDate: date,
-      ExperiationDate: endDate,
-      currentUserID: "c9fb9260-85de-4ad1-8602-03419557858c",
-    },
-    create: {
-      territoryID: 2,
-      location: "Park Avenue 456",
-
-      congregationID: congo.id,
-      currentUserID: tester.id,
     },
   });
 }

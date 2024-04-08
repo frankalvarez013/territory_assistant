@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 export default async function fetchEditTerritory(id) {
   const res = await fetch(`/api/territory`, {
     method: "GET",

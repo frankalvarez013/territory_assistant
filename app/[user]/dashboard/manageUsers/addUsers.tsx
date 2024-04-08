@@ -51,10 +51,6 @@ export default function AddUsers() {
           required
         ></input>
       </div>
-      {/* <div>
-        <label htmlFor="isAdmin">Is Admin:</label>
-        <input type="checkbox" id="isAdmin" name="isAdmin"></input>
-      </div> */}
       <button
         className="border-2 border-black rounded-3xl px-3"
         type="submit"

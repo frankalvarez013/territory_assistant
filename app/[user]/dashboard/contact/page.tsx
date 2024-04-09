@@ -1,6 +1,5 @@
 "use client";
-
-import HomepageLayout from "../components/Layout/HomepageLayout";
+import HomepageLayout from "../../../components/Layout/DashboardLayout";
 
 import { useState } from "react";
 

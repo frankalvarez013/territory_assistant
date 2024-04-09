@@ -35,6 +35,7 @@ export default function InnerHeader() {
         <a href={`/${check}/dashboard/request`}>Requests</a>
         <a href={`/${check}/dashboard/manageUsers`}>Manage Users</a>
         <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
+        <a href={`/${check}/dashboard/contact`}>Contact</a>
 
         <LogoutButton></LogoutButton>
       </nav>

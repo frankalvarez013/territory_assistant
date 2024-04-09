@@ -32,8 +32,12 @@ export default function TerritoryPreview(props) {
       <tbody>
         {user[1].map((element) => (
           <tr key={element.territoryID}>
-            <td className="border-t border-gray-200 py-4 px-4">
-              {element.territoryID}
+            <td className="border-t border-gray-200 py-4 px-4 hover:underline hover:to-blue-300">
+              <a
+                href={`/territory/${element.congregationID}/${element.territoryID}`}
+              >
+                {element.territoryID}
+              </a>
             </td>
             <td className="border-t border-gray-200 py-4 px-4">
               {element.location}

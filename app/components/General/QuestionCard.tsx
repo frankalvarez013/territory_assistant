@@ -31,7 +31,7 @@ const Question = ({ Question }) => {
         {isHidden ? (
           <a className="pb-20 font-light text-light-grey1 hidden"></a>
         ) : (
-          <form action="" className=" pl-8 " onSubmit={handleSubmit}>
+          <form action="" className=" " onSubmit={handleSubmit}>
             <h1 className="text-black mb-4">
               Make sure you share the Service Account Email in the excel file or
               else it won't work.

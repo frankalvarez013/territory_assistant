@@ -9,6 +9,7 @@ enum ActivityStatus {
 export default function TerritoryTransfer(props) {
   const [territories, setTerritories] = useState(null);
   const [users, setUsers] = useState(null);
+  const [nullValKey, setNullValKey] = useState(0);
   useEffect(() => {
     async function fetchUserData() {
       const response = await fetch(`/api/territory`);
@@ -45,39 +46,53 @@ export default function TerritoryTransfer(props) {
         </tr>
       </thead>
       <tbody>
-        {territories.map((element) => (
-          <tr
-            key={element.territoryID}
-            className={`border-t border-gray-200 ${
-              element.activity == ActivityStatus.Unassigned ? "bg-red-100" : ""
-            }`}
-          >
-            <td className="border-t border-gray-200 py-4 px-4 hover:underline hover:to-blue-300">
-              <a
-                href={`/territory/${element.congregationID}/${element.territoryID}`}
-              >
-                {element.territoryID}
-              </a>
-            </td>
-            <td className="border-t border-gray-200 py-4 px-4">
-              <SelectComponent
-                uniqueOption={element.currentUser}
-                options={users}
-                territoryId={element.territoryID}
-                congregationId={element.congregationID}
-              ></SelectComponent>
-            </td>
-            <td className="border-t border-gray-200 py-4 px-4">
-              {new Date(element.AssignedDate).toLocaleDateString("en-US")}
-            </td>
-            <td className="border-t border-gray-200 py-4 px-4">
-              {new Date(element.ExperiationDate).toLocaleDateString("en-US")}
-            </td>
-            <td className="border-t border-gray-200 py-4 px-4">
-              {element.activity}
-            </td>
-          </tr>
-        ))}
+        {console.log(territories)}
+        {territories
+          .sort((a, b) => a.territoryID - b.territoryID)
+          .map((element) => (
+            <tr
+              key={element.territoryID}
+              className={`border-t border-gray-200 ${
+                element.activity == ActivityStatus.Unassigned
+                  ? "bg-red-100"
+                  : ""
+              }`}
+            >
+              <td className="border-t border-gray-200 py-4 px-4 hover:underline hover:to-blue-300">
+                <a
+                  href={`/territory/${element.congregationID}/${element.territoryID}`}
+                >
+                  {element.territoryID}
+                </a>
+              </td>
+              <td className="border-t border-gray-200 py-4 px-4">
+                {element.currentUser ? (
+                  <SelectComponent
+                    uniqueOption={element.currentUser}
+                    options={users}
+                    territoryId={element.territoryID}
+                    congregationId={element.congregationID}
+                  ></SelectComponent>
+                ) : (
+                  <SelectComponent
+                    uniqueOption={{ id: null, name: "NULL" }}
+                    options={users}
+                    territoryId={element.territoryID}
+                    congregationId={element.congregationID}
+                  ></SelectComponent>
+                )}
+              </td>
+              <td className="border-t border-gray-200 py-4 px-4">
+                {new Date(element.AssignedDate).toLocaleDateString("en-US")}
+              </td>
+              <td className="border-t border-gray-200 py-4 px-4">
+                {new Date(element.ExperiationDate).toLocaleDateString("en-US")}
+              </td>
+              <td className="border-t border-gray-200 py-4 px-4">
+                {element.activity}
+              </td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );

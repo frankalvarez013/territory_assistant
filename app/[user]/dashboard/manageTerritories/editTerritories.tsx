@@ -23,34 +23,38 @@ export default function EditTerritories(props) {
   if (!territories) {
     return <h1>...Checking</h1>;
   }
-  const territoryResults = territories.map((territory, index) => {
-    if (territory.currentUser.id !== props.userID) {
-      return;
-    }
-    return (
-      <a
-        href={`manageTerritories/edit/${props.congID}/${territory.territoryID}`}
-        key={index}
-        className="flex items-center justify-between"
-      >
-        <Image
-          src={pinLocation}
-          alt="Pin Location"
-          className="inline mr-5"
-          height={35}
-        ></Image>
-        <h1 className="inline w-full">Territory - {territory.territoryID}</h1>
-        <div className="">
+  const territoryResults = territories
+    .sort((a, b) => a.territoryID - b.territoryID)
+    .map((territory, index) => {
+      if (territory.currentUser.id !== props.userID) {
+        return;
+      }
+      return (
+        <a
+          href={`manageTerritories/edit/${props.congID}/${territory.territoryID}`}
+          key={index}
+          className="flex items-center justify-between"
+        >
           <Image
-            src={edit}
-            alt="Edit Symbol"
+            src={pinLocation}
+            alt="Pin Location"
             className="inline mr-5"
-            height={25}
+            height={35}
           ></Image>
-        </div>
-      </a>
-    );
-  });
+          <h1 className="inline w-full">
+            Territory {territory.territoryID} - {territory.location}
+          </h1>
+          <div className="">
+            <Image
+              src={edit}
+              alt="Edit Symbol"
+              className="inline mr-5"
+              height={25}
+            ></Image>
+          </div>
+        </a>
+      );
+    });
   if (
     territoryResults.every((result) => result === null || result === undefined)
   ) {

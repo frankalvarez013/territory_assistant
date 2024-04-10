@@ -5,7 +5,6 @@ import { LogoutButton } from "@/app/components/auth";
 import { useSession } from "next-auth/react";
 export default function InnerHeader() {
   const { data: session, status } = useSession();
-  console.log(session);
   let check = null;
   if (session && session.user) {
     if (session.user.isAdmin) {

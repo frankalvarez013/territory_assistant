@@ -26,7 +26,7 @@ model User {
   password       String       @db.VarChar(255)
   isAdmin        Boolean      @default(false)
   congregationID String
-  congregation   Congregation @relation(fields: [congregationID], references: [id])
+  congregation   Congregation @relation(fields: [congregationID], references: [id], onDelete: Cascade)
   Territory      Territory[]
 
   @@id([id, congregationID])
@@ -51,9 +51,10 @@ model Territory {
   ExperiationDate DateTime?
   congregationID  String
   currentUserID   String?
+  locationPic String?
   activity        TerritoryComment @default(Unassigned)
   currentUser     User?            @relation(fields: [currentUserID], references: [id])
-  Congregation    Congregation     @relation(fields: [congregationID], references: [id])
+  Congregation    Congregation     @relation(fields: [congregationID], references: [id], onDelete: Cascade)
   Request         Request[]
 
   @@id([territoryID, congregationID])
@@ -89,8 +90,8 @@ model Request {
   houseID        Int
   congregationID String
   approval       Boolean?
-  Territory      Territory    @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID])
-  House          House        @relation(fields: [houseID, territoryID, congregationID], references: [houseID, territoryID, congregationID])
+  Territory      Territory    @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID], onDelete: Cascade )
+  House          House        @relation(fields: [houseID, territoryID, congregationID], references: [houseID, territoryID, congregationID], onDelete: Cascade)
 }
 
 model HouseCounter {
@@ -112,8 +113,8 @@ model House {
   status         Status       @default(LLEGA)
   comment        String?      @db.VarChar(255)
   dateVisited    DateTime?
-  Territory      Territory    @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID])
-  Congregation   Congregation @relation(fields: [congregationID], references: [id])
+  Territory      Territory    @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID], onDelete: Cascade)
+  Congregation   Congregation @relation(fields: [congregationID], references: [id], onDelete: Cascade)
   Request        Request[]
 
   @@id([territoryID, houseID, congregationID])

@@ -7,6 +7,5 @@ type Props = {
 };
 
 export const Providers = ({ children }: Props) => {
-  console.log("OI");
   return <SessionProvider>{children}</SessionProvider>;
 };

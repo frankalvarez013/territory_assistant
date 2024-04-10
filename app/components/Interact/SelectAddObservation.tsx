@@ -7,7 +7,6 @@ function SelectObservation(props) {
     props.handleChange(e);
   };
   useEffect(() => {
-    console.log("OI");
     if (!props.isEditable) {
       setSelectedOption(props.uniqueOption);
     }

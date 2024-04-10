@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
 import prisma from "@/prisma/client";
-import type { Congregation, Territory } from "@prisma/client";
+import type { Congregation, Territory, User } from "@prisma/client";
 import { ErrorResponse, territoryJSON } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { TerritoryComment } from "@prisma/client";
 const createTerritorySchema = z.object({
   location: z.string().min(1).max(255),
 });
 const updateTerritorySchema = z.object({
   territoryID: z.number().positive().finite(),
   congregationID: z.string().min(1).max(255),
-  currentUserID: z.string().min(1).max(255),
+  currentUserID: z.string().min(1).max(255).optional(),
   dateLength: z.string().min(1).max(255).optional(),
   location: z.string().min(1).max(255).optional(),
 });
@@ -119,7 +120,7 @@ export async function PATCH(
 ): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
   const validation = updateTerritorySchema.safeParse(body);
-
+  const session = await getServerSession(authOptions);
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
@@ -127,7 +128,7 @@ export async function PATCH(
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {
-      if (key == "dateLength") {
+      if (key === "dateLength") {
         const dateLengthStr: string = body.dateLength;
         const dateLength = parseInt(dateLengthStr);
         const date = new Date();
@@ -135,7 +136,40 @@ export async function PATCH(
         updateData["AssignedDate"] = date;
         updateData["ExperiationDate"] = endDate;
       } else {
-        updateData[key] = value;
+        if (key === "currentUserID") {
+          console.log("Checking if its a current User...");
+          const user: User = await prisma.user.findUnique({
+            where: {
+              id: validation.data.currentUserID,
+            },
+          });
+          if (user) {
+            if (validation.data.congregationID != user.congregationID) {
+              console.log("Checking if its a good ID match...");
+
+              return NextResponse.json(
+                {
+                  message:
+                    "The User must be a part of the congregation that owns the territory",
+                },
+                { status: 412 }
+              );
+            }
+            if (!user.isAdmin) {
+              updateData["activity"] = TerritoryComment.Assigned;
+              updateData["currentUserID"] = validation.data.currentUserID;
+            } else {
+              updateData["activity"] = TerritoryComment.Unassigned;
+              updateData["currentUserID"] = validation.data.currentUserID;
+            }
+          } else {
+            return NextResponse.json({
+              message: "No User Found",
+            });
+          }
+        } else {
+          updateData[key] = value;
+        }
       }
     }
   }

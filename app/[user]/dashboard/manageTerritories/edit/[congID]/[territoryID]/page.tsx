@@ -1,13 +1,12 @@
 "use client";
 import DashboardLayout from "@/app/components/Layout/DashboardLayout";
-import qrcode from "@/app/public/images/qrCode.png";
-import territory from "@/app/public/images/defaultMap.png";
 import Image from "next/image";
-import TerritoryGeneralView from "@/app/components/General/TerritoryGeneralADMIN";
+import TerritoryGeneralADMIN from "@/app/components/General/TerritoryGeneralADMIN";
 import Upload from "./upload";
 import { useEffect, useState } from "react";
 export default function Page({ params }) {
   const [image, setImage] = useState(null);
+  const [qrCode, setQrCode] = useState("");
   useEffect(() => {
     async function duv() {
       const resUsers = await fetch(
@@ -19,12 +18,20 @@ export default function Page({ params }) {
       }
       const usersData = await resUsers.json();
       setImage(usersData);
+      const resQRCode = await fetch(
+        `https://quickchart.io/qr?text=http://localhost:3000/`
+      );
+      const imageBlob = await resQRCode.blob(); // Process response as a Blob
+      const imageUrl = URL.createObjectURL(imageBlob); // Create a local URL to the blob object
+      setQrCode(imageUrl);
+      // Now you can use 'imageUrl' as the source for an <img> element in your HTML
     }
     duv();
   }, []);
   if (!image) {
     return <h1>Loading...</h1>;
   }
+  console.log(qrCode);
   return (
     <DashboardLayout>
       <main className="flex flex-col mt-10 justify-center items-center">
@@ -34,7 +41,7 @@ export default function Page({ params }) {
           </header>
           <button className="">
             <Image
-              src={qrcode}
+              src={qrCode}
               alt="Picture of QR Code Icon"
               width={100}
               height={100}
@@ -50,10 +57,10 @@ export default function Page({ params }) {
           territoryID={params.territoryID}
         ></Upload>
         <div className="mt-28 mb-28">
-          <TerritoryGeneralView
+          <TerritoryGeneralADMIN
             congID={params.congID}
             territoryID={params.territoryID}
-          ></TerritoryGeneralView>
+          ></TerritoryGeneralADMIN>
         </div>
       </main>
     </DashboardLayout>

@@ -3,7 +3,7 @@ import SelectObservation from "../Interact/SelectObservation";
 import { useEffect, useState } from "react";
 export default function TerritoryGeneralView(props) {
   const [territory, setTerritory] = useState(null);
-
+  const [user, setUser] = useState(null);
   useEffect(() => {
     async function brv() {
       const res = await fetch(
@@ -17,10 +17,20 @@ export default function TerritoryGeneralView(props) {
       );
       const res1 = await res.json();
       setTerritory(res1);
+      const res4 = await fetch(`/api/user?id=${res1.currentUserID}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // console.log("Check after fetching user");
+      const res5 = await res4.json();
+      setUser(res5);
     }
+
     brv();
   }, []);
-  if (!territory) {
+  if (!territory || !user) {
     return <h1>Checking Territory...</h1>;
   }
   const observationValues: Observation[] = Object.values(Observation);
@@ -49,7 +59,7 @@ export default function TerritoryGeneralView(props) {
           <tr className="bg-blue-200 border-l border-b border-gray-200 py-4 px-4">
             <th className="border-r border-gray-200 py-1 px-2 ">Encargado:</th>
             <th className="py-1 px-2 border-r border-gray-200" colSpan={2}>
-              {territory.currentUserID}
+              {user[0].name}
             </th>
 
             <th colSpan={2} className="py-1 px-2 border-r border-gray-200">

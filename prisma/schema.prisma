@@ -51,21 +51,25 @@ model Territory {
   ExperiationDate DateTime?
   congregationID  String
   currentUserID   String?
-  locationPic String?
   activity        TerritoryComment @default(Unassigned)
   currentUser     User?            @relation(fields: [currentUserID], references: [id])
   Congregation    Congregation     @relation(fields: [congregationID], references: [id], onDelete: Cascade)
   Request         Request[]
+  Image           Image?
 
   @@id([territoryID, congregationID])
   @@unique([territoryID, congregationID])
 }
 
 model Image {
-  id       String @default(cuid()) @id
-  publicId String @unique
-  format   String
-  version  String
+  territoryID    Int
+  congregationID String
+  publicId       String    @unique
+  format         String
+  version        String
+  Territory      Territory @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID])
+
+  @@id([territoryID, congregationID])
 }
 
 enum Observation {
@@ -97,7 +101,7 @@ model Request {
   houseID        Int
   congregationID String
   approval       Boolean?
-  Territory      Territory    @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID], onDelete: Cascade )
+  Territory      Territory    @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID], onDelete: Cascade)
   House          House        @relation(fields: [houseID, territoryID, congregationID], references: [houseID, territoryID, congregationID], onDelete: Cascade)
 }
 

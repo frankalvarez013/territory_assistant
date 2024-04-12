@@ -32,7 +32,7 @@ export default function TerritoryGeneralView(props) {
       setVal(res1);
 
       if (!res1 || !res1.currentUserID) {
-        console.log("currentUserID is null or undefined", res1);
+        // console.log("currentUserID is null or undefined", res1);
         return; // Stop execution if currentUserID is not found
       }
 
@@ -48,7 +48,7 @@ export default function TerritoryGeneralView(props) {
       const res3 = await res2.json();
       setHouses(res3);
 
-      console.log("Check After Setting House", res1.currentUserID);
+      // console.log("Check After Setting House", res1.currentUserID);
 
       // Use res1.currentUserID directly
       const res4 = await fetch(`/api/user?id=${res1.currentUserID}`, {
@@ -57,7 +57,7 @@ export default function TerritoryGeneralView(props) {
           "Content-Type": "application/json",
         },
       });
-      console.log("Check after fetching user");
+      // console.log("Check after fetching user");
       const res5 = await res4.json();
       setUser(res5);
     }
@@ -67,7 +67,7 @@ export default function TerritoryGeneralView(props) {
   if (!val || !houses || !user) {
     return <h1>Checking Territory...</h1>;
   }
-  console.log("user: ", user);
+  // console.log("user: ", user);
   return (
     <div className="overflow-x-auto">
       <table className="table-auto">

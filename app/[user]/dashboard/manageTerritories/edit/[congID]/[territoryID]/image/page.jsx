@@ -1,15 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Layout from "../../../../../../../components/Layout/HomepageLayout";
-import Upload from "./upload";
+import Upload from "../upload";
 const Gallery = () => {
-  const [images, setImages] = useState([]);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`${process.env.SERVER_PATH}/api/images`);
+      const res = await fetch(`/api/images`);
       const data = await res.json();
-      setImages(data);
+      setImage(data);
     };
 
     fetchData();

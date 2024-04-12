@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Layout from "../../../../../../../components/Layout/HomepageLayout";
+import Layout from "../../../../../../components/Layout/HomepageLayout";
 import Router from "next/router";
 
-const Upload = () => {
+const Upload = (props) => {
   const [imageUploaded, setImageUploaded] = useState();
 
   const handleChange = (event) => {
@@ -18,7 +18,10 @@ const Upload = () => {
 
     try {
       const formData = new FormData();
+
       formData.append("image", imageUploaded);
+      formData.append("congregationID", props.congregationID);
+      formData.append("territoryID", props.territoryID);
 
       await fetch("/api/upload", {
         method: "POST",

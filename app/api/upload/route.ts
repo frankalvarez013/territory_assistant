@@ -29,8 +29,11 @@ async function ensureDirectoryExists(dirPath) {
 
 export async function POST(req) {
   try {
+    console.log("trying...");
     const form = await req.formData();
     const file = form.get("image");
+    const congregationID = form.get("congregationID");
+    const territoryID = parseInt(form.get("territoryID"), 10);
     if (!file) {
       throw new Error("File not found in the form data");
     }
@@ -51,8 +54,22 @@ export async function POST(req) {
     uploadImage(base64Data, "jpg")
       .then(async (imageData) => {
         console.log("Image uploaded successfully:", imageData);
-        const result = await prisma.image.create({
-          data: {
+        console.log("upserting...");
+        const result = await prisma.image.upsert({
+          where: {
+            territoryID_congregationID: {
+              territoryID: territoryID,
+              congregationID: congregationID,
+            },
+          },
+          update: {
+            publicId: imageData.public_id,
+            format: imageData.format,
+            version: imageData.version.toString(),
+          },
+          create: {
+            territoryID: territoryID,
+            congregationID: congregationID,
             publicId: imageData.public_id,
             format: imageData.format,
             version: imageData.version.toString(),

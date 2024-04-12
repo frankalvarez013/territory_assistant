@@ -1,7 +1,7 @@
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
+  cloud_name: process.env.NEXT_PUBLIC_CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
@@ -19,6 +19,5 @@ export function uploadImage(base64Data, fileType = "jpg") {
         resolve(result);
       }
     );
-    console.log("Added!");
   });
 }

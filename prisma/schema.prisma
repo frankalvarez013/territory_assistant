@@ -61,6 +61,13 @@ model Territory {
   @@unique([territoryID, congregationID])
 }
 
+model Image {
+  id       String @default(cuid()) @id
+  publicId String @unique
+  format   String
+  version  String
+}
+
 enum Observation {
   EMPTY
   NO_LLEGAR

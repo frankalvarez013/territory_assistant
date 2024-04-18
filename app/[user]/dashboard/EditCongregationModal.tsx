@@ -1,23 +1,24 @@
-import { useEffect, useState, Fragment } from "react";
+import { useState, Fragment } from "react";
+import check from "../../public/images/check.svg";
+import upDown from "../../public/images/chevron-up-down.svg";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
-import userImg from "../../../public/images/user.svg";
+import userImg from "../../public/images/user.svg";
 import Image from "next/image";
-import fetchDeleteUser from "../../../components/fetch/fetchDeleteUser";
-export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
-  function deleteModal() {
-    console.log("?");
-    fetchDeleteUser(user.id);
-    setIsOpen(false);
-    // window.location.reload();
-  }
-  function cancelModal() {
-    console.log("close");
+import fetchEditCongregation from "../../components/fetch/fetchEditCongregation";
 
+export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  function closeEditModal() {
+    setIsOpen(false);
+  }
+  function patchEditModal() {
+    fetchEditCongregation(congregation.id, { name, address });
     setIsOpen(false);
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={cancelModal}>
+      <Dialog as="div" className="relative z-10" onClose={closeEditModal}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -46,7 +47,7 @@ export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Are you sure you want to delete this User?
+                  Congregation Information
                 </Dialog.Title>
                 <div>
                   <Image
@@ -55,22 +56,37 @@ export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
                     className="inline mr-5"
                     height={50}
                   ></Image>
-                  <h1>{user.name}</h1>
+                  <h1 className=" text-md text-black">
+                    {congregation.congregationName}
+                  </h1>
+                </div>
+                <div className="mt-2">
+                  <label htmlFor="Name">Change Congregation Name</label>
+                  <input
+                    className=" border-[1px] border-gray-400 rounded-lg block"
+                    type="text"
+                    id="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className="mt-2">
+                  <label htmlFor="Name">Change Congregation Address</label>
+                  <input
+                    className=" border-[1px] border-gray-400 rounded-lg block"
+                    type="text"
+                    id="Name"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
                 </div>
                 <div className="mt-4">
                   <button
                     type="button"
-                    className="mr-5 inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={deleteModal}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    type="button"
                     className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={cancelModal}
+                    onClick={patchEditModal}
                   >
-                    Cancel
+                    Save Changes
                   </button>
                 </div>
               </Dialog.Panel>

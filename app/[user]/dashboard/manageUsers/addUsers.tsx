@@ -7,8 +7,25 @@ export default function AddUsers() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // This prevents the form from submitting traditionally
+    console.log("should invoke...");
+    const result = await fetchAddUser(
+      name,
+      email,
+      password,
+      session?.user?.congID
+    );
+    if (result) {
+      // Refresh the page to reflect changes or reset the state globally
+      window.location.reload();
+    } else {
+      // Optional: Handle error scenario, possibly showing an error message
+      console.log(result); // Display an error message if something goes wrong
+    }
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="name">Name:</label>
         <input
@@ -51,14 +68,7 @@ export default function AddUsers() {
           required
         ></input>
       </div>
-      <button
-        className="border-2 border-black rounded-3xl px-3"
-        type="submit"
-        onClick={() => {
-          console.log("broo");
-          fetchAddUser(name, email, password, session.user.congID);
-        }}
-      >
+      <button className="border-2 border-black rounded-3xl px-3" type="submit">
         Submit
       </button>
     </form>

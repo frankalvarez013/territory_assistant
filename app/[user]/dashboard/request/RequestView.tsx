@@ -90,7 +90,10 @@ export default function RequestView(props) {
     if (!territoryRequests || !Array.isArray(territoryRequests)) {
       return null; // or some placeholder indicating no data for this territory
     }
-    if (element.currentUser.id !== session?.user.id) {
+    if (
+      element.currentUser === null ||
+      element.currentUser.id !== session?.user.id
+    ) {
       return;
     }
 

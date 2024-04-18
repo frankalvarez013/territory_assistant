@@ -6,9 +6,12 @@ import { useSession } from "next-auth/react";
 export default function InnerHeader() {
   const { data: session, status } = useSession();
   let check = null;
+  console.log("hello");
   if (session && session.user) {
     if (session.user.isAdmin) {
       check = "admin";
+    } else if (session.user.isGeneralAdmin) {
+      check = "gAdmin";
     } else {
       check = "user";
     }
@@ -18,7 +21,22 @@ export default function InnerHeader() {
       <header className=" bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white"></header>
     );
   }
-  return check === "admin" ? (
+  return (check = "gAdmin" ? (
+    <header className=" bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white">
+      <a
+        href={`/${check}/dashboard`}
+        className=" flex justify-center items-center gap-2"
+      >
+        <Image alt="NA" src={logo} width={50} height={50}></Image>
+        <div className="w-20">Territory Assistant</div>
+      </a>
+
+      <div className="hidden">burger</div>
+      <nav className=" justify-end gap-10 flex basis-1/2">
+        <LogoutButton></LogoutButton>
+      </nav>
+    </header>
+  ) : check === "admin" ? (
     <header className=" bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white">
       <a
         href={`/${check}/dashboard`}
@@ -57,5 +75,5 @@ export default function InnerHeader() {
         <LogoutButton></LogoutButton>
       </nav>
     </header>
-  );
+  ));
 }

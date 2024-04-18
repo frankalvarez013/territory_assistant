@@ -15,6 +15,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("oi");
   return (
     <body className={`${inter.className} min-h-screen `}>
       <Providers>

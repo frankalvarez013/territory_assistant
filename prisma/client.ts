@@ -1,5 +1,7 @@
-import { PrismaClient } from "@prisma/client";
-import type { HouseCounter } from "@prisma/client";
+import { PrismaClient, TerritoryComment } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 const prismaClientSingleton = () => {
   return new PrismaClient().$extends({
     query: {
@@ -100,6 +102,43 @@ const prismaClientSingleton = () => {
 
             console.log("Transaction successful");
             return result;
+          } else {
+            // Handle the case where territoryID or congregationID is not provided
+            console.log("TerritoryID or CongregationID is missing");
+            throw new Error("TerritoryID and CongregationID are required.");
+          }
+        },
+      },
+      user: {
+        async delete({ args, query }) {
+          const session = await getServerSession(authOptions);
+          console.log("sesh in trans", session);
+          console.log(session?.user.id);
+          const id = args.where.id;
+          if (id) {
+            // Start a transaction to ensure all operations are successful
+            const territories = await prisma.territory.findMany({
+              where: { currentUserID: id },
+            });
+            const result = await Promise.all(
+              territories.map((territory) =>
+                prisma.territory.update({
+                  where: {
+                    territoryID_congregationID: {
+                      territoryID: territory.territoryID,
+                      congregationID: territory.congregationID,
+                    },
+                  },
+                  data: {
+                    activity: TerritoryComment.Unassigned,
+                    currentUserID: session?.user.id,
+                  },
+                })
+              )
+            );
+
+            // Proceed with the main creation query only if all previous operations are successful
+            return query(args);
           } else {
             // Handle the case where territoryID or congregationID is not provided
             console.log("TerritoryID or CongregationID is missing");

@@ -1,23 +1,30 @@
-// import { hash } from "bcryptjs";
+import { hash } from "bcryptjs";
 
 export default async function fetchAddUser(
   name,
   email,
   password,
-  congregationID
+  congregationID,
+  isAdmin = false
 ) {
   console.log(congregationID);
   let res1 = null;
-  // const hashPassword = await hash(password, 12);
+  const hashPassword = await hash(password, 12);
 
-  console.log("adding user...");
+  console.log("invoked add user...");
   try {
     const res = await fetch(`/api/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, password, congregationID }),
+      body: JSON.stringify({
+        name,
+        email,
+        password: hashPassword,
+        congregationID,
+        isAdmin,
+      }),
     });
     res1 = await res.json();
     return res1;

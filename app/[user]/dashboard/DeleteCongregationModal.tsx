@@ -1,14 +1,18 @@
 import { useEffect, useState, Fragment } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
-import userImg from "../../../public/images/user.svg";
+import userImg from "../../public/images/user.svg";
 import Image from "next/image";
-import fetchDeleteUser from "../../../components/fetch/fetchDeleteUser";
-export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
+import fetchDeleteCongregation from "../../components/fetch/fetchDeleteCongregation";
+export default function DeleteCongregationModal({
+  congregation,
+  isOpen,
+  setIsOpen,
+}) {
   function deleteModal() {
     console.log("?");
-    fetchDeleteUser(user.id);
+    fetchDeleteCongregation(congregation.id);
     setIsOpen(false);
-    // window.location.reload();
+    window.location.reload();
   }
   function cancelModal() {
     console.log("close");
@@ -46,7 +50,7 @@ export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Are you sure you want to delete this User?
+                  Are you sure you want to delete this Congregation?
                 </Dialog.Title>
                 <div>
                   <Image
@@ -55,7 +59,7 @@ export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
                     className="inline mr-5"
                     height={50}
                   ></Image>
-                  <h1>{user.name}</h1>
+                  <h1>{congregation.congregationName}</h1>
                 </div>
                 <div className="mt-4">
                   <button

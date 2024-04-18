@@ -44,6 +44,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           isAdmin: user.isAdmin,
           congID: user.congregationID,
+          isGeneralAdmin: user.isGeneralAdmin,
         };
       },
     }),
@@ -60,6 +61,7 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
           isAdmin: token.isAdmin,
           congID: token.congregationID,
+          isGeneralAdmin: token.isGeneralAdmin,
         },
       };
     },
@@ -67,6 +69,8 @@ export const authOptions: NextAuthOptions = {
       if (session) {
         if (session.user.isAdmin) {
           return baseUrl + "/admin/dashboard";
+        } else if (session.user.isGeneralAdmin) {
+          return baseUrl + "/gAdmin/dashboard";
         }
         return baseUrl + "/user/dashboard";
       }
@@ -78,11 +82,14 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const u = user as unknown as any; //user in user.randomKey is not our USER, its the one in next/auth and since we want to access randomKey, so
         //we have to cast it. We can use it as a prisma user but since we use randomkey we use 'any'
+        console.log("api insidie", u);
+
         return {
           ...token,
           id: u.id,
           isAdmin: u.isAdmin,
           congregationID: u.congID,
+          isGeneralAdmin: u.isGeneralAdmin,
         };
       }
       return token;

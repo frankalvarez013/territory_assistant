@@ -7,7 +7,7 @@ import edit from "../../../public/images/edit.svg";
 
 export default function EditTerritories(props) {
   const [territories, setTerritories] = useState(null);
-  const { data: session1, status } = useSession();
+  const { data: session } = useSession();
   useEffect(() => {
     async function duv() {
       const resUsers = await fetch("/api/territory");
@@ -26,7 +26,11 @@ export default function EditTerritories(props) {
   const territoryResults = territories
     .sort((a, b) => a.territoryID - b.territoryID)
     .map((territory, index) => {
-      if (territory.currentUser.id !== props.userID) {
+      if (
+        !session?.user.isAdmin &&
+        (territories[0].currentUser === null ||
+          territories[0].currentUser.id !== props.userID)
+      ) {
         return;
       }
       return (

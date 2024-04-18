@@ -88,6 +88,15 @@ export async function GET(request: NextRequest, response: NextResponse) {
         // console.log("returning...", getAdminUsers);
         return NextResponse.json(getAdminUsers, { status: 201 });
       }
+      if (session?.user.isGeneralAdmin) {
+        const congID = request.nextUrl.searchParams.get("congID");
+        getUser = await prisma.user.findMany({
+          where: {
+            congregationID: congID ?? undefined,
+          },
+        });
+        return NextResponse.json(getUser, { status: 201 });
+      }
     }
     if (!getUser) {
       return NextResponse.json({ message: "User Record not found" });

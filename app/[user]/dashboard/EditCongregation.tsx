@@ -31,8 +31,6 @@ export default function EditUsers() {
   if (!congregations) {
     return <h1>...Checking</h1>;
   }
-
-  console.log("checkin", congregations);
   return (
     <div className="flex flex-col gap-10 mt-10">
       {Array.isArray(congregations) ? (

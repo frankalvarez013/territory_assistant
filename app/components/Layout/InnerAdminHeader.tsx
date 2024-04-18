@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 export default function InnerHeader() {
   const { data: session, status } = useSession();
   let check = null;
-  console.log("hello");
   if (session && session.user) {
     if (session.user.isAdmin) {
       check = "admin";

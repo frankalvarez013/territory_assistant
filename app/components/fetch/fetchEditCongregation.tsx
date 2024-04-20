@@ -10,7 +10,7 @@ export default async function fetchEditCongregation(id, updateInfo) {
   });
   console.log(obj);
   try {
-    const res = await fetch(`/api/user?id=${id}`, {
+    const res = await fetch(`/api/congregation?id=${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -20,7 +20,7 @@ export default async function fetchEditCongregation(id, updateInfo) {
     res1 = await res.json();
     return res1;
   } catch (error) {
-    console.error("Failed to edit user", error);
+    console.error("Failed to edit congregation", error);
     return null;
   }
 }

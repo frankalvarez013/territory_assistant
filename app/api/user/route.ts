@@ -5,6 +5,7 @@ import { User } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { exclude } from "../../utils/functions";
 const createUserSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().min(1).max(255),
@@ -18,6 +19,7 @@ const updateUserSchema = z.object({
   email: z.string().min(1).max(255).optional(),
   congregationID: z.string().min(1).max(255).optional(),
   password: z.string().min(1).max(255).optional(),
+  isAdmin: z.boolean().optional(),
   //use zod to check if the isAdmin is true or false "strings"
 });
 export async function POST(
@@ -72,6 +74,8 @@ export async function GET(request: NextRequest, response: NextResponse) {
           },
         });
         const total = [];
+        // const userWithoutPassword = exclude(getUser, ["password"]);
+        // const userWithoutPassword.filter((user)=>{})
         total.push(getUser, territories);
         return NextResponse.json(total, { status: 201 });
       }

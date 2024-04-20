@@ -8,12 +8,31 @@ import Image from "next/image";
 import fetchEditCongregation from "../../components/fetch/fetchEditCongregation";
 import cross from "../../public/images/cross-circle.svg";
 import plus from "../../public/images/plus-circle.svg";
+import fetchAddUser from "@/app/components/fetch/fetchAddUser";
+import fetchEditUser from "@/app/components/fetch/fetchEditUser";
 
 export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [users, setUsers] = useState(null);
+  const [adminUsers, setAdminUsers] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [normalUsers, setNormalUsers] = useState(null);
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // This prevents the form from submitting traditionally
+    console.log("should invoke...");
+    const result = await fetchAddUser(name, email, password, congregation.id);
+    if (result) {
+      // Refresh the page to reflect changes or reset the state globally
+      window.location.reload();
+    } else {
+      // Optional: Handle error scenario, possibly showing an error message
+      console.log(result); // Display an error message if something goes wrong
+    }
+  };
   function closeEditModal() {
     setIsOpen(false);
   }
@@ -36,19 +55,38 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
         setUsers(data); // Set users with fetched data
         // Filter and set selected users after data is fetched and set
         const result = data.filter((user) => user.isAdmin === true);
-        setSelected(result);
+        const resultNormal = data.filter(
+          (user) => user.isAdmin === false && user.isGeneralAdmin === false
+        );
+
+        setAdminUsers(result);
+        setNormalUsers(resultNormal);
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
     };
+    setSelected(null);
+    setName("");
+    setAddress("");
+    setUsers(null);
+    setAdminUsers(null);
+    setSelected(null);
+    setNormalUsers(null);
+    setUserName("");
+    setEmail("");
+    setPassword("");
 
     fetchData();
   }, [congregation]); // Only re-run the effect if `congregation` changes
   // console.log("Users", users);
   // console.log("selected", selected);
+  console.log("Normal Users", normalUsers);
+  console.log("Admin Users", adminUsers);
+
   if (!users) {
     return <h1>loading</h1>;
   }
+  console.log(selected);
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeEditModal}>
@@ -93,61 +131,65 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                     {congregation.congregationName}
                   </h1>
                 </div>
-                <Dialog.Title>Admins</Dialog.Title>
-                {selected ? (
-                  selected.map((admin, adminIdx) => (
-                    <div key={adminIdx}>
-                      <h2 className=" inline-block">{admin.name}</h2>
-                      <button>
-                        {" "}
-                        <Image
-                          src={cross}
-                          alt="User Symbol"
-                          className="inline mr-5"
-                          height={23}
-                        ></Image>
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <h1 className=" text-gray-500 font-light">
-                    It seems you have no Admins for this congregation!
-                  </h1>
-                )}
-                {users ? (
-                  selected ? (
-                    <div className="mt-2">
-                      Add User Admin
-                      <Listbox
-                        value={selected}
-                        onChange={() => {
-                          console.log("changed");
-                        }}
-                      >
-                        <div className="relative mt-1">
-                          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-3 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                            <span className="block truncate">
-                              {selected.name}
-                            </span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                              <Image
-                                src={upDown}
-                                alt="User Symbol"
-                                className="inline mr-2"
-                                height={23}
-                              ></Image>
-                            </span>
-                          </Listbox.Button>
-                          <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                          >
-                            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                              {users.map((user, userIdx) => (
+                <div className="flex flex-col bg-slate-500 bg-opacity-10 rounded-xl px-10 py-5">
+                  <Dialog.Title>Admins</Dialog.Title>
+                  {adminUsers !== null && adminUsers.length !== 0 ? (
+                    adminUsers.map((admin, adminIdx) => (
+                      <div key={adminIdx}>
+                        <h2 className=" inline-block">{admin.name}</h2>
+                        <button>
+                          {" "}
+                          <Image
+                            src={cross}
+                            alt="User Symbol"
+                            className="inline mr-5"
+                            height={23}
+                          ></Image>
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <h1 className=" text-gray-500 font-light">
+                      It seems you have no Admins for this congregation!
+                    </h1>
+                  )}
+                </div>
+
+                <div className="flex flex-col bg-slate-500 bg-opacity-10 rounded-xl px-10 py-5">
+                  Add User Admin
+                  <div className="flex">
+                    <div className="flex-grow">
+                      {normalUsers.length !== 0 && normalUsers !== null ? (
+                        <Listbox
+                          value={selected ? selected : null}
+                          onChange={(e) => {
+                            // console.log("oi", e, "luv");
+                            setSelected(e);
+                            console.log("shoulda changed", selected);
+                          }}
+                        >
+                          <div className="relative mt-1">
+                            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-3 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                              {selected ? selected.name : "Select a User"}
+
+                              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                <Image
+                                  src={upDown}
+                                  alt="User Symbol"
+                                  className="inline mr-2"
+                                  height={23}
+                                ></Image>
+                              </span>
+                            </Listbox.Button>
+                            <Transition
+                              as={Fragment}
+                              leave="transition ease-in duration-100"
+                              leaveFrom="opacity-100"
+                              leaveTo="opacity-0"
+                            >
+                              <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
                                 <Listbox.Option
-                                  key={userIdx}
+                                  value={null} // Setting the value to null for the empty option
                                   className={({ active }) =>
                                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                       active
@@ -155,7 +197,6 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                                         : "text-gray-900"
                                     }`
                                   }
-                                  value={user}
                                 >
                                   {({ selected }) => (
                                     <>
@@ -166,55 +207,13 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                                             : "font-normal"
                                         }`}
                                       >
-                                        {user.name}
+                                        None or Select...{" "}
+                                        {/* Displaying a friendly name for the empty option */}
                                       </span>
-                                      {selected ? (
-                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                          <Image
-                                            src={check}
-                                            alt="User Symbol"
-                                            className="inline mr-5"
-                                            height={23}
-                                          ></Image>
-                                        </span>
-                                      ) : null}
                                     </>
                                   )}
                                 </Listbox.Option>
-                              ))}
-                            </Listbox.Options>
-                          </Transition>
-                        </div>
-                      </Listbox>
-                    </div>
-                  ) : (
-                    <div className="mt-2">
-                      Add Admin
-                      <Listbox
-                        onChange={() => {
-                          console.log("changed");
-                        }}
-                      >
-                        <div className="relative mt-1">
-                          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-3 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                              <Image
-                                src={upDown}
-                                alt="User Symbol"
-                                className="inline mr-2"
-                                height={23}
-                              ></Image>
-                            </span>
-                          </Listbox.Button>
-                          <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                          >
-                            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                              {users ? (
-                                users.map((user, userIdx) => (
+                                {normalUsers.map((user, userIdx) => (
                                   <Listbox.Option
                                     key={userIdx}
                                     className={({ active }) =>
@@ -237,51 +236,130 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                                         >
                                           {user.name}
                                         </span>
+                                        {selected ? (
+                                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                            <Image
+                                              src={check}
+                                              alt="User Symbol"
+                                              className="inline mr-5"
+                                              height={23}
+                                            ></Image>
+                                          </span>
+                                        ) : null}
                                       </>
                                     )}
                                   </Listbox.Option>
-                                ))
-                              ) : (
-                                <h1>oi</h1>
-                              )}
-                            </Listbox.Options>
-                          </Transition>
-                        </div>
-                      </Listbox>
+                                ))}
+                              </Listbox.Options>
+                            </Transition>
+                          </div>
+                        </Listbox>
+                      ) : (
+                        <h3 className="text-gray-500 font-light">
+                          It seems you have no users for this congregation!
+                        </h3>
+                      )}
                     </div>
-                  )
-                ) : (
-                  <h1>lol</h1>
-                )}
-
-                <div className="mt-2">
-                  <label htmlFor="Name">Change Congregation Name</label>
-                  <input
-                    className=" border-[1px] border-gray-400 rounded-lg block"
-                    type="text"
-                    id="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
+                    <button
+                      onClick={() => {
+                        fetchEditUser(selected.id, { isAdmin: true });
+                      }}
+                      disabled={selected === null ? true : false}
+                    >
+                      <Image
+                        src={plus}
+                        alt="User Symbol"
+                        className={`ml-2 h-6 w-6 mr-5  fill-green-400 text-green-400 ${
+                          selected === null ? "bg-gray-500" : "bg-green-400"
+                        }`}
+                        height={23}
+                      ></Image>
+                    </button>
+                  </div>
                 </div>
-                <div className="mt-2">
-                  <label htmlFor="Name">Change Congregation Address</label>
-                  <input
-                    className=" border-[1px] border-gray-400 rounded-lg block"
-                    type="text"
-                    id="Name"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
+                <div className="flex flex-col bg-slate-500 bg-opacity-10 rounded-xl px-10 py-5">
+                  Add User to Congregation
+                  <form onSubmit={handleSubmit}>
+                    <div>
+                      <label htmlFor="name">Name:</label>
+                      <input
+                        className="block border-2 border-black"
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={name}
+                        onChange={(e) => {
+                          setName(e.target.value);
+                        }}
+                        required
+                      ></input>
+                    </div>
+                    <div>
+                      <label htmlFor="email">Email:</label>
+                      <input
+                        className="block border-2 border-black"
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                        }}
+                        required
+                      ></input>
+                    </div>
+                    <div>
+                      <label htmlFor="password">Password:</label>
+                      <input
+                        className="block border-2 border-black"
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={password}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }}
+                        required
+                      ></input>
+                    </div>
+                    <button
+                      className="border-2 border-black rounded-3xl px-3"
+                      type="submit"
+                    >
+                      Submit
+                    </button>
+                  </form>
                 </div>
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={patchEditModal}
-                  >
-                    Save Changes
-                  </button>
+                <div className="bg-slate-500 bg-opacity-10 rounded-xl px-10 py-5">
+                  <div className="mt-2">
+                    <label htmlFor="Name">Change Congregation Name</label>
+                    <input
+                      className=" border-[1px] border-gray-400 rounded-lg block"
+                      type="text"
+                      id="userName"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <label htmlFor="Name">Change Congregation Address</label>
+                    <input
+                      className=" border-[1px] border-gray-400 rounded-lg block"
+                      type="text"
+                      id="Name"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      onClick={patchEditModal}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

@@ -41,7 +41,11 @@ export default function EditUsers() {
   return (
     <div className="flex flex-col gap-10 mt-10">
       {users.map((user, index) => {
-        if (user.id === session.user.id || user.isAdmin) {
+        if (
+          user.id === session.user.id ||
+          user.isAdmin ||
+          user.isGeneralAdmin
+        ) {
           return;
         } else {
           return (

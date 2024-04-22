@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 
 export default async function fetchEditUser(id, updateInfo) {
   let res1 = null;
+  console.log("updating", id, updateInfo);
   const obj: { [key: string]: any } = {};
   Object.keys(updateInfo).forEach((key) => {
-    if (updateInfo[key]) {
+    console.log(key);
+    if (updateInfo[key] || (key === "isAdmin" && updateInfo[key] === false)) {
+      console.log("SHOULD BE gOING FRU");
       obj[key] = updateInfo[key];
     }
   });
-  console.log(obj);
+  console.log("?", obj);
   try {
     const res = await fetch(`/api/user?id=${id}`, {
       method: "PATCH",

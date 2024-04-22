@@ -64,6 +64,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       getUser = await prisma.user.findUnique({
         where: {
           id: request.nextUrl.searchParams.get("id") ?? undefined,
+          isGeneralAdmin: false,
         },
       });
       if (getUser) {
@@ -74,8 +75,6 @@ export async function GET(request: NextRequest, response: NextResponse) {
           },
         });
         const total = [];
-        // const userWithoutPassword = exclude(getUser, ["password"]);
-        // const userWithoutPassword.filter((user)=>{})
         total.push(getUser, territories);
         return NextResponse.json(total, { status: 201 });
       }
@@ -87,6 +86,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
         const getAdminUsers = await prisma.user.findMany({
           where: {
             congregationID: session.user.congID,
+            isGeneralAdmin: false,
           },
         });
         // console.log("returning...", getAdminUsers);
@@ -97,6 +97,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
         getUser = await prisma.user.findMany({
           where: {
             congregationID: congID ?? undefined,
+            isGeneralAdmin: false,
           },
         });
         return NextResponse.json(getUser, { status: 201 });
@@ -141,6 +142,7 @@ export async function PATCH(
     const updatedUser = await prisma.user.update({
       where: {
         id: request.nextUrl.searchParams.get("id") ?? undefined,
+        isGeneralAdmin: false,
       },
       data: updateData,
     });
@@ -164,6 +166,7 @@ export async function DELETE(request, response) {
       where: {
         //id is not recognized...
         id: id,
+        isGeneralAdmin: false,
       },
     });
     console.log("rip");

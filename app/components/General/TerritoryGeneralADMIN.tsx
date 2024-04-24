@@ -7,6 +7,7 @@ import Image from "next/image";
 import check from "../../public/images/check1.svg";
 import HouseRow from "./HouseRow";
 import AddHouseRow from "./AddHouseRow";
+import fetchEditTerritory from "../fetch/fetchEditTerritory";
 export default function TerritoryGeneralView(props) {
   const [val, setVal] = useState(null);
   const [houses, setHouses] = useState(null);
@@ -96,7 +97,11 @@ export default function TerritoryGeneralView(props) {
               </label>
               <button
                 onClick={(e) => {
-                  console.log(e);
+                  fetchEditTerritory(
+                    parseInt(props.territoryID, 10),
+                    props.congID,
+                    location
+                  );
                 }}
                 className="ml-3"
               >

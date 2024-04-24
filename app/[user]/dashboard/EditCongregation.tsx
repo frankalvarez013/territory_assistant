@@ -7,6 +7,7 @@ import trash from "../../public/images/trash.svg";
 import edit from "../../public/images/edit.svg";
 import EditCongregationModal from "./EditCongregationModal";
 import DeleteCongregationModal from "./DeleteCongregationModal";
+import CancelModal from "./CancelModal";
 export default function EditUsers() {
   const [congregations, setcongregations] = useState(null);
   const [selectedCongregation, setSelectedCongregation] = useState(null);

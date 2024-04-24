@@ -23,9 +23,11 @@ export default function AddTerritories() {
       <button
         className="border-2 border-black rounded-3xl px-3"
         type="submit"
-        onClick={() => {
+        onClick={(event) => {
+          event?.preventDefault();
           console.log("broo");
           fetchAddTerritory(location);
+          window.location.reload();
         }}
       >
         Submit

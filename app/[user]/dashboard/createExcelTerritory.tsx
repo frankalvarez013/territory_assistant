@@ -2,7 +2,7 @@ import { Observation } from "@prisma/client";
 interface House {
   territoryID: any; // Replace `any` with a more specific type if possible
   StreetAd?: string;
-  direction?: string;
+  Direction?: string;
   comment?: string;
   observation?: Observation;
 }
@@ -69,7 +69,7 @@ function parseSheet(data, territory) {
 
     // Conditionally add properties if they exist in the item array
     if (item[1] !== undefined) obj.StreetAd = item[1];
-    if (item[2] !== undefined) obj.direction = item[2];
+    if (item[2] !== undefined) obj.Direction = item[2];
     item[3] !== undefined
       ? (obj.observation = observationMapping[item[3]])
       : (obj.observation = Observation.EMPTY);

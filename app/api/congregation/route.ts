@@ -75,11 +75,11 @@ export async function GET(
   return NextResponse.json(getCongregation, { status: 200 });
 }
 
-export async function PATCH(
-  request: NextRequest
-): Promise<NextResponse<Congregation | ZodIssue[] | ErrorResponse>> {
+export async function PATCH(request, res) {
   const body: Congregation = await request.json();
+
   const validation = updateCongregationSchema.safeParse(body);
+
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }

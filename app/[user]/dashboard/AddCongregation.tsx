@@ -15,7 +15,7 @@ export default function AddCongregation() {
         <div className=" mt-5 font-light text-slate-500">
           Create Congregation.
         </div>
-        <label htmlFor="location">Name of Hall:</label>
+        <label htmlFor="location">Name of Congregation:</label>
         <input
           className="block border-2 border-black"
           type="text"

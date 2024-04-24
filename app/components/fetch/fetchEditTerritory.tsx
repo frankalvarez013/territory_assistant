@@ -4,6 +4,7 @@ export default async function editTerritory(
   location
 ) {
   try {
+    console.log("inside editTerritory...");
     const response = await fetch("/api/territory", {
       method: "PATCH",
       headers: {

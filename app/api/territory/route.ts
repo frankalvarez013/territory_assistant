@@ -27,8 +27,10 @@ export async function POST(request: NextRequest) {
   }
   const endDate = ExperiationDateCalculator(date, timeUserKeepsTerritory);
   try {
+    console.log("Logging Admin...");
     const session = await getServerSession(authOptions);
     if (session?.user.isAdmin) {
+      console.log("Creating Terr");
       const newTerritory = await prisma.territory.create({
         data: {
           territoryID: defaultVal,
@@ -39,6 +41,7 @@ export async function POST(request: NextRequest) {
           currentUserID: session.user.id,
         },
       });
+      console.log("finished....");
       return NextResponse.json(
         {
           ...newTerritory,
@@ -119,11 +122,14 @@ export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
+  console.log(body);
   const validation = updateTerritorySchema.safeParse(body);
   const session = await getServerSession(authOptions);
+  console.log("terr update");
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
+  console.log("rearranging update info");
 
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
@@ -173,7 +179,9 @@ export async function PATCH(
       }
     }
   }
+
   if (body.territoryID && body.congregationID) {
+    console.log("brudder");
     try {
       const updatedTerritory = await prisma.territory.update({
         where: {
@@ -184,7 +192,10 @@ export async function PATCH(
         },
         data: updateData,
       });
+      console.log("terr updated");
+
       if (!updatedTerritory) {
+        console.log("()OI");
         return NextResponse.json({ message: "Territory Record was not found" });
       }
       return NextResponse.json(updatedTerritory, { status: 201 });

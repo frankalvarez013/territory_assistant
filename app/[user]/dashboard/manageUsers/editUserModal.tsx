@@ -31,6 +31,7 @@ export default function EditUserModal({
     console.log("OOI");
     fetchEditUser(user.id, { name, email, password, congregationID });
     setIsOpen(false);
+    // window.location.reload();
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>

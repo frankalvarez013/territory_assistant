@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 export default async function fetchEditCongregation(id, updateInfo) {
   let res1 = null;
   const obj: { [key: string]: any } = {};
+  console.log(updateInfo);
   Object.keys(updateInfo).forEach((key) => {
     if (updateInfo[key]) {
       obj[key] = updateInfo[key];
     }
   });
-  console.log(obj);
   try {
     const res = await fetch(`/api/congregation?id=${id}`, {
       method: "PATCH",

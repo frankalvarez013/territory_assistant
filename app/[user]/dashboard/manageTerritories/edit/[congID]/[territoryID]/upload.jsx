@@ -30,6 +30,7 @@ const Upload = (props) => {
     } catch (error) {
       console.error(error);
     }
+    window.location.reload();
   };
 
   return (

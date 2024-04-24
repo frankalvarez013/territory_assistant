@@ -31,7 +31,7 @@ const createHouseSchema = z.object({
 const updateHouseSchema = z.object({
   Direction: z.string().min(1).max(255).optional().nullable(),
   StreetAd: z.string().min(1).max(255).optional().nullable(),
-  comment: z.string().min(1).max(255).optional().nullable(),
+  comment: z.string().min(0).max(255).optional().nullable(),
   observation: z
     .enum([
       "EMPTY",

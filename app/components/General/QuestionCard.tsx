@@ -9,6 +9,7 @@ const Question = ({ Question }) => {
     event.preventDefault();
     console.log(sheetID, sheetName);
     createExcelTerritory(sheetID, sheetName);
+    window.location.reload();
   };
   const toggleVisibility = () => {
     setIsHidden(!isHidden);

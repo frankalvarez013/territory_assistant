@@ -8,7 +8,7 @@ export default function InnerHeader() {
   const { data: session, status } = useSession();
   let check = null;
 
-  console.log("Status and Session:", status, session);
+  // console.log("Status and Session:", status, session);
 
   if (session?.user) {
     if (session.user.isAdmin) {

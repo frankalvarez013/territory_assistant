@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
 import prisma from "@/prisma/client";
-import { User } from "@prisma/client";
+import { TerritoryComment, User } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -123,22 +123,37 @@ export async function PATCH(
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  // console.log("INSIDE");
+  let adminFalseAction = false;
+  let changingCongregations = false;
+  let oldCongregation: {} | null = null;
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {
       if (key === "isAdmin") {
+        console.log("isAdmin");
         let isAdmin = false;
         if (String(value).toLowerCase() === "true") {
           isAdmin = true;
+          adminFalseAction = true;
         }
         updateData[key] = isAdmin;
+      }
+      if (key === "congregationID") {
+        changingCongregations = true;
+        oldCongregation = value;
+        updateData[key] = value;
       } else {
         updateData[key] = value;
       }
     }
   }
+  const oldUser = await prisma.user.findUnique({
+    where: {
+      id: request.nextUrl.searchParams.get("id") ?? undefined,
+    },
+  });
   try {
+    let updatedTerritories = null;
     const updatedUser = await prisma.user.update({
       where: {
         id: request.nextUrl.searchParams.get("id") ?? undefined,
@@ -146,6 +161,41 @@ export async function PATCH(
       },
       data: updateData,
     });
+    if (adminFalseAction || changingCongregations) {
+      console.log("adminFalse OR Changing Congregations");
+      if (adminFalseAction) {
+        updatedTerritories = await prisma.territory.updateMany({
+          where: {
+            currentUserID: request.nextUrl.searchParams.get("id") ?? undefined,
+            congregationID: oldUser.congregationID,
+          },
+          data: {
+            currentUserID: null,
+          },
+        });
+      } else {
+        console.log(request.nextUrl.searchParams.get("id"), oldCongregation);
+        try {
+          updatedTerritories = await prisma.territory.updateMany({
+            where: {
+              currentUserID:
+                request.nextUrl.searchParams.get("id") ?? undefined,
+              congregationID: oldUser.congregationID,
+            },
+            data: {
+              currentUserID: null,
+              activity: TerritoryComment.Unassigned,
+            },
+          });
+          console.log("wtf");
+          console.log("bruh", updatedTerritories);
+        } catch (e) {
+          console.log("territories updated???");
+          console.log(e);
+        }
+      }
+    }
+
     return NextResponse.json(updatedUser, { status: 201 });
   } catch (e) {
     return NextResponse.json({

@@ -68,7 +68,7 @@ model Image {
   publicId       String    @unique
   format         String
   version        String
-  Territory      Territory @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID])
+  Territory      Territory @relation(fields: [territoryID, congregationID], references: [territoryID, congregationID], onDelete: Cascade)
 
   @@id([territoryID, congregationID])
 }

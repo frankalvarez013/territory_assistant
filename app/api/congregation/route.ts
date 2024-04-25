@@ -17,9 +17,7 @@ const updateCongregationSchema = z.object({
 export async function POST(
   request: NextRequest,
   res: NextApiResponse
-): Promise<
-  NextResponse<Congregation | Congregation[] | ErrorResponse | ZodIssue[]>
-> {
+): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse | ZodIssue[]>> {
   console.log("hi");
   const body: Congregation = await request.json();
   const validation = createCongregationSchema.safeParse(body);
@@ -67,10 +65,7 @@ export async function GET(
   }
   if (!getCongregation) {
     console.log("Congregation Record not Found:\n", getCongregation);
-    return NextResponse.json(
-      { message: "Congregation Record not Found:\n" },
-      { status: 404 }
-    );
+    return NextResponse.json({ message: "Congregation Record not Found:\n" }, { status: 404 });
   }
   return NextResponse.json(getCongregation, { status: 200 });
 }
@@ -105,20 +100,24 @@ export async function PATCH(request, res) {
   }
 }
 
-export async function DELETE(
-  request: NextRequest
-): Promise<NextResponse<Congregation | ErrorResponse>> {
+export async function DELETE(request: NextRequest) {
   const idParam = request.nextUrl.searchParams.get("id");
+  if (!idParam) {
+    return NextResponse.json({ message: "No ID provided" }, { status: 400 });
+  }
   try {
     const deletedCongregation = await prisma.congregation.delete({
       where: {
-        id: request.nextUrl.searchParams.get("id") ?? undefined,
+        id: idParam,
       },
     });
-    return NextResponse.json(deletedCongregation, { status: 201 });
+    return NextResponse.json(deletedCongregation, { status: 200 });
   } catch (e) {
+    console.error("Error deleting congregation:", e);
     return NextResponse.json(
-      { message: `Congregation DELETE Transaction failed\n: ${e}` },
+      {
+        message: `Congregation DELETE Transaction failed: ${e.message}`,
+      },
       { status: 404 }
     );
   }

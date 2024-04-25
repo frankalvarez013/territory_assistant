@@ -51,7 +51,8 @@ export async function POST(
     });
     return NextResponse.json(newUser, { status: 201 });
   } catch (e) {
-    return NextResponse.json({ message: `User POST failed:\n ${e}` });
+    console.error("User POST failed:", e);
+    return NextResponse.json({ message: `User POST failed:\n ${e}` }, { status: 409 });
   }
 }
 
@@ -178,8 +179,7 @@ export async function PATCH(
         try {
           updatedTerritories = await prisma.territory.updateMany({
             where: {
-              currentUserID:
-                request.nextUrl.searchParams.get("id") ?? undefined,
+              currentUserID: request.nextUrl.searchParams.get("id") ?? undefined,
               congregationID: oldUser.congregationID,
             },
             data: {

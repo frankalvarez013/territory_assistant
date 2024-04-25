@@ -10,12 +10,7 @@ export default function AddUsers() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // This prevents the form from submitting traditionally
     console.log("should invoke...");
-    const result = await fetchAddUser(
-      name,
-      email,
-      password,
-      session?.user?.congID
-    );
+    const result = await fetchAddUser(name, email, password, session?.user?.congID);
     if (result) {
       // Refresh the page to reflect changes or reset the state globally
       window.location.reload();

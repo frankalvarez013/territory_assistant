@@ -21,42 +21,38 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [del, setDel] = useState(false);
-  const [selectedAdmin, setSelectedAdmin] = useState("");
-  let congID = congregation.id;
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedEntity, setEntity] = useState({});
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // This prevents the form from submitting traditionally
-    console.log("should invoke...");
-    const result = await fetchAddUser(
-      userName,
-      email,
-      password,
-      congregation.id
-    );
-    if (result) {
-      // Refresh the page to reflect changes or reset the state globally
-      window.location.reload();
-    } else {
-      // Optional: Handle error scenario, possibly showing an error message
-      console.log(result); // Display an error message if something goes wrong
-    }
+    setEntity({
+      data: {
+        name: userName,
+        email: email,
+        password: password,
+        congregationID: congregation.id,
+      },
+      message: `Are you sure you want to add this user?`,
+      function: fetchAddUser,
+    });
+    setDeleteModal(true);
   };
   function closeEditModal() {
-    if (!del) {
+    if (!deleteModal) {
       setIsOpen(false);
     }
   }
   async function patchEditModal() {
-    const res = await fetchEditCongregation(congregation.id, {
-      congregationName: congName,
-      address,
+    setEntity({
+      data: {
+        id: congregation.id,
+        updateInfo: { congregationName: congName, address },
+      },
+      message: `Are you sure you want to change the Name/Address of this congregation?`,
+      function: fetchEditCongregation,
     });
-    if (res) {
-      window.location.reload();
-    } else {
-      console.log(res);
-    }
-    setIsOpen(false);
+    setDeleteModal(true);
   }
   useEffect(() => {
     // Define an async function inside the effect
@@ -96,15 +92,10 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
 
     fetchData();
   }, [congregation]); // Only re-run the effect if `congregation` changes
-  // console.log("Users", users);
-  // console.log("selected", selected);
-  // console.log("Normal Users", normalUsers);
-  // console.log("Admin Users", adminUsers);
 
   if (!users) {
     return <h1>loading</h1>;
   }
-  console.log(selected);
   return (
     <div>
       <Transition appear show={isOpen} as={Fragment}>
@@ -133,10 +124,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all flex flex-col gap-5">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
+                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
                     Congregation Information
                   </Dialog.Title>
                   <div>
@@ -146,27 +134,29 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                       className="inline mr-5"
                       height={50}
                     ></Image>
-                    <h1 className=" text-md text-black">
-                      {`${congregation.congregationName}`}
-                    </h1>
-                    <h1 className=" text-md text-black">
-                      {` ${congregation.address}`}
-                    </h1>
+                    <h1 className=" text-md text-black">{`${congregation.congregationName}`}</h1>
+                    <h1 className=" text-md text-black">{` ${congregation.address}`}</h1>
                   </div>
                   <div className="flex flex-col bg-slate-500 bg-opacity-10 rounded-xl px-10 py-5">
                     <Dialog.Title className={`underline`}>Admins</Dialog.Title>
-                    <h1 className=" text font-extralight">
-                      Delete Admin Priveleges from Users
-                    </h1>
+                    <h1 className=" text font-extralight">Delete Admin Priveleges from Users</h1>
                     {adminUsers !== null && adminUsers.length !== 0 ? (
                       adminUsers.map((admin, adminIdx) => (
                         <div key={adminIdx} className="flex items-center">
                           <h2 className=" inline-block"> {admin.name}</h2>
                           <button
                             onClick={() => {
-                              setDel(true);
-                              setSelectedAdmin(admin.name);
-                              // fetchEditUser(admin.id, { isAdmin: false });
+                              setDeleteModal(true);
+                              setEntity({
+                                adminAction: true,
+                                data: {
+                                  name: admin.name,
+                                  id: admin.id,
+                                  action: true,
+                                },
+                                message: `Are you sure you want to remove ${admin.name}'s Administration Priveleges?`,
+                                function: fetchEditUser,
+                              });
                             }}
                           >
                             <div className="w-5 h-5 ml-3 my-auto">
@@ -200,6 +190,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                             onChange={(e) => {
                               // console.log("oi", e, "luv");
                               setSelected(e);
+
                               console.log("shoulda changed", selected);
                             }}
                           >
@@ -227,9 +218,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                                     value={null} // Setting the value to null for the empty option
                                     className={({ active }) =>
                                       `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                        active
-                                          ? "bg-amber-100 text-amber-900"
-                                          : "text-gray-900"
+                                        active ? "bg-amber-100 text-amber-900" : "text-gray-900"
                                       }`
                                     }
                                   >
@@ -237,9 +226,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                                       <>
                                         <span
                                           className={`block truncate ${
-                                            selected
-                                              ? "font-medium"
-                                              : "font-normal"
+                                            selected ? "font-medium" : "font-normal"
                                           }`}
                                         >
                                           None or Select...{" "}
@@ -253,9 +240,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                                       key={userIdx}
                                       className={({ active }) =>
                                         `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                          active
-                                            ? "bg-amber-100 text-amber-900"
-                                            : "text-gray-900"
+                                          active ? "bg-amber-100 text-amber-900" : "text-gray-900"
                                         }`
                                       }
                                       value={user}
@@ -264,9 +249,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                                         <>
                                           <span
                                             className={`block truncate ${
-                                              selected
-                                                ? "font-medium"
-                                                : "font-normal"
+                                              selected ? "font-medium" : "font-normal"
                                             }`}
                                           >
                                             {user.name}
@@ -297,13 +280,17 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                       </div>
                       <button
                         onClick={async () => {
-                          const res = fetchEditUser(selected.id, {
-                            isAdmin: true,
+                          setEntity({
+                            adminAction: true,
+                            data: {
+                              name: selected.name,
+                              id: selected.id,
+                              action: false,
+                            },
+                            message: `Are you sure you want to make ${selected.name} into an Administrator?`,
+                            function: fetchEditUser,
                           });
-                          if (res) {
-                            window.location.reload();
-                          } else {
-                          }
+                          setDeleteModal(true);
                         }}
                         disabled={selected === null ? true : false}
                       >
@@ -370,10 +357,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           required
                         ></input>
                       </div>
-                      <button
-                        className="border-2 border-black rounded-3xl px-3"
-                        type="submit"
-                      >
+                      <button className="border-2 border-black rounded-3xl px-3" type="submit">
                         Submit
                       </button>
                     </form>
@@ -416,9 +400,9 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
         </Dialog>
       </Transition>
       <CancelModal
-        isOpen={del}
-        setIsOpen={setDel}
-        congregation={{ selectedAdmin, email, password, congID }}
+        isOpen={deleteModal}
+        setIsOpen={setDeleteModal}
+        entity={selectedEntity}
       ></CancelModal>
     </div>
   );

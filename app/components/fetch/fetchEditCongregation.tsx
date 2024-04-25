@@ -17,10 +17,14 @@ export default async function fetchEditCongregation(id, updateInfo) {
       },
       body: JSON.stringify(obj),
     });
-    res1 = await res.json();
-    return res1;
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    console.log("done");
+    return { success: true, data };
   } catch (error) {
     console.error("Failed to edit congregation", error);
-    return null;
+    return { success: false, error: error.message };
   }
 }

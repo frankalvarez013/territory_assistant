@@ -1,18 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import userImg from "../../public/images/user.svg";
 import trash from "../../public/images/trash.svg";
 import edit from "../../public/images/edit.svg";
 import EditCongregationModal from "./EditCongregationModal";
-import DeleteCongregationModal from "./DeleteCongregationModal";
-import CancelModal from "./CancelModal";
+import DeleteCongregationModal from "./CancelModal";
+import fetchDeleteCongregation from "../../components/fetch/fetchDeleteCongregation";
 export default function EditUsers() {
   const [congregations, setcongregations] = useState(null);
   const [selectedCongregation, setSelectedCongregation] = useState(null);
   const [isEditOpen, setisEditOpen] = useState(false);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
+  const [setSelectedEntity, setEntity] = useState({});
   useEffect(() => {
     async function duv() {
       const res = await fetch(`/api/congregation`, {
@@ -46,37 +46,24 @@ export default function EditUsers() {
                   }}
                   className="flex flex-grow items-center justify-center"
                 >
-                  <Image
-                    src={userImg}
-                    alt="User Symbol"
-                    className="inline"
-                    height={50}
-                  />
-                  <h1 className="inline w-full text-start mx-5">
-                    {congregation.congregationName}
-                  </h1>
+                  <Image src={userImg} alt="User Symbol" className="inline" height={50} />
+                  <h1 className="inline w-full text-start mx-5">{congregation.congregationName}</h1>
                   <div className="inline mr-5">
-                    <Image
-                      src={edit}
-                      alt="Edit Symbol"
-                      className="inline"
-                      height={25}
-                    />
+                    <Image src={edit} alt="Edit Symbol" className="inline" height={25} />
                   </div>
                 </button>
                 <button
                   className="inline"
                   onClick={() => {
-                    setSelectedCongregation(congregation);
+                    setEntity({
+                      data: { id: congregation.id },
+                      message: `Are you sure you want to delete ${congregation.congregationName}?`,
+                      function: fetchDeleteCongregation,
+                    });
                     setisDeleteOpen(true);
                   }}
                 >
-                  <Image
-                    src={trash}
-                    alt="Trash Symbol"
-                    className="m-auto inline"
-                    height={25}
-                  />
+                  <Image src={trash} alt="Trash Symbol" className="m-auto inline" height={25} />
                 </button>
               </div>
             );
@@ -95,7 +82,7 @@ export default function EditUsers() {
       <DeleteCongregationModal
         isOpen={isDeleteOpen}
         setIsOpen={setisDeleteOpen}
-        congregation={selectedCongregation}
+        entity={setSelectedEntity}
       ></DeleteCongregationModal>
     </div>
   );

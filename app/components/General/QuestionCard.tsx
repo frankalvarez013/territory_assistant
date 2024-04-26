@@ -1,14 +1,17 @@
 "use client";
+import LoadingModal from "@/app/[user]/dashboard/LoadingModal";
 import createExcelTerritory from "../../[user]/dashboard/createExcelTerritory";
 import { useState } from "react";
 const Question = ({ Question }) => {
   const [isHidden, setIsHidden] = useState(true);
   const [sheetID, setsheetID] = useState("");
   const [sheetName, setsheetName] = useState("");
-  const handleSubmit = (event) => {
+  const [loadingModal, setLoadingModal] = useState(false);
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(sheetID, sheetName);
-    createExcelTerritory(sheetID, sheetName);
+    setLoadingModal(true);
+    const res = await createExcelTerritory(sheetID, sheetName);
     window.location.reload();
   };
   const toggleVisibility = () => {
@@ -34,8 +37,7 @@ const Question = ({ Question }) => {
         ) : (
           <form action="" className=" " onSubmit={handleSubmit}>
             <h1 className="text-black mb-4">
-              Make sure you share the Service Account Email in the excel file or
-              else it won't work.
+              Make sure you share the Service Account Email in the excel file or else it won't work.
             </h1>
             <label htmlFor="sheetID" className="text-black font-semibold">
               Insert Excel Sheet ID
@@ -79,6 +81,7 @@ const Question = ({ Question }) => {
           </form>
         )}
       </div>
+      <LoadingModal setIsOpen={setLoadingModal} isOpen={loadingModal}></LoadingModal>
     </div>
   );
 };

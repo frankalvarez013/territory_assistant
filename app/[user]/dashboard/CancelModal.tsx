@@ -24,6 +24,7 @@ export default function CancelModal({ isOpen, setIsOpen, entity }) {
         });
         console.log("add");
       }
+      window.location.reload();
     } else if (entity.function) {
       const res = await dynamicCall(entity.function, entity.data);
       if (!res.success) {

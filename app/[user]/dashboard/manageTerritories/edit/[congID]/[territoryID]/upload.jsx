@@ -3,7 +3,7 @@ import Layout from "../../../../../../components/Layout/HomepageLayout";
 import Router from "next/router";
 
 const Upload = (props) => {
-  const [imageUploaded, setImageUploaded] = useState();
+  const [imageUploaded, setImageUploaded] = useState(null);
 
   const handleChange = (event) => {
     setImageUploaded(event.target.files[0]);
@@ -35,34 +35,23 @@ const Upload = (props) => {
 
   return (
     <div>
-      <div className="page">
+      <div className=" bg-white p-12 flex justify-center items-center">
         <form onSubmit={submitData}>
           <h1>Upload Image</h1>
 
-          <input
-            onChange={handleChange}
-            accept=".jpg, .png, .gif, .jpeg"
-            type="file"
-          ></input>
+          <input onChange={handleChange} accept=".jpg, .png, .gif, .jpeg" type="file"></input>
 
-          <input type="submit" value="Upload" />
+          <input
+            type="submit"
+            className={`px-5 py-4 border-0 ${
+              imageUploaded
+                ? " bg-blue-400 hover:text-white hover:cursor-pointer"
+                : "bg-gray-300 cursor-not-allowed"
+            }`}
+            value="Upload"
+          />
         </form>
       </div>
-      <style jsx>{`
-        .page {
-          background: white;
-          padding: 3rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        input[type="submit"] {
-          background: #ececec;
-          border: 0;
-          padding: 1rem 2rem;
-        }
-      `}</style>
     </div>
   );
 };

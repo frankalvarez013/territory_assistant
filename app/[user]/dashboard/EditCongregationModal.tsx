@@ -94,7 +94,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
   }, [congregation]); // Only re-run the effect if `congregation` changes
 
   if (!users) {
-    return <h1>loading</h1>;
+    return <h1></h1>;
   }
   return (
     <div>

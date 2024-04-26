@@ -20,8 +20,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
       updatedState.StreetAd = house.StreetAd;
     if (!updatedState.Direction || !updatedState.Direction.trim())
       updatedState.Direction = house.Direction;
-    if (!updatedState.comment || !updatedState.comment.trim())
-      updatedState.comment = house.comment;
+    if (!updatedState.comment || !updatedState.comment.trim()) updatedState.comment = house.comment;
     console.log("Saving", updatedState);
     fetchEditHouse(
       updatedState.territoryID,
@@ -63,12 +62,14 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
         <>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             {house.status === Status.LLEGA
-              ? house.observation === Observation.CANDADO ||
+              ? house.observation === Observation.INGLES
+                ? "🔵"
+                : ""
+              : house.observation === Observation.CANDADO ||
                 house.observation === Observation.EMPTY ||
                 house.observation === Observation.PERRO_EN_CASA
-                ? "🟢"
-                : "🔴"
-              : "🔴" || "🔴"}
+              ? "🟢"
+              : "🔴"}
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="direction">
@@ -128,10 +129,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
           </td>
 
           <td className="focus-within:bg-none focus:bg-none bg-none">
-            <button
-              className="border-black border-2 rounded-2xl px-1 "
-              onClick={saveHouseData}
-            >
+            <button className="border-black border-2 rounded-2xl px-1 " onClick={saveHouseData}>
               Save
             </button>
           </td>
@@ -140,12 +138,17 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
         <>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             {house.status === Status.LLEGA
-              ? house.observation === Observation.CANDADO ||
+              ? house.observation === Observation.INGLES ||
+                house.observation === Observation.OTRO_IDIOMA ||
+                house.observation === Observation.DUERME_DE_DIA ||
+                house.observation === Observation.TESTIGOS
+                ? "🔵"
+                : ""
+              : house.observation === Observation.CANDADO ||
                 house.observation === Observation.EMPTY ||
                 house.observation === Observation.PERRO_EN_CASA
-                ? "🟢"
-                : "🔴"
-              : "🔴" || "🔴"}
+              ? "🟢"
+              : "🔴"}
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="streetAd">

@@ -20,15 +20,12 @@ export default function TerritoryGeneralView(props) {
   }, []);
   useEffect(() => {
     async function brv() {
-      const res = await fetch(
-        `/api/territory?congID=${props.congID}&terrID=${props.territoryID}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`/api/territory?congID=${props.congID}&terrID=${props.territoryID}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const res1 = await res.json();
       setVal(res1);
 
@@ -68,16 +65,14 @@ export default function TerritoryGeneralView(props) {
   if (!val || !houses || !user) {
     return <h1>Checking Territory...</h1>;
   }
+  console.log("Houses...", houses);
   // console.log("user: ", user);
   return (
     <div className="overflow-x-auto">
       <table className="table-auto">
         <thead>
           <tr>
-            <th
-              colSpan={6}
-              className="bg-blue-400 border-b border-gray-200 py-4 px-4"
-            >
+            <th colSpan={6} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
               REGISTRO DE CASA EN CASA
             </th>
           </tr>
@@ -97,11 +92,7 @@ export default function TerritoryGeneralView(props) {
               </label>
               <button
                 onClick={(e) => {
-                  fetchEditTerritory(
-                    parseInt(props.territoryID, 10),
-                    props.congID,
-                    location
-                  );
+                  fetchEditTerritory(parseInt(props.territoryID, 10), props.congID, location);
                 }}
                 className="ml-3"
               >
@@ -129,20 +120,12 @@ export default function TerritoryGeneralView(props) {
             </th>
           </tr>
           <tr className="bg-blue-200  border-gray-200 py-4 px-4">
-            <th className="border-r border-b border-gray-200 py-1 px-2 ">
-              Encargado:
-            </th>
-            <th
-              className="py-1 px-2 border-r border-b border-gray-200"
-              colSpan={2}
-            >
+            <th className="border-r border-b border-gray-200 py-1 px-2 ">Encargado:</th>
+            <th className="py-1 px-2 border-r border-b border-gray-200" colSpan={2}>
               {user[0].name}
             </th>
 
-            <th
-              colSpan={2}
-              className="py-1 px-2 border-r border-b border-gray-200"
-            >
+            <th colSpan={2} className="py-1 px-2 border-r border-b border-gray-200">
               Expira:
             </th>
             <th className="py-1 border-b px-2">

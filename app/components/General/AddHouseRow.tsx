@@ -18,10 +18,9 @@ const AddHouseRow = React.memo((props) => {
       localState.StreetAd = localState.StreetAd;
     if (!localState.Direction || !localState.Direction.trim())
       localState.Direction = localState.Direction;
-    if (!localState.comment || !localState.comment.trim())
-      localState.comment = localState.comment;
+    if (!localState.comment || !localState.comment.trim()) localState.comment = localState.comment;
     console.log("Saving", localState, "terrID: ", props.territoryID);
-    fetchAddHouse(
+    const res = await fetchAddHouse(
       parseInt(props.territoryID),
       localState.Direction,
       localState.StreetAd,
@@ -54,9 +53,7 @@ const AddHouseRow = React.memo((props) => {
     >
       {props.isEditable ? (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200">
-            Add New Houses:{" "}
-          </td>
+          <td className="py-1 px-2 border-r border-b border-gray-200">Add New Houses: </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="direction">
               {" "}
@@ -114,29 +111,17 @@ const AddHouseRow = React.memo((props) => {
         </>
       ) : (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200">
-            Add New Houses:{" "}
-          </td>
+          <td className="py-1 px-2 border-r border-b border-gray-200">Add New Houses: </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="streetAd">
               {" "}
-              <input
-                name="streetAd"
-                type="text"
-                placeholder={"Add StreetAd"}
-                value={""}
-              />
+              <input name="streetAd" type="text" placeholder={"Add StreetAd"} value={""} />
             </label>
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="direction">
               {" "}
-              <input
-                name="direction"
-                type="text"
-                placeholder={"Add Direction"}
-                value={""}
-              />
+              <input name="direction" type="text" placeholder={"Add Direction"} value={""} />
             </label>
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200 ">
@@ -153,12 +138,7 @@ const AddHouseRow = React.memo((props) => {
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="comment">
               {" "}
-              <input
-                name="comment"
-                type="text"
-                placeholder={"Add Comment"}
-                value={""}
-              />
+              <input name="comment" type="text" placeholder={"Add Comment"} value={""} />
             </label>
           </td>
           <td className="py-1 px-2 border-b "></td>

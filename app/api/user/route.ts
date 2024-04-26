@@ -6,12 +6,14 @@ import { ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { exclude } from "../../utils/functions";
+import { Role } from "@prisma/client";
 const createUserSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().min(1).max(255),
   congregationID: z.string().min(1).max(255),
   isAdmin: z.boolean().optional(),
   isGeneralAdmin: z.boolean().optional(),
+  Role: z.enum(["Elder", "MS", "Approved"]).optional(),
   //use zode to check if the isAdmin is true or false "strings"
 });
 const updateUserSchema = z.object({
@@ -20,6 +22,8 @@ const updateUserSchema = z.object({
   congregationID: z.string().min(1).max(255).optional(),
   password: z.string().min(1).max(255).optional(),
   isAdmin: z.boolean().optional(),
+  Role: z.enum(["Elder", "MS", "Approved"]).optional(),
+
   //use zod to check if the isAdmin is true or false "strings"
 });
 export async function POST(
@@ -29,6 +33,7 @@ export async function POST(
   const validation = createUserSchema.safeParse(body);
   let isAdmin = false;
   let isGAdmin = false;
+  let role: Role = Role.Approved;
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
@@ -37,6 +42,12 @@ export async function POST(
   }
   if (String(validation.data.isGeneralAdmin).toLowerCase() === "true") {
     isGAdmin = true;
+  }
+  if (String(validation.data.isGeneralAdmin).toLowerCase() === "true") {
+    isGAdmin = true;
+  }
+  if (validation.data.role) {
+    role = validation.data.role;
   }
   try {
     const newUser = await prisma.user.create({
@@ -47,6 +58,7 @@ export async function POST(
         congregationID: body.congregationID,
         isAdmin: isAdmin,
         isGeneralAdmin: isGAdmin,
+        Role: role,
       },
     });
     return NextResponse.json(newUser, { status: 201 });
@@ -121,13 +133,18 @@ export async function PATCH(
   const body = await request.json();
   // console.log(body);
   const validation = updateUserSchema.safeParse(body);
+  console.log("checkin");
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
+  console.log("checkin1");
+
   let adminFalseAction = false;
   let changingCongregations = false;
   let oldCongregation: {} | null = null;
   const updateData: { [key: string]: any } = {};
+  console.log("checkin2");
+
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {
       if (key === "isAdmin") {
@@ -142,19 +159,25 @@ export async function PATCH(
       if (key === "congregationID") {
         changingCongregations = true;
         oldCongregation = value;
-        updateData[key] = value;
+        updateData["congregation"] = { connect: { id: value } };
       } else {
         updateData[key] = value;
       }
     }
   }
+  console.log("checkin3");
+
   const oldUser = await prisma.user.findUnique({
     where: {
       id: request.nextUrl.searchParams.get("id") ?? undefined,
     },
   });
+  console.log("checkin4");
+
   try {
     let updatedTerritories = null;
+    console.log("brudder");
+    console.log(updateData);
     const updatedUser = await prisma.user.update({
       where: {
         id: request.nextUrl.searchParams.get("id") ?? undefined,
@@ -162,6 +185,8 @@ export async function PATCH(
       },
       data: updateData,
     });
+    console.log("oi", updatedUser);
+
     if (adminFalseAction || changingCongregations) {
       console.log("adminFalse OR Changing Congregations");
       if (adminFalseAction) {
@@ -198,6 +223,7 @@ export async function PATCH(
 
     return NextResponse.json(updatedUser, { status: 201 });
   } catch (e) {
+    console.error("bruh", e);
     return NextResponse.json({
       message: `User UPDATE Transaction Failed\n: ${e}`,
     });

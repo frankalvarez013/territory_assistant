@@ -7,11 +7,11 @@ export default async function fetchEditUser(id, updateInfo) {
   Object.keys(updateInfo).forEach((key) => {
     console.log(key);
     if (updateInfo[key] || (key === "isAdmin" && updateInfo[key] === false)) {
-      console.log("SHOULD BE gOING FRU");
+      console.log("Converting to OBJ...");
       obj[key] = updateInfo[key];
     }
   });
-  console.log("?", obj);
+  console.log("Edit User Goin Thru", obj);
   try {
     const res = await fetch(`/api/user?id=${id}`, {
       method: "PATCH",

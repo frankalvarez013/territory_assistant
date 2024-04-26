@@ -26,6 +26,7 @@ model User {
   password       String       @db.VarChar(255)
   isAdmin        Boolean      @default(false)
   isGeneralAdmin Boolean      @default(false)
+  Role            Role        @default(Approved)
   congregationID String
   congregation   Congregation @relation(fields: [congregationID], references: [id], onDelete: Cascade)
   Territory      Territory[]
@@ -37,7 +38,11 @@ model TerritoryCounter {
   congregationID  String @id
   nextTerritoryID Int
 }
-
+enum Role {
+  Elder
+  MS
+  Approved
+}
 enum TerritoryComment {
   Expired
   Unassigned

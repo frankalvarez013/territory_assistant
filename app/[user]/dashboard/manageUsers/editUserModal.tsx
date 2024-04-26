@@ -5,21 +5,24 @@ import { Dialog, Transition, Listbox } from "@headlessui/react";
 import userImg from "../../../public/images/user.svg";
 import Image from "next/image";
 import fetchEditUser from "../../../components/fetch/fetchEditUser";
-
-export default function EditUserModal({
-  user,
-  isOpen,
-  setIsOpen,
-  congregations,
-}) {
+import { Role } from "@prisma/client";
+export default function EditUserModal({ user, isOpen, setIsOpen, congregations }) {
   const congregation = congregations.find(
     (congregation) => congregation.id === user.congregationID
   );
+  console.log(user);
   const [selected, setSelected] = useState(congregation);
   const [congregationID, setCongregationID] = useState(congregation.id);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState(user.Role);
+  var roles = Object.keys(Role).map((key) => key);
+  console.log("role: ", role);
+  const handleChange = (e) => {
+    console.log("setting");
+    setRole(e.target.value);
+  };
   function setEm(e) {
     setSelected(e);
     setCongregationID(e.id);
@@ -29,7 +32,7 @@ export default function EditUserModal({
   }
   function patchEditModal() {
     console.log("OOI");
-    fetchEditUser(user.id, { name, email, password, congregationID });
+    fetchEditUser(user.id, { name, email, password, congregationID, Role: role });
     setIsOpen(false);
     // window.location.reload();
   }
@@ -60,10 +63,7 @@ export default function EditUserModal({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all flex flex-col gap-5">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
+                <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
                   User Information
                 </Dialog.Title>
                 <div>
@@ -80,9 +80,7 @@ export default function EditUserModal({
                   <Listbox value={selected} onChange={setEm}>
                     <div className="relative mt-1">
                       <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                        <span className="block truncate">
-                          {selected.congregationName}
-                        </span>
+                        <span className="block truncate">{selected.congregationName}</span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                           <Image
                             src={upDown}
@@ -99,47 +97,64 @@ export default function EditUserModal({
                         leaveTo="opacity-0"
                       >
                         <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                          {congregations.map(
-                            (congregation, congregationIdx) => (
-                              <Listbox.Option
-                                key={congregationIdx}
-                                className={({ active }) =>
-                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                    active
-                                      ? "bg-amber-100 text-amber-900"
-                                      : "text-gray-900"
-                                  }`
-                                }
-                                value={congregation}
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={`block truncate ${
-                                        selected ? "font-medium" : "font-normal"
-                                      }`}
-                                    >
-                                      {congregation.congregationName}
+                          {congregations.map((congregation, congregationIdx) => (
+                            <Listbox.Option
+                              key={congregationIdx}
+                              className={({ active }) =>
+                                `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                  active ? "bg-amber-100 text-amber-900" : "text-gray-900"
+                                }`
+                              }
+                              value={congregation}
+                            >
+                              {({ selected }) => (
+                                <>
+                                  <span
+                                    className={`block truncate ${
+                                      selected ? "font-medium" : "font-normal"
+                                    }`}
+                                  >
+                                    {congregation.congregationName}
+                                  </span>
+                                  {selected ? (
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                      <Image
+                                        src={check}
+                                        alt="User Symbol"
+                                        className="inline mr-5"
+                                        height={23}
+                                      ></Image>
                                     </span>
-                                    {selected ? (
-                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                        <Image
-                                          src={check}
-                                          alt="User Symbol"
-                                          className="inline mr-5"
-                                          height={23}
-                                        ></Image>
-                                      </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            )
-                          )}
+                                  ) : null}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))}
                         </Listbox.Options>
                       </Transition>
                     </div>
                   </Listbox>
+                </div>
+                <div>
+                  <label htmlFor="role">Role:</label>
+                  <select
+                    className=" bg-white  border-2 rounded-xl px-3"
+                    onChange={handleChange}
+                    value={role}
+                    id={""}
+                    name="observation"
+                  >
+                    <option value={""}>{user.role}</option>
+                    {roles.map((option, index) => {
+                      if (option !== user.role) {
+                        return (
+                          <option key={index} value={option}>
+                            {option}
+                          </option>
+                        );
+                      }
+                    })}
+                  </select>
                 </div>
                 <div className="mt-2">
                   <label htmlFor="Name">Change Name</label>

@@ -1,6 +1,13 @@
 import { hash } from "bcryptjs";
 
-export default async function fetchAddUser(name, email, password, congregationID, isAdmin = false) {
+export default async function fetchAddUser(
+  name,
+  email,
+  password,
+  congregationID,
+  role,
+  isAdmin = false
+) {
   let res1 = null;
   const hashPassword = await hash(password, 12);
 
@@ -16,6 +23,7 @@ export default async function fetchAddUser(name, email, password, congregationID
         email,
         password: hashPassword,
         congregationID,
+        role,
         isAdmin,
       }),
     });

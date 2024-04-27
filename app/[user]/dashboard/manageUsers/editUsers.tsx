@@ -54,20 +54,10 @@ export default function EditUsers() {
                 key={index}
                 className="flex flex-grow items-center justify-center"
               >
-                <Image
-                  src={userImg}
-                  alt="User Symbol"
-                  className="inline"
-                  height={50}
-                ></Image>
+                <Image src={userImg} alt="User Symbol" className="inline" height={50}></Image>
                 <h1 className="inline w-full text-start mx-5">{user.name}</h1>
                 <div className="inline mr-5">
-                  <Image
-                    src={edit}
-                    alt="User Symbol"
-                    className="inline"
-                    height={25}
-                  ></Image>
+                  <Image src={edit} alt="User Symbol" className="inline" height={25}></Image>
                 </div>
               </button>
               <button className="inline">

@@ -18,7 +18,7 @@ export default function AddUsers() {
     const result = await fetchAddUser(name, email, password, session?.user?.congID, role);
     if (result) {
       // Refresh the page to reflect changes or reset the state globally
-      window.location.reload();
+      // window.location.reload();
     } else {
       // Optional: Handle error scenario, possibly showing an error message
       console.log(result); // Display an error message if something goes wrong

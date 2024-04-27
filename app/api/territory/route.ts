@@ -155,8 +155,7 @@ export async function PATCH(
 
               return NextResponse.json(
                 {
-                  message:
-                    "The User must be a part of the congregation that owns the territory",
+                  message: "The User must be a part of the congregation that owns the territory",
                 },
                 { status: 412 }
               );
@@ -165,7 +164,7 @@ export async function PATCH(
               updateData["activity"] = TerritoryComment.Assigned;
               updateData["currentUserID"] = validation.data.currentUserID;
             } else {
-              updateData["activity"] = TerritoryComment.Unassigned;
+              updateData["activity"] = TerritoryComment.Available;
               updateData["currentUserID"] = validation.data.currentUserID;
             }
           } else {
@@ -207,8 +206,7 @@ export async function PATCH(
     }
   } else {
     return NextResponse.json({
-      message:
-        "Make sure the parameters are correctly set with the correct types.",
+      message: "Make sure the parameters are correctly set with the correct types.",
     });
   }
 }
@@ -233,14 +231,12 @@ export async function DELETE(
       return NextResponse.json(deletedTerritory, { status: 201 });
     } catch (e) {
       return NextResponse.json({
-        message:
-          "Make sure the parameters are correctly set with the correct types.",
+        message: "Make sure the parameters are correctly set with the correct types.",
       });
     }
   } else {
     return NextResponse.json({
-      message:
-        "Make sure the parameters are correctly set with the correct types.",
+      message: "Make sure the parameters are correctly set with the correct types.",
     });
   }
   return NextResponse.json({ message: "" });

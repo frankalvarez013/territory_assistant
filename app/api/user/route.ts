@@ -46,9 +46,10 @@ export async function POST(
   if (String(validation.data.isGeneralAdmin).toLowerCase() === "true") {
     isGAdmin = true;
   }
-  if (validation.data.role) {
-    role = validation.data.role;
+  if (validation.data.Role) {
+    role = validation.data.Role;
   }
+  console.log(role);
   try {
     const newUser = await prisma.user.create({
       data: {
@@ -209,7 +210,7 @@ export async function PATCH(
             },
             data: {
               currentUserID: null,
-              activity: TerritoryComment.Unassigned,
+              activity: TerritoryComment.Available,
             },
           });
           console.log("wtf");

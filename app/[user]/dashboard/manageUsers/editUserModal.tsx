@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import check from "../../../public/images/check.svg";
 import upDown from "../../../public/images/chevron-up-down.svg";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
@@ -10,15 +10,20 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
   const congregation = congregations.find(
     (congregation) => congregation.id === user.congregationID
   );
-  console.log(user);
   const [selected, setSelected] = useState(congregation);
   const [congregationID, setCongregationID] = useState(congregation.id);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(user.Role);
+  console.log("start of modal...", user.Role);
+  const [role, setRole] = useState("");
+  useEffect(() => {
+    if (user.Role) {
+      setRole(user.Role);
+      console.log("updated role in effect...", user.Role);
+    }
+  }, [user.Role]); // Dependency on user.Role to update state when it changes
   var roles = Object.keys(Role).map((key) => key);
-  console.log("role: ", role);
   const handleChange = (e) => {
     console.log("setting");
     setRole(e.target.value);
@@ -141,12 +146,12 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
                     className=" bg-white  border-2 rounded-xl px-3"
                     onChange={handleChange}
                     value={role}
-                    id={""}
+                    id={role}
                     name="observation"
                   >
-                    <option value={""}>{user.role}</option>
+                    <option value={""}>{user.Role}</option>
                     {roles.map((option, index) => {
-                      if (option !== user.role) {
+                      if (option !== user.Role) {
                         return (
                           <option key={index} value={option}>
                             {option}

@@ -5,13 +5,13 @@ export default async function fetchAddUser(
   email,
   password,
   congregationID,
-  role,
+  Role,
   isAdmin = false
 ) {
   let res1 = null;
   const hashPassword = await hash(password, 12);
 
-  console.log("invoked add user...");
+  console.log("invoked add user... Look at what we want: ", Role);
   try {
     const res = await fetch(`/api/user`, {
       method: "POST",
@@ -23,7 +23,7 @@ export default async function fetchAddUser(
         email,
         password: hashPassword,
         congregationID,
-        role,
+        Role,
         isAdmin,
       }),
     });

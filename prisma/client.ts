@@ -9,22 +9,19 @@ const prismaClientSingleton = () => {
         async create({ args, query }) {
           const { congregationID } = args.data;
           //Fetch the nextTeritoryID for the given congregationID
-          let congregationTerritoryCounter =
-            await prisma.territoryCounter.findUnique({
-              where: {
-                congregationID: congregationID,
-              },
-            });
+          let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
+            where: {
+              congregationID: congregationID,
+            },
+          });
           //if congregationTerritoryCounter is there use it, if not create it
           if (congregationTerritoryCounter == null && congregationID) {
-            congregationTerritoryCounter = await prisma.territoryCounter.create(
-              {
-                data: {
-                  congregationID: congregationID,
-                  nextTerritoryID: 1,
-                },
-              }
-            );
+            congregationTerritoryCounter = await prisma.territoryCounter.create({
+              data: {
+                congregationID: congregationID,
+                nextTerritoryID: 1,
+              },
+            });
           }
           console.log(congregationTerritoryCounter?.nextTerritoryID);
           if (
@@ -32,15 +29,13 @@ const prismaClientSingleton = () => {
             congregationTerritoryCounter != null
           ) {
             //Use the nextTerritoryID for the new Territory
-            args.data.territoryID =
-              congregationTerritoryCounter.nextTerritoryID;
+            args.data.territoryID = congregationTerritoryCounter.nextTerritoryID;
             const bobo = await prisma.territoryCounter.update({
               where: {
                 congregationID: congregationID,
               },
               data: {
-                nextTerritoryID:
-                  congregationTerritoryCounter?.nextTerritoryID + 1,
+                nextTerritoryID: congregationTerritoryCounter?.nextTerritoryID + 1,
               },
             });
           }
@@ -130,7 +125,7 @@ const prismaClientSingleton = () => {
                     },
                   },
                   data: {
-                    activity: TerritoryComment.Unassigned,
+                    activity: TerritoryComment.Available,
                     currentUserID: session?.user.id,
                   },
                 })

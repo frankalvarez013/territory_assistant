@@ -45,7 +45,7 @@ enum Role {
 }
 enum TerritoryComment {
   Expired
-  Unassigned
+  Available
   Assigned
 }
 
@@ -57,7 +57,7 @@ model Territory {
   ExperiationDate DateTime?
   congregationID  String
   currentUserID   String?
-  activity        TerritoryComment @default(Unassigned)
+  activity        TerritoryComment @default(Available)
   currentUser     User?            @relation(fields: [currentUserID], references: [id])
   Congregation    Congregation     @relation(fields: [congregationID], references: [id], onDelete: Cascade)
   Request         Request[]

@@ -16,6 +16,7 @@ export default function EditTerritories(props) {
         return;
       }
       const usersData = await resUsers.json();
+
       setTerritories(usersData);
     }
     duv();
@@ -28,8 +29,7 @@ export default function EditTerritories(props) {
     .map((territory, index) => {
       if (
         !session?.user.isAdmin &&
-        (territories[0].currentUser === null ||
-          territories[0].currentUser.id !== props.userID)
+        (territories[0].currentUser === null || territories[0].currentUser.id !== props.userID)
       ) {
         return;
       }
@@ -39,33 +39,21 @@ export default function EditTerritories(props) {
           key={index}
           className="flex items-center justify-between"
         >
-          <Image
-            src={pinLocation}
-            alt="Pin Location"
-            className="inline mr-5"
-            height={35}
-          ></Image>
+          <Image src={pinLocation} alt="Pin Location" className="inline mr-5" height={35}></Image>
           <h1 className="inline w-full">
             Territory {territory.territoryID} - {territory.location}
           </h1>
           <div className="">
-            <Image
-              src={edit}
-              alt="Edit Symbol"
-              className="inline mr-5"
-              height={25}
-            ></Image>
+            <Image src={edit} alt="Edit Symbol" className="inline mr-5" height={25}></Image>
           </div>
         </a>
       );
     });
-  if (
-    territoryResults.every((result) => result === null || result === undefined)
-  ) {
+  if (territoryResults.every((result) => result === null || result === undefined)) {
     return (
       <div className="font-extralight mt-5">
-        Looks like you have no assigned territories! Contact your administrator
-        if you need assistance
+        Looks like you have no assigned territories! Contact your administrator if you need
+        assistance
       </div>
     );
   } else {

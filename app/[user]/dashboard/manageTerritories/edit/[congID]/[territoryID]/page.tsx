@@ -4,6 +4,7 @@ import Image from "next/image";
 import TerritoryGeneralADMIN from "@/app/components/General/TerritoryGeneralADMIN";
 import Upload from "./upload";
 import { useEffect, useState } from "react";
+import TerritoryCheck from "./TerritoryCheck";
 export default function Page({ params }) {
   const [image, setImage] = useState(null);
   const [qrCode, setQrCode] = useState("");
@@ -18,9 +19,7 @@ export default function Page({ params }) {
       }
       const usersData = await resUsers.json();
       setImage(usersData);
-      const resQRCode = await fetch(
-        `https://quickchart.io/qr?text=http://localhost:3000/`
-      );
+      const resQRCode = await fetch(`https://quickchart.io/qr?text=http://localhost:3000/`);
       const imageBlob = await resQRCode.blob(); // Process response as a Blob
       const imageUrl = URL.createObjectURL(imageBlob); // Create a local URL to the blob object
       setQrCode(imageUrl);
@@ -36,32 +35,17 @@ export default function Page({ params }) {
     <DashboardLayout>
       <main className="flex flex-col mt-10 justify-center items-center">
         <div className="flex justify-evenly mb-10 items-center gap-20">
-          <header className="text-6xl text-center">
-            EDIT Territory {params.territoryID}
-          </header>
+          <header className="text-6xl text-center">EDIT Territory {params.territoryID}</header>
           <button className="">
-            <Image
-              src={qrCode}
-              alt="Picture of QR Code Icon"
-              width={100}
-              height={100}
-            ></Image>
+            <Image src={qrCode} alt="Picture of QR Code Icon" width={100} height={100}></Image>
           </button>
         </div>
         <img
           src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/v${image.version}/${image.publicId}.${image.format}`}
           key={image.publicId}
         />
-        <Upload
-          congregationID={params.congID}
-          territoryID={params.territoryID}
-        ></Upload>
-        <div className="mt-28 mb-28">
-          <TerritoryGeneralADMIN
-            congID={params.congID}
-            territoryID={params.territoryID}
-          ></TerritoryGeneralADMIN>
-        </div>
+        <Upload congregationID={params.congID} territoryID={params.territoryID}></Upload>
+        <TerritoryCheck territoryID={params.territoryID} congID={params.congID}></TerritoryCheck>
       </main>
     </DashboardLayout>
   );

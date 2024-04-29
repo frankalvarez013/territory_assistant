@@ -5,8 +5,6 @@ import { redirect } from "next/navigation";
 import EditTerritories from "./editTerritories";
 import AddTerritories from "./AddTerritories";
 import QuestionCard from "../../../components/General/QuestionCard";
-
-import fetchAddTerritory from "@/app/components/fetch/fetchAddTerritory";
 export default async function Page() {
   const session = await getServerSession(authOptions);
   // console.log(session);

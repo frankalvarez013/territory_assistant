@@ -62,14 +62,17 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
         <>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             {house.status === Status.LLEGA
-              ? house.observation === Observation.INGLES
+              ? house.observation === Observation.INGLES ||
+                house.observation === Observation.OTRO_IDIOMA ||
+                house.observation === Observation.DUERME_DE_DIA ||
+                house.observation === Observation.TESTIGOS
                 ? "🔵"
-                : ""
-              : house.observation === Observation.CANDADO ||
-                house.observation === Observation.EMPTY ||
-                house.observation === Observation.PERRO_EN_CASA
-              ? "🟢"
-              : "🔴"}
+                : house.observation === Observation.CANDADO ||
+                  house.observation === Observation.EMPTY ||
+                  house.observation === Observation.PERRO_EN_CASA
+                ? "🟢"
+                : "🔴"
+              : ""}
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="direction">
@@ -143,12 +146,12 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
                 house.observation === Observation.DUERME_DE_DIA ||
                 house.observation === Observation.TESTIGOS
                 ? "🔵"
-                : ""
-              : house.observation === Observation.CANDADO ||
-                house.observation === Observation.EMPTY ||
-                house.observation === Observation.PERRO_EN_CASA
-              ? "🟢"
-              : "🔴"}
+                : house.observation === Observation.CANDADO ||
+                  house.observation === Observation.EMPTY ||
+                  house.observation === Observation.PERRO_EN_CASA
+                ? "🟢"
+                : "🔴"
+              : ""}
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="streetAd">

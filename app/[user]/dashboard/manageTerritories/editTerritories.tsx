@@ -24,12 +24,13 @@ export default function EditTerritories(props) {
   if (!territories) {
     return <h1>...Checking</h1>;
   }
+  console.log(territories);
   const territoryResults = territories
     .sort((a, b) => a.territoryID - b.territoryID)
     .map((territory, index) => {
       if (
         !session?.user.isAdmin &&
-        (territories[0].currentUser === null || territories[0].currentUser.id !== props.userID)
+        (territory.currentUser === null || territory.currentUser.id !== props.userID)
       ) {
         return;
       }

@@ -8,6 +8,7 @@ import check from "../../public/images/check1.svg";
 import HouseRow from "./HouseRow";
 import AddHouseRow from "./AddHouseRow";
 import fetchEditTerritory from "../fetch/fetchEditTerritory";
+import Upload from "@/app/[user]/dashboard/manageTerritories/edit/[congID]/[territoryID]/upload";
 export default function TerritoryGeneralView(props) {
   const [val, setVal] = useState(null);
   const [houses, setHouses] = useState(null);
@@ -69,6 +70,7 @@ export default function TerritoryGeneralView(props) {
   // console.log("user: ", user);
   return (
     <div className="overflow-x-auto">
+      <Upload congregationID={props.congID} territoryID={props.territoryID}></Upload>
       <table className="table-auto">
         <thead>
           <tr>

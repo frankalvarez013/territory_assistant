@@ -44,7 +44,7 @@ export default function Page({ params }) {
           src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/v${image.version}/${image.publicId}.${image.format}`}
           key={image.publicId}
         />
-        <Upload congregationID={params.congID} territoryID={params.territoryID}></Upload>
+
         <TerritoryCheck territoryID={params.territoryID} congID={params.congID}></TerritoryCheck>
       </main>
     </DashboardLayout>

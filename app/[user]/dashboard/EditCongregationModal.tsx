@@ -33,6 +33,8 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
         password: password,
         congregationID: congregation.id,
       },
+      addUser: true,
+      email: email,
       message: `Are you sure you want to add this user?`,
       function: fetchAddUser,
     });
@@ -289,6 +291,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                             },
                             message: `Are you sure you want to make ${selected.name} into an Administrator?`,
                             function: fetchEditUser,
+                            email: selected.email,
                           });
                           setDeleteModal(true);
                         }}

@@ -3,7 +3,6 @@ import { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 
 export default function CancelModal({ isOpen, setIsOpen, entity }) {
-  console.log(entity);
   function closeEditModal() {
     setIsOpen(false);
   }
@@ -17,10 +16,23 @@ export default function CancelModal({ isOpen, setIsOpen, entity }) {
         const res = entity.function(entity.data.id, {
           isAdmin: false,
         });
+
         console.log("remove");
       } else {
         const res = entity.function(entity.data.id, {
           isAdmin: true,
+        });
+        let subject = "Territory Assistant: Admin Priveleges Granted";
+        let message = `You have been given the Administration Role for your Congregation! Use the listed url to access the website and login with your credentials:
+         <u>territoryAssistant.com/admin/dashboard`;
+        let email = entity.email;
+        console.log("bro", entity);
+        const response = await fetch("/api/sendEmail", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, subject, message }),
         });
         console.log("add");
       }
@@ -31,7 +43,20 @@ export default function CancelModal({ isOpen, setIsOpen, entity }) {
         console.log("error", res); // Display an error message if something goes wrong
         setIsOpen(false);
       } else {
-        console.log("Success");
+        console.log("Success", entity.addUser);
+        if (entity.addUser) {
+          let subject = "Territory Assistant: User Priveleges Granted";
+          let message = `You have been given a User Role for your Congregation! Use the listed url to access the website and login with your credentials:
+         <u>territoryAssistant.com/user/dashboard`;
+          let email = entity.email;
+          const response = await fetch("/api/sendEmail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, subject, message }),
+          });
+        }
         window.location.reload();
       }
     } else {

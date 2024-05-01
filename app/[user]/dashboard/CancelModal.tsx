@@ -19,24 +19,28 @@ export default function CancelModal({ isOpen, setIsOpen, entity }) {
 
         console.log("remove");
       } else {
-        const res = entity.function(entity.data.id, {
-          isAdmin: true,
-        });
-        let subject = "Territory Assistant: Admin Priveleges Granted";
-        let message = `You have been given the Administration Role for your Congregation! Use the listed url to access the website and login with your credentials:
-         <u>territoryAssistant.com/admin/dashboard`;
-        let email = entity.email;
-        console.log("bro", entity);
-        const response = await fetch("/api/sendEmail", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, subject, message }),
-        });
-        console.log("add");
+        try {
+          const res = entity.function(entity.data.id, {
+            isAdmin: true,
+          });
+          let subject = "Territory Assistant: Admin Priveleges Granted";
+          let message = `You have been given the Administration Role for your Congregation! Use the listed url to access the website and login with your credentials:
+           <u>territoryAssistant.com/admin/dashboard`;
+          let email = entity.email;
+          console.log("bro", entity);
+          const response = await fetch("/api/sendEmail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, subject, message }),
+          });
+          console.log("add");
+          // window.location.reload();
+        } catch (e) {
+          console.log(e);
+        }
       }
-      window.location.reload();
     } else if (entity.function) {
       const res = await dynamicCall(entity.function, entity.data);
       if (!res.success) {

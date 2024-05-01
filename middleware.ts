@@ -8,61 +8,69 @@ async function isGeneralAdmin(req) {
     return new Response("Method not allowed", { status: 405 });
   }
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  console.log("token...", token);
-  const session = await getSession({ req });
-  console.log("cong sess", session);
+  console.log("Checking isGeneralAdmin");
+
   if (token.isGeneralAdmin) {
+    console.log("GAdmin - Approved!");
+
     return NextResponse.next();
   }
-  return new Response("Unauthorized", { status: 401 });
+  return null;
 }
 
 // Middleware to check if the user is an admin
 async function isAdmin(req) {
-  const session = await getSession({ req });
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  console.log("token...", token);
+  console.log("checking isAdmin");
   if (token.isAdmin) {
+    console.log("Admin - Approved!");
     return NextResponse.next();
   }
-  return new Response("Unauthorized", { status: 401 });
+  return null;
 }
 
 // Middleware for general authentication
 async function isAuthenticated(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  console.log("token...", token);
+  console.log("Checking Authentication");
   const session = await getSession({ req });
   if (token.user) {
+    console.log("Authenticated - Approved!");
     return NextResponse.next();
   }
-  return new Response("Unauthorized", { status: 401 });
+  return null;
 }
 
 export async function middleware(req) {
   const pathname = req.nextUrl.pathname;
   const method = req.method;
-
-  console.log("middleware...", { pathname, method }, req.user);
   if (
     pathname.startsWith("/api/congregation") &&
     ["POST", "PATCH", "DELETE", "GET"].includes(method)
   ) {
     const checkGeneralAdmin = await isGeneralAdmin(req);
-    if (checkGeneralAdmin instanceof NextResponse) return checkGeneralAdmin;
+    if (checkGeneralAdmin) {
+      return checkGeneralAdmin;
+    }
     return new Response("Unauthorized", { status: 401 });
   }
 
   if (pathname.startsWith("/api/user") && ["POST", "PATCH", "DELETE"].includes(method)) {
-    const adminCheck = await isAdmin(req);
-    if (adminCheck instanceof NextResponse) return adminCheck;
+    const checkGeneralAdmin = await isGeneralAdmin(req);
+    const adminCheck = checkGeneralAdmin ? checkGeneralAdmin : await isAdmin(req);
+    if (adminCheck) {
+      return adminCheck;
+    }
+
     return new Response("Unauthorized", { status: 401 });
   }
 
   if (pathname.startsWith("/api/house") && ["POST", "PATCH", "DELETE"].includes(method)) {
     const checkAdminOrAuthenticated =
-      method === "PATCH" ? await isAuthenticated(req) : await isAdmin(req);
-    if (checkAdminOrAuthenticated instanceof NextResponse) return checkAdminOrAuthenticated;
+      method === "PATCH" ? await isAdmin(req) : await isAuthenticated(req);
+    if (checkAdminOrAuthenticated) {
+      return checkAdminOrAuthenticated;
+    }
     return new Response("Unauthorized", { status: 401 });
   }
 

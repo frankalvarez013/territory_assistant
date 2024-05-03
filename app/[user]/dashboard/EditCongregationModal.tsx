@@ -23,22 +23,46 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
   const [password, setPassword] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntity, setEntity] = useState({});
+  const [formErrorHandler, setFormErrorHandler] = useState({});
 
   const handleSubmit = async (e) => {
+    setFormErrorHandler({});
     e.preventDefault(); // This prevents the form from submitting traditionally
-    setEntity({
-      data: {
-        name: userName,
+    try {
+      setEntity({
+        data: {
+          name: userName,
+          email: email,
+          password: password,
+          congregationID: congregation.id,
+        },
+        addUser: true,
         email: email,
-        password: password,
-        congregationID: congregation.id,
-      },
-      addUser: true,
-      email: email,
-      message: `Are you sure you want to add this user?`,
-      function: fetchAddUser,
-    });
-    setDeleteModal(true);
+        message: `Are you sure you want to add this user?`,
+        function: fetchAddUser,
+      });
+      setDeleteModal(true);
+    } catch (error) {
+      console.log("ERRORRR");
+      console.error("Error:", error);
+      switch (error.error) {
+        case "Error1":
+          setFormErrorHandler({
+            name: `Error with the name field`,
+          });
+          break;
+        case "Error1":
+          setFormErrorHandler({
+            email: `Error with the email field`,
+          });
+          break;
+        case "Error3":
+          setFormErrorHandler({
+            password: `Error with the password field`,
+          });
+          break;
+      }
+    }
   };
   function closeEditModal() {
     if (!deleteModal) {
@@ -321,7 +345,11 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                       <div>
                         <label htmlFor="name">Name:</label>
                         <input
-                          className="block border-2 border-black"
+                          className={`block border-2 border-black ${
+                            formErrorHandler.name
+                              ? `border-red-500 text-red-500`
+                              : `border-gray-300`
+                          }`}
                           type="text"
                           id="name"
                           name="name"
@@ -331,11 +359,18 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
+                        {formErrorHandler.name && (
+                          <p className="text-red-500 text-xs italic">{errors.name}</p>
+                        )}
                       </div>
                       <div>
                         <label htmlFor="email">Email:</label>
                         <input
-                          className="block border-2 border-black"
+                          className={`block border-2 border-black ${
+                            formErrorHandler.email
+                              ? `border-red-500 text-red-500`
+                              : `border-gray-300`
+                          }`}
                           type="email"
                           id="email"
                           name="email"
@@ -345,11 +380,18 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
+                        {formErrorHandler.email && (
+                          <p className="text-red-500 text-xs italic">{errors.name}</p>
+                        )}
                       </div>
                       <div>
                         <label htmlFor="password">Password:</label>
                         <input
-                          className="block border-2 border-black"
+                          className={`block border-2 border-black ${
+                            formErrorHandler.password
+                              ? `border-red-500 text-red-500`
+                              : `border-gray-300`
+                          }`}
                           type="password"
                           id="password"
                           name="password"
@@ -359,6 +401,9 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
+                        {formErrorHandler.password && (
+                          <p className="text-red-500 text-xs italic">{errors.name}</p>
+                        )}
                       </div>
                       <button className="border-2 border-black rounded-3xl px-3" type="submit">
                         Submit

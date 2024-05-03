@@ -28,13 +28,12 @@ export default async function fetchAddUser(
       }),
     });
     if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      throw new Error(`HTTP error! status: ${res.status} ${res.}`);
     }
     const data = await res.json();
-    console.log("done");
     return { success: true, data };
   } catch (error) {
-    console.error("Failed to edit user", error);
+    console.error("In fetchAddUser - Failed to edit user", error);
     return { success: false, error: error.message };
   }
 }

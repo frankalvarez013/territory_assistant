@@ -36,8 +36,9 @@ export default function CancelModal({ isOpen, setIsOpen, entity }) {
             body: JSON.stringify({ email, subject, message }),
           });
           console.log("add");
-          // window.location.reload();
+          window.location.reload();
         } catch (e) {
+          console.error(e);
           console.log(e);
         }
       }

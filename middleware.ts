@@ -61,7 +61,6 @@ export async function middleware(req) {
     if (adminCheck) {
       return adminCheck;
     }
-
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -73,7 +72,6 @@ export async function middleware(req) {
     }
     return new Response("Unauthorized", { status: 401 });
   }
-
   return NextResponse.next(); // Default response for non-configured paths
 }
 

@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import fetchAddCongregation from "@/app/components/fetch/fetchAddCongregation";
-import fetchAddUser from "@/app/components/fetch/fetchAddUser";
 import CancelModal from "./CancelModal";
 
 export default function AddCongregation() {

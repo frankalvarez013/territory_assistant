@@ -32,10 +32,8 @@ export async function POST(
     });
     return NextResponse.json(newCongregation, { status: 201 });
   } catch (e) {
-    return NextResponse.json(
-      { message: `Congregation GET Transaction failed:\n ${e}` },
-      { status: 404 }
-    );
+    console.error("Congregation POST failed:", e);
+    return NextResponse.json({ message: `Congregation POST failed:\n ${e}` }, { status: 409 });
   }
 }
 
@@ -53,17 +51,15 @@ export async function GET(
         },
       });
     } catch (e) {
-      console.log(e);
-      return NextResponse.json(
-        { message: `Congregation GET Transaction failed:\n ${e}` },
-        { status: 404 }
-      );
+      console.error("Congregation GET failed:", e);
+      return NextResponse.json({ message: `Congregation POST failed:\n ${e}` }, { status: 409 });
     }
   } else {
     getCongregation = await prisma.congregation.findMany({});
   }
   if (!getCongregation) {
-    console.log("Congregation Record not Found:\n", getCongregation);
+    console.error("Congregation GET failed:");
+
     return NextResponse.json({ message: "Congregation Record not Found:\n" }, { status: 404 });
   }
   return NextResponse.json(getCongregation, { status: 200 });
@@ -75,6 +71,7 @@ export async function PATCH(request, res) {
   const validation = updateCongregationSchema.safeParse(body);
 
   if (!validation.success) {
+    console.error("Congregation PATCH failed:");
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
   const updateData: { [key: string]: string } = {};
@@ -92,10 +89,8 @@ export async function PATCH(request, res) {
     });
     return NextResponse.json(updateCongregation, { status: 201 });
   } catch (e) {
-    return NextResponse.json(
-      { message: `Congregation UPDATE Transaction failed\n: ${e}` },
-      { status: 404 }
-    );
+    console.error("Congregation PATCH failed:", e);
+    return NextResponse.json({ message: `Congregation POST failed:\n ${e}` }, { status: 409 });
   }
 }
 
@@ -112,12 +107,7 @@ export async function DELETE(request: NextRequest) {
     });
     return NextResponse.json(deletedCongregation, { status: 200 });
   } catch (e) {
-    console.error("Error deleting congregation:", e);
-    return NextResponse.json(
-      {
-        message: `Congregation DELETE Transaction failed: ${e.message}`,
-      },
-      { status: 404 }
-    );
+    console.error("Congregation GET failed:", e);
+    return NextResponse.json({ message: `Congregation POST failed:\n ${e}` }, { status: 409 });
   }
 }

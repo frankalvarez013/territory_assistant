@@ -10,10 +10,14 @@ export default async function fetchAddCongregation(congregationName, address) {
       },
       body: JSON.stringify({ congregationName, address }),
     });
+    if (!res.ok) {
+      const errorData = await res.json();
+      return { success: false, error: errorData.message };
+    }
     const data = await res.json();
     return { success: true, data };
   } catch (error) {
-    console.error("Failed to edit user", error);
+    console.error("In fetchAddUser - Failed to edit user", error);
     return { success: false, error: error.message };
   }
 }

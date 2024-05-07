@@ -46,7 +46,7 @@ export default function TerritoryTransfer(props) {
         </tr>
       </thead>
       <tbody>
-        {console.log(territories)}
+        {console.log("territories:", territories)}
         {territories
           .sort((a, b) => a.territoryID - b.territoryID)
           .map((element) => (

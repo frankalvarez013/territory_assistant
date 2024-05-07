@@ -133,18 +133,14 @@ export async function PATCH(
   const body = await request.json();
   // console.log(body);
   const validation = updateUserSchema.safeParse(body);
-  console.log("checkin");
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  console.log("checkin1");
 
   let adminFalseAction = false;
   let changingCongregations = false;
   let oldCongregation: {} | null = null;
   const updateData: { [key: string]: any } = {};
-  console.log("checkin2");
-
   for (const [key, value] of Object.entries(body)) {
     if (value !== undefined) {
       if (key === "isAdmin") {
@@ -165,19 +161,15 @@ export async function PATCH(
       }
     }
   }
-  console.log("checkin3");
-
   const oldUser = await prisma.user.findUnique({
     where: {
       id: request.nextUrl.searchParams.get("id") ?? undefined,
     },
   });
   console.log("checkin4");
-
   try {
     let updatedTerritories = null;
     console.log("brudder");
-    console.log(updateData);
     const updatedUser = await prisma.user.update({
       where: {
         id: request.nextUrl.searchParams.get("id") ?? undefined,
@@ -223,10 +215,8 @@ export async function PATCH(
 
     return NextResponse.json(updatedUser, { status: 201 });
   } catch (e) {
-    console.error("bruh", e);
-    return NextResponse.json({
-      message: `User UPDATE Transaction Failed\n: ${e}`,
-    });
+    console.error("User POST failed:", e);
+    return NextResponse.json({ message: `User UPDATE failed:\n ${e}` }, { status: 409 });
   }
 }
 

@@ -39,17 +39,17 @@ export default function EditUsers() {
     return <h1>...Checking</h1>;
   }
   return (
-    <div className="flex flex-col gap-10 mt-10">
+    <div className="flex flex-col gap-10 mt-10 ">
       {users.map((user, index) => {
         if (user.id === session.user.id || user.isAdmin) {
           return;
         } else {
           return (
-            <div key={index} className="flex">
+            <div key={index} className="flex hover:text-gray-300">
               <button
                 onClick={() => {
-                  setisEditOpen(true);
                   setUser(user);
+                  setisEditOpen(true);
                 }}
                 key={index}
                 className="flex flex-grow items-center justify-center"

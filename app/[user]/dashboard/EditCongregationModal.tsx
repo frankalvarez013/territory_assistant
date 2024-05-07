@@ -391,7 +391,10 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           </p>
                         )}
                       </div>
-                      <button className="border-2 border-black rounded-3xl px-3" type="submit">
+                      <button
+                        className="border-2 border-black rounded-3xl px-3 mt-2 hover:bg-black hover:text-white"
+                        type="submit"
+                      >
                         Submit
                       </button>
                     </form>

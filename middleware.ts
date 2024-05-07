@@ -44,10 +44,7 @@ async function isAuthenticated(req) {
 export async function middleware(req) {
   const pathname = req.nextUrl.pathname;
   const method = req.method;
-  if (
-    pathname.startsWith("/api/congregation") &&
-    ["POST", "PATCH", "DELETE", "GET"].includes(method)
-  ) {
+  if (pathname.startsWith("/api/congregation") && ["POST", "PATCH", "DELETE"].includes(method)) {
     const checkGeneralAdmin = await isGeneralAdmin(req);
     if (checkGeneralAdmin) {
       return checkGeneralAdmin;

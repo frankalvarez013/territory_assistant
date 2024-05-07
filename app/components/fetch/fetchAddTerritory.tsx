@@ -10,10 +10,15 @@ export default async function fetchAddTerritory(location) {
       },
       body: JSON.stringify({ location }),
     });
-    const res1 = await res.json();
-    return res1;
+    if (!res.ok) {
+      const errorData = await res.json();
+      return { success: false, error: errorData.message };
+    }
+    const data = await res.json();
+
+    return { success: true, data };
   } catch (error) {
-    console.error("Failed to edit user", error);
-    return null;
+    console.error("In fetchAddUser - Failed to edit user", error);
+    return { success: false, error: error.message };
   }
 }

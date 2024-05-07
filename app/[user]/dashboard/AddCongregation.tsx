@@ -63,7 +63,7 @@ export default function AddCongregation() {
           </div>
         </div>
         <button
-          className="border-2 border-black rounded-3xl px-3"
+          className="border-2 border-black rounded-3xl px-3 hover:bg-black hover:text-white"
           type="submit"
           onClick={async (e) => {
             e.preventDefault();

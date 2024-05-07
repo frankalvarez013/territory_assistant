@@ -18,7 +18,6 @@ export async function POST(
   request: NextRequest,
   res: NextApiResponse
 ): Promise<NextResponse<Congregation | Congregation[] | ErrorResponse | ZodIssue[]>> {
-  console.log("hi");
   const body: Congregation = await request.json();
   const validation = createCongregationSchema.safeParse(body);
   if (!validation.success) {

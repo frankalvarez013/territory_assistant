@@ -49,7 +49,6 @@ export async function POST(
   if (validation.data.Role) {
     role = validation.data.Role;
   }
-  console.log(role);
   try {
     const newUser = await prisma.user.create({
       data: {

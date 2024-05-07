@@ -1,8 +1,8 @@
 "use client";
 import { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
-
-export default function CancelModal({ isOpen, setIsOpen, entity }) {
+import ErrorParser from "@/app/utils/ErrorParse";
+export default function CancelModal({ isOpen, setIsOpen, entity, setFormErrorHandler }) {
   function closeEditModal() {
     setIsOpen(false);
   }
@@ -16,8 +16,6 @@ export default function CancelModal({ isOpen, setIsOpen, entity }) {
         const res = entity.function(entity.data.id, {
           isAdmin: false,
         });
-
-        console.log("remove");
       } else {
         try {
           const res = entity.function(entity.data.id, {
@@ -45,7 +43,19 @@ export default function CancelModal({ isOpen, setIsOpen, entity }) {
     } else if (entity.function) {
       const res = await dynamicCall(entity.function, entity.data);
       if (!res.success) {
-        console.log("error", res); // Display an error message if something goes wrong
+        console.log("parsing....");
+        const errorParts: string | null = ErrorParser(res.error);
+        console.log("Error Field:", errorParts);
+        if (errorParts) {
+          setFormErrorHandler({
+            [errorParts.model]: errorParts.model,
+
+            [errorParts.field]: errorParts.field,
+
+            error: `Login Failed`,
+          });
+        }
+
         setIsOpen(false);
       } else {
         console.log("Success", entity.addUser);

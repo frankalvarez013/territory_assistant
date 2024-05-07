@@ -8,10 +8,10 @@ async function isGeneralAdmin(req) {
     return new Response("Method not allowed", { status: 405 });
   }
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  console.log("Checking isGeneralAdmin");
+  // console.log("Checking isGeneralAdmin");
 
   if (token.isGeneralAdmin) {
-    console.log("GAdmin - Approved!");
+    // console.log("GAdmin - Approved!");
 
     return NextResponse.next();
   }
@@ -21,9 +21,9 @@ async function isGeneralAdmin(req) {
 // Middleware to check if the user is an admin
 async function isAdmin(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  console.log("checking isAdmin");
+  // console.log("checking isAdmin");
   if (token.isAdmin) {
-    console.log("Admin - Approved!");
+    // console.log("Admin - Approved!");
     return NextResponse.next();
   }
   return null;
@@ -32,10 +32,10 @@ async function isAdmin(req) {
 // Middleware for general authentication
 async function isAuthenticated(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  console.log("Checking Authentication");
+  // console.log("Checking Authentication");
   const session = await getSession({ req });
   if (token.user) {
-    console.log("Authenticated - Approved!");
+    // console.log("Authenticated - Approved!");
     return NextResponse.next();
   }
   return null;

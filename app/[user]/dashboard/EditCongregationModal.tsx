@@ -28,41 +28,19 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
   const handleSubmit = async (e) => {
     setFormErrorHandler({});
     e.preventDefault(); // This prevents the form from submitting traditionally
-    try {
-      setEntity({
-        data: {
-          name: userName,
-          email: email,
-          password: password,
-          congregationID: congregation.id,
-        },
-        addUser: true,
+    setEntity({
+      data: {
+        name: userName,
         email: email,
-        message: `Are you sure you want to add this user?`,
-        function: fetchAddUser,
-      });
-      setDeleteModal(true);
-    } catch (error) {
-      console.log("ERRORRR");
-      console.error("Error:", error);
-      switch (error.error) {
-        case "Error1":
-          setFormErrorHandler({
-            name: `Error with the name field`,
-          });
-          break;
-        case "Error1":
-          setFormErrorHandler({
-            email: `Error with the email field`,
-          });
-          break;
-        case "Error3":
-          setFormErrorHandler({
-            password: `Error with the password field`,
-          });
-          break;
-      }
-    }
+        password: password,
+        congregationID: congregation.id,
+      },
+      addUser: true,
+      email: email,
+      message: `Are you sure you want to add this user?`,
+      function: fetchAddUser,
+    });
+    setDeleteModal(true);
   };
   function closeEditModal() {
     if (!deleteModal) {
@@ -118,7 +96,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
 
     fetchData();
   }, [congregation]); // Only re-run the effect if `congregation` changes
-
+  console.log(formErrorHandler);
   if (!users) {
     return <h1></h1>;
   }
@@ -346,7 +324,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                         <label htmlFor="name">Name:</label>
                         <input
                           className={`block border-2 border-black ${
-                            formErrorHandler.name
+                            formErrorHandler.name && formErrorHandler.user
                               ? `border-red-500 text-red-500`
                               : `border-gray-300`
                           }`}
@@ -359,16 +337,18 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
-                        {formErrorHandler.name && (
-                          <p className="text-red-500 text-xs italic">{errors.name}</p>
+                        {formErrorHandler.name && formErrorHandler.user && (
+                          <p className="text-red-500 text-xs italic">
+                            Change your Name to successfully create a new Email
+                          </p>
                         )}
                       </div>
                       <div>
                         <label htmlFor="email">Email:</label>
                         <input
                           className={`block border-2 border-black ${
-                            formErrorHandler.email
-                              ? `border-red-500 text-red-500`
+                            formErrorHandler.email && formErrorHandler.user
+                              ? `border-red-500 `
                               : `border-gray-300`
                           }`}
                           type="email"
@@ -380,15 +360,18 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
-                        {formErrorHandler.email && (
-                          <p className="text-red-500 text-xs italic">{errors.name}</p>
+                        {formErrorHandler.email && formErrorHandler.user && (
+                          <p className="text-red-500 text-xs italic">
+                            {" "}
+                            Change your email to successfully create a new Email
+                          </p>
                         )}
                       </div>
                       <div>
                         <label htmlFor="password">Password:</label>
                         <input
                           className={`block border-2 border-black ${
-                            formErrorHandler.password
+                            formErrorHandler.password && formErrorHandler.user
                               ? `border-red-500 text-red-500`
                               : `border-gray-300`
                           }`}
@@ -401,8 +384,11 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
-                        {formErrorHandler.password && (
-                          <p className="text-red-500 text-xs italic">{errors.name}</p>
+                        {formErrorHandler.password && formErrorHandler.user && (
+                          <p className="text-red-500 text-xs italic">
+                            {" "}
+                            Change your password to successfully create a new Email
+                          </p>
                         )}
                       </div>
                       <button className="border-2 border-black rounded-3xl px-3" type="submit">
@@ -414,7 +400,11 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                     <div className="mt-2">
                       <label htmlFor="Name">Change Congregation Name</label>
                       <input
-                        className=" border-[1px] border-gray-400 rounded-lg block"
+                        className={`border-[1px] border-gray-400 rounded-lg block ${
+                          formErrorHandler.name && formErrorHandler.congregation
+                            ? `border-red-500 text-red-500`
+                            : `border-gray-300`
+                        }`}
                         type="text"
                         id="congName"
                         value={congName}
@@ -424,7 +414,11 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                     <div className="mt-2">
                       <label htmlFor="Name">Change Congregation Address</label>
                       <input
-                        className=" border-[1px] border-gray-400 rounded-lg block"
+                        className={`border-[1px] border-gray-400 rounded-lg block ${
+                          formErrorHandler.address && formErrorHandler.congregation
+                            ? `border-red-500 text-red-500`
+                            : `border-gray-300`
+                        }`}
                         type="text"
                         id="Name"
                         value={address}
@@ -451,6 +445,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
         isOpen={deleteModal}
         setIsOpen={setDeleteModal}
         entity={selectedEntity}
+        setFormErrorHandler={setFormErrorHandler}
       ></CancelModal>
     </div>
   );

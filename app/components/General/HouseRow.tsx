@@ -2,6 +2,7 @@ import { Observation, Status } from "@prisma/client";
 import React, { useEffect, useMemo, useState } from "react";
 import SelectObservation from "../Interact/SelectObservationADMIN";
 import fetchEditHouse from "../fetch/fetchEditHouse";
+import ErrorParser from "@/app/utils/ErrorParse";
 
 const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
   const [localState, setLocalState] = useState({ ...house });
@@ -14,7 +15,9 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
   });
   const [localSave, setLocalSave] = useState(false);
   const observationValues = useMemo(() => Object.values(Observation), []);
+  const [errorFormHandler, setErrorFormHandler] = useState({});
   const saveHouseData = async () => {
+    setErrorFormHandler({});
     const updatedState = { ...localState };
     if (!updatedState.StreetAd || !updatedState.StreetAd.trim())
       updatedState.StreetAd = house.StreetAd;
@@ -22,7 +25,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
       updatedState.Direction = house.Direction;
     if (!updatedState.comment || !updatedState.comment.trim()) updatedState.comment = house.comment;
     console.log("Saving", updatedState);
-    fetchEditHouse(
+    const res = await fetchEditHouse(
       updatedState.territoryID,
       updatedState.congregationID,
       updatedState.houseID,
@@ -32,6 +35,20 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
       updatedState.observation,
       updatedState.dateVisited
     );
+    if (!res.success) {
+      console.log("parsing....");
+      const errorParts: string | null = ErrorParser(res.error);
+      console.log("Error Field:", errorParts);
+      if (errorParts) {
+        setErrorFormHandler({
+          [errorParts.model]: errorParts.model,
+
+          [errorParts.field]: errorParts.field,
+
+          error: `Login Failed`,
+        });
+      }
+    }
     setLocalSave(true);
     setEmptyState({
       Direction: localState.Direction,
@@ -84,6 +101,12 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
                 onChange={(e) => handleChange(e)}
                 value={localState.streetAd}
               />
+              {errorFormHandler.StreetAd && (
+                <p className="text-red-500 text-xs italic">
+                  {" "}
+                  Change the address to successfully create a new Email
+                </p>
+              )}
             </label>
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">

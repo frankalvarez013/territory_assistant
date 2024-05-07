@@ -4,7 +4,9 @@ import SelectObservation from "../Interact/SelectAddObservation";
 import fetchAddHouse from "../fetch/fetchAddHouse";
 import plus from "../../public/images/plus.svg";
 import Image from "next/image";
+import ErrorParser from "@/app/utils/ErrorParse";
 const AddHouseRow = React.memo((props) => {
+  const [errorFormHandler, setErrorFormHandler] = useState({});
   const [localState, setLocalState] = useState({
     Direction: "",
     observation: Observation.EMPTY,
@@ -14,6 +16,8 @@ const AddHouseRow = React.memo((props) => {
   });
   const observationValues = useMemo(() => Object.values(Observation), []);
   const saveHouseData = async () => {
+    setErrorFormHandler({});
+
     if (!localState.StreetAd || !localState.StreetAd.trim())
       localState.StreetAd = localState.StreetAd;
     if (!localState.Direction || !localState.Direction.trim())
@@ -28,7 +32,26 @@ const AddHouseRow = React.memo((props) => {
       localState.observation,
       undefined
     );
-    props.setUpdate(!props.update);
+    //!!!!!!!!!!!!!!!!Remember This is where you left off,
+    //You have to add Error Handling for this page and for the fetch itself, and prob the route as well...
+    //to be continued
+    //In this case add Error handling for each tr tl comment
+    if (!res.success) {
+      console.log("parsing....");
+      const errorParts: string | null = ErrorParser(res.error);
+      console.log("Error Field:", errorParts);
+      if (errorParts) {
+        setErrorFormHandler({
+          [errorParts.model]: errorParts.model,
+
+          [errorParts.field]: errorParts.field,
+
+          error: `Login Failed`,
+        });
+      }
+    } else {
+      props.setUpdate(!props.update);
+    }
   };
   useEffect(() => {
     setLocalState({

@@ -76,10 +76,8 @@ export async function POST(
     });
     return NextResponse.json(newHouse, { status: 201 });
   } catch (e) {
-    return NextResponse.json(
-      { message: `House POST Transaction failed:\n ${e}` },
-      { status: 201 }
-    );
+    console.error("House POST failed:", e);
+    return NextResponse.json({ message: `House POST failed:\n ${e}` }, { status: 409 });
   }
 }
 
@@ -115,10 +113,7 @@ export async function GET(
     }
   }
   if (!getHouse) {
-    return NextResponse.json(
-      { message: "House record not found" },
-      { status: 404 }
-    );
+    return NextResponse.json({ message: "House record not found" }, { status: 404 });
   }
   return NextResponse.json(getHouse, { status: 201 });
 }
@@ -156,16 +151,12 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json(updatedHouse, { status: 201 });
     }
   } catch (e) {
-    return NextResponse.json(
-      { message: `House Update Transaction failed:\n ${e}` },
-      { status: 201 }
-    );
+    console.error("House PATCH failed:", e);
+    return NextResponse.json({ message: `House PATCH failed:\n ${e}` }, { status: 409 });
   }
 }
 
-export async function DELETE(
-  request: NextRequest
-): Promise<NextResponse<House | ErrorResponse>> {
+export async function DELETE(request: NextRequest): Promise<NextResponse<House | ErrorResponse>> {
   const idParam = request.nextUrl.searchParams.get("terrId");
   const streetdAdParam = request.nextUrl.searchParams.get("streetAd");
   const streetAd = streetdAdParam ? streetdAdParam : undefined;

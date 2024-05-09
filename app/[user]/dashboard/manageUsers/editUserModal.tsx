@@ -85,7 +85,7 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all flex flex-col gap-5">
                   <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                    User Information
+                    <h1>User: {user.name}</h1>
                   </Dialog.Title>
                   <div>
                     <Image
@@ -94,7 +94,7 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
                       className="inline mr-5"
                       height={50}
                     ></Image>
-                    <h1>{user.name}</h1>
+                    <h1 className=" italic text-gray-400 mt-2">Email: {user.email}</h1>
                   </div>
                   <div className="mt-2">
                     Change Congregations

@@ -17,7 +17,15 @@ const AddHouseRow = React.memo((props) => {
   const observationValues = useMemo(() => Object.values(Observation), []);
   const saveHouseData = async () => {
     setErrorFormHandler({});
+    if (!localState.StreetAd) {
+      setErrorFormHandler({ StreetAd: true, message: "Please input a valid value" });
+      return;
+    }
+    if (!localState.Direction) {
+      setErrorFormHandler({ Direction: true, message: "Please input a valid value" });
 
+      return;
+    }
     if (!localState.StreetAd || !localState.StreetAd.trim())
       localState.StreetAd = localState.StreetAd;
     if (!localState.Direction || !localState.Direction.trim())
@@ -86,7 +94,11 @@ const AddHouseRow = React.memo((props) => {
                 placeholder={"Add StreetAd"}
                 onChange={(e) => handleChange(e)}
                 value={localState.StreetAd}
+                required
               />
+              {errorFormHandler.StreetAd && (
+                <p className="text-red-500 text-xs italic">{errorFormHandler.message}</p>
+              )}
             </label>
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
@@ -98,7 +110,11 @@ const AddHouseRow = React.memo((props) => {
                 placeholder={"Add Direction"}
                 onChange={(e) => handleChange(e)}
                 value={localState.Direction}
+                required
               />
+              {errorFormHandler.Direction && (
+                <p className="text-red-500 text-xs italic">{errorFormHandler.message}</p>
+              )}
             </label>
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200 ">

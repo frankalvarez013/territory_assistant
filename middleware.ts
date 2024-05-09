@@ -61,7 +61,15 @@ export async function middleware(req) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  if (pathname.startsWith("/api/house") && ["POST", "PATCH", "DELETE"].includes(method)) {
+  if (pathname.startsWith("/api/house") && ["POST", "DELETE"].includes(method)) {
+    const checkAdmin = await isAdmin(req);
+    if (checkAdmin) {
+      return checkAdmin;
+    }
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  if (pathname.startsWith("/api/house") && ["PATCH"].includes(method)) {
     const checkAdminOrAuthenticated =
       method === "PATCH" ? await isAdmin(req) : await isAuthenticated(req);
     if (checkAdminOrAuthenticated) {

@@ -1,16 +1,17 @@
 import { Observation, Status } from "@prisma/client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import SelectObservation from "../Interact/SelectObservationADMIN";
 import fetchEditHouse from "../fetch/fetchEditHouse";
+import { EmptyState, HouseRowProps } from "@/app/types/common";
 
-const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
+const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps) => {
   const [localState, setLocalState] = useState({ ...house });
-  const [emptyState, setEmptyState] = useState({
+  const [emptyState, setEmptyState] = useState<EmptyState>({
     Direction: "",
     observation: house.observation,
     StreetAd: "",
     comment: "",
-    dateVisited: "",
+    dateVisited: null,
   });
   const [localSave, setLocalSave] = useState(false);
   const observationValues = useMemo(() => Object.values(Observation), []);
@@ -36,7 +37,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
     setEmptyState({
       Direction: localState.Direction,
       StreetAd: localState.StreetAd,
-      comment: localState.comment,
+      comment: localState.comment || "",
       observation: localState.observation,
       dateVisited: localState.dateVisited,
     });
@@ -46,7 +47,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
       setLocalState({ ...house });
     }
   }, [isEditable, house, localSave]);
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name, value);
     setLocalState((prev) => ({ ...prev, [name]: value }));
@@ -82,7 +83,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
               options={observationValues}
               territoryID={house.territoryID.toString()}
               congregationID={house.congregationID}
-              userID={house.currentUserID}
               houseID={house.houseID.toString()}
               setLocalState={setLocalState}
               handleChange={handleChange}
@@ -134,7 +134,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
               options={observationValues}
               territoryID={house.territoryID.toString()}
               congregationID={house.congregationID}
-              userID={house.currentUserID}
               houseID={house.houseID.toString()}
               setLocalState={setLocalState}
               handleChange={handleChange}

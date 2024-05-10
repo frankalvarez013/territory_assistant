@@ -1,21 +1,22 @@
-import { Observation, Status } from "@prisma/client";
-import React, { useEffect, useMemo, useState } from "react";
+import { House, Observation, Status } from "@prisma/client";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import SelectObservation from "../Interact/SelectObservationADMIN";
 import fetchEditHouse from "../fetch/fetchEditHouse";
 import ErrorParser from "@/app/utils/ErrorParse";
-
-const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
+import { EmptyState, HouseRowProps } from "@/app/types/common";
+import type { ErrorFormHandler, OptionalHouse } from "../../types/error.d.ts";
+const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps) => {
   const [localState, setLocalState] = useState({ ...house });
-  const [emptyState, setEmptyState] = useState({
+  const [emptyState, setEmptyState] = useState<EmptyState>({
     Direction: "",
     observation: house.observation,
     StreetAd: "",
     comment: "",
-    dateVisited: "",
+    dateVisited: null,
   });
   const [localSave, setLocalSave] = useState(false);
   const observationValues = useMemo(() => Object.values(Observation), []);
-  const [errorFormHandler, setErrorFormHandler] = useState({});
+  const [errorFormHandler, setErrorFormHandler] = useState<ErrorFormHandler<OptionalHouse>>({});
   const saveHouseData = async () => {
     setErrorFormHandler({});
     const updatedState = { ...localState };
@@ -24,7 +25,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
     if (!updatedState.Direction || !updatedState.Direction.trim())
       updatedState.Direction = house.Direction;
     if (!updatedState.comment || !updatedState.comment.trim()) updatedState.comment = house.comment;
-    console.log("Saving", updatedState);
     const res = await fetchEditHouse(
       updatedState.territoryID,
       updatedState.congregationID,
@@ -36,10 +36,11 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
       updatedState.dateVisited
     );
     if (!res.success) {
-      console.log("parsing....");
-      const errorParts: string | null = ErrorParser(res.error);
-      console.log("Error Field:", errorParts);
-      if (errorParts) {
+      const errorParts: {
+        field: string | null;
+        model: string | null;
+      } | null = ErrorParser(res.error);
+      if (errorParts && errorParts.model && errorParts.field) {
         setErrorFormHandler({
           [errorParts.model]: errorParts.model,
 
@@ -63,10 +64,10 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
       setLocalState({ ...house });
     }
   }, [isEditable, house, localSave]);
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name, value);
-    setLocalState((prev) => ({ ...prev, [name]: value }));
+    setLocalState((prev: House) => ({ ...prev, [name]: value }));
   };
   return (
     <tr
@@ -99,9 +100,9 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
                 type="text"
                 placeholder={house.StreetAd}
                 onChange={(e) => handleChange(e)}
-                value={localState.streetAd}
+                value={localState.StreetAd}
               />
-              {errorFormHandler.StreetAd && (
+              {errorFormHandler && errorFormHandler.StreetAd && (
                 <p className="text-red-500 text-xs italic">
                   {" "}
                   Change the address to successfully create a new Email
@@ -126,7 +127,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
               options={observationValues}
               territoryID={house.territoryID.toString()}
               congregationID={house.congregationID}
-              userID={house.currentUserID}
               houseID={house.houseID.toString()}
               setLocalState={setLocalState}
               handleChange={handleChange}
@@ -141,7 +141,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
               <input
                 name="comment"
                 type="text"
-                placeholder={house.comment}
+                placeholder={house.comment || ""}
                 onChange={(e) => handleChange(e)}
               />
             </label>
@@ -204,7 +204,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
               options={observationValues}
               territoryID={house.territoryID.toString()}
               congregationID={house.congregationID}
-              userID={house.currentUserID}
               houseID={house.houseID.toString()}
               setLocalState={setLocalState}
               handleChange={handleChange}
@@ -219,8 +218,8 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }) => {
               <input
                 name="comment"
                 type="text"
-                placeholder={house.comment}
-                value={emptyState.comment}
+                placeholder={house.comment || ""}
+                value={emptyState.comment || ""}
               />
             </label>
           </td>

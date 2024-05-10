@@ -24,7 +24,6 @@ export default function EditTerritories(props) {
   if (!territories) {
     return <h1>...Checking</h1>;
   }
-  console.log(territories);
   const territoryResults = territories
     .sort((a, b) => a.territoryID - b.territoryID)
     .map((territory, index) => {
@@ -38,7 +37,7 @@ export default function EditTerritories(props) {
         <a
           href={`manageTerritories/edit/${props.congID}/${territory.territoryID}`}
           key={index}
-          className="flex items-center justify-between"
+          className="flex items-center justify-between hover:text-gray-300"
         >
           <Image src={pinLocation} alt="Pin Location" className="inline mr-5" height={35}></Image>
           <h1 className="inline w-full">

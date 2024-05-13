@@ -1,18 +1,14 @@
 import { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Image from "next/image";
+import { QRCodeModalProps } from "@/app/types/common";
 
-export default function QrCodeModal({
-  isOpen,
-  setIsOpen,
-  congregation,
-  territory,
-}) {
+export default function QrCodeModal(props: QRCodeModalProps) {
   const [qrCode, setQrCode] = useState("");
   useEffect(() => {
     async function GETQR() {
       const resQRCode = await fetch(
-        `https://quickchart.io/qr?text=http://localhost:3000/territory/${congregation}/${territory}`
+        `https://quickchart.io/qr?text=http://localhost:3000/props.territory/${props.congregation}/${props.territory}`
       );
       const imageBlob = await resQRCode.blob(); // Process response as a Blob
       const imageUrl = URL.createObjectURL(imageBlob); // Create a local URL to the blob object
@@ -20,22 +16,17 @@ export default function QrCodeModal({
     }
     GETQR();
     console.log("FU");
-  }, [congregation, territory]);
+  }, [props.congregation, props.territory]);
   function closeEditModal() {
-    setIsOpen(false);
+    props.setIsOpen(false);
   }
   if (!qrCode) {
     return <h1>Loading</h1>;
   }
   console.log("OI", qrCode);
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        onClose={closeEditModal}
-        onClick={closeEditModal}
-      >
+    <Transition appear show={props.isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeEditModal} onClick={closeEditModal}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -60,12 +51,7 @@ export default function QrCodeModal({
               leaveTo="opacity-0 scale-95"
             >
               <div>
-                <img
-                  src={qrCode}
-                  alt="Picture of QR Code Icon"
-                  width="500"
-                  height="500"
-                />
+                <img src={qrCode} alt="Picture of QR Code Icon" width="500" height="500" />
               </div>
             </Transition.Child>
           </div>

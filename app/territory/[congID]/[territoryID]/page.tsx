@@ -6,9 +6,17 @@ import Image from "next/image";
 import TerritoryGeneralView from "../../../components/General/TerritoryGeneralView";
 import QrCodeModal from "./QrCodeModal";
 import { useEffect, useState } from "react";
-export default function Page({ params }) {
+import { TerritoryEditAdmin, TerritoryParams } from "@/app/types/common";
+import { Image as Imaage } from "@prisma/client";
+export default function Page({ params }: TerritoryParams) {
   const [isOpen, setIsOpen] = useState(false);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState<Imaage>({
+    territoryID: 0, // Assuming `0` can be a default placeholder value
+    congregationID: "",
+    publicId: "",
+    format: "",
+    version: "",
+  });
   useEffect(() => {
     async function getInfo() {
       const resUsers = await fetch(
@@ -27,9 +35,7 @@ export default function Page({ params }) {
     <DashboardLayout>
       <main className="flex flex-col mt-10 justify-center items-center">
         <div className="flex justify-evenly mb-10 items-center gap-20">
-          <header className="text-6xl text-center">
-            Territory {params.territoryID}
-          </header>
+          <header className="text-6xl text-center">Territory {params.territoryID}</header>
           <button className="">
             <Image
               src={qrcode}
@@ -45,6 +51,7 @@ export default function Page({ params }) {
         <img
           src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/v${image.version}/${image.publicId}.${image.format}`}
           key={image.publicId}
+          alt="f"
         />
         <div className="mt-28 mb-28">
           <TerritoryGeneralView

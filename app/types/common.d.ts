@@ -87,3 +87,16 @@ type SelectComponentProps = {
   territoryId: string;
   congregationId: string;
 };
+
+type TerritoryParams = {
+  params: {
+    territoryID: string;
+    congID: string;
+  };
+};
+type QRCodeModalProps = {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<Boolean>>;
+  congregation: string;
+  territory: string;
+};

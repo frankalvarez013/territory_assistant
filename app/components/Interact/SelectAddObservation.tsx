@@ -1,9 +1,23 @@
+import { SelectAddObservationProps } from "@/app/types/common";
 import { Observation } from "@prisma/client";
-import React, { useEffect, useState } from "react";
-function SelectObservation(props) {
+import React, { ChangeEvent, useEffect, useState } from "react";
+function SelectObservation(props: SelectAddObservationProps) {
   const [selectedOption, setSelectedOption] = useState(props.uniqueOption);
-  const handleChange = (e) => {
-    setSelectedOption(e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newValue = e.target.value as
+      | "EMPTY"
+      | "NO_LLEGAR"
+      | "INGLES"
+      | "OTRO_IDIOMA"
+      | "DUERME_DE_DIA"
+      | "VARON_VISITA"
+      | "PERRO_AFUERA"
+      | "PERRO_EN_CASA"
+      | "TESTIGOS"
+      | "VIOLENTO"
+      | "NO_TRASPASAR"
+      | "CANDADO";
+    setSelectedOption(newValue);
     props.handleChange(e);
   };
   useEffect(() => {

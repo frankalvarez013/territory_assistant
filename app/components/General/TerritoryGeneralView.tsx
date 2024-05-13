@@ -1,20 +1,18 @@
-import { Observation, Territory, Status } from "@prisma/client";
+import { Observation, Territory, Status, House, TerritoryCounter, User } from "@prisma/client";
 import SelectObservation from "../Interact/SelectObservation";
 import { useEffect, useState } from "react";
-export default function TerritoryGeneralView(props) {
-  const [territory, setTerritory] = useState(null);
-  const [user, setUser] = useState(null);
+import { TerritoryEditAdmin, TerritoryWithHouses } from "@/app/types/common";
+export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
+  const [territory, setTerritory] = useState<TerritoryWithHouses | null>(null);
+  const [user, setUser] = useState<User[] | null>(null);
   useEffect(() => {
     async function brv() {
-      const res = await fetch(
-        `/api/territory?congID=${props.congID}&terrID=${props.territoryID}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`/api/territory?congID=${props.congID}&terrID=${props.territoryID}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const res1 = await res.json();
       setTerritory(res1);
       const res4 = await fetch(`/api/user?id=${res1.currentUserID}`, {
@@ -29,7 +27,7 @@ export default function TerritoryGeneralView(props) {
     }
 
     brv();
-  }, []);
+  }, [props.congID, props.territoryID]);
   if (!territory || !user) {
     return <h1>Checking Territory...</h1>;
   }
@@ -39,10 +37,7 @@ export default function TerritoryGeneralView(props) {
       <table className="table-auto">
         <thead>
           <tr>
-            <th
-              colSpan={6}
-              className="bg-blue-400 border-b border-gray-200 py-4 px-4"
-            >
+            <th colSpan={6} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
               REGISTRO DE CASA EN CASA
             </th>
           </tr>
@@ -67,9 +62,7 @@ export default function TerritoryGeneralView(props) {
             </th>
             <th className="py-1 px-2">
               {territory.ExperiationDate
-                ? new Date(territory.ExperiationDate).toLocaleDateString(
-                    "en-US"
-                  )
+                ? new Date(territory.ExperiationDate).toLocaleDateString("en-US")
                 : "No Expiration Date"}
             </th>
           </tr>
@@ -93,13 +86,10 @@ export default function TerritoryGeneralView(props) {
           </tr>
           {territory.houses
             .slice() // Create a shallow copy of the array to avoid mutating the original array
-            .sort((a, b) => a.houseID - b.houseID) // Sort the copy based on houseID
-            .map((element) => {
+            .sort((a: House, b: House) => a.houseID - b.houseID) // Sort the copy based on houseID
+            .map((element: House) => {
               return (
-                <tr
-                  key={element.houseID}
-                  className=" border-b border-gray-200 "
-                >
+                <tr key={element.houseID} className=" border-b border-gray-200 ">
                   <td className="py-1 px-2 border-r border-gray-200">
                     {element.status === Status.LLEGA
                       ? element.observation === Observation.CANDADO ||
@@ -109,33 +99,23 @@ export default function TerritoryGeneralView(props) {
                         : "🔴"
                       : "🔴" || "🔴"}
                   </td>
-                  <td className="py-1 px-2 border-r border-gray-200">
-                    {element.StreetAd}
-                  </td>
-                  <td className="py-1 px-2 border-r border-gray-200">
-                    {element.Direction}
-                  </td>
+                  <td className="py-1 px-2 border-r border-gray-200">{element.StreetAd}</td>
+                  <td className="py-1 px-2 border-r border-gray-200">{element.Direction}</td>
                   <td className="py-1 px-2 border-r border-gray-200">
                     <SelectObservation
                       uniqueOption={element.observation}
                       options={observationValues}
                       territoryID={territory.territoryID.toString()}
                       congregationID={territory.congregationID}
-                      userID={territory.currentUserID}
                       houseID={element.houseID.toString()}
                     />
                   </td>
-                  <td className="py-1 px-2 border-r border-gray-200">
-                    {element.comment}
-                  </td>
+                  <td className="py-1 px-2 border-r border-gray-200">{element.comment}</td>
                   <td className="py-1 px-2">
                     {element.dateVisited
-                      ? new Date(element.dateVisited).toLocaleDateString(
-                          "en-US",
-                          {
-                            /* formatting options here */
-                          }
-                        )
+                      ? new Date(element.dateVisited).toLocaleDateString("en-US", {
+                          /* formatting options here */
+                        })
                       : ""}
                   </td>
                 </tr>

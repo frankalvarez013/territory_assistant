@@ -6,10 +6,10 @@ import plus from "../../public/images/plus.svg";
 import Image from "next/image";
 import ErrorParser from "@/app/utils/ErrorParse";
 import { ErrorFormHandler, OptionalHouse } from "@/app/types/error";
-import { AddHouseRowProps } from "@/app/types/common";
+import { AddHouseRowProps, LocalState } from "@/app/types/common";
 const AddHouseRow = React.memo((props: AddHouseRowProps) => {
   const [errorFormHandler, setErrorFormHandler] = useState<ErrorFormHandler<OptionalHouse>>({});
-  const [localState, setLocalState] = useState({
+  const [localState, setLocalState] = useState<LocalState>({
     Direction: "",
     observation: Observation.EMPTY,
     StreetAd: "",

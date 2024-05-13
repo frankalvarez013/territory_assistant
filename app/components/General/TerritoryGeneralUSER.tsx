@@ -1,18 +1,19 @@
-import { Observation, Territory, Status } from "@prisma/client";
+import { Observation, Territory, Status, House, User } from "@prisma/client";
 import cancel from "../../public/images/cancel.svg";
 import check1 from "../../public/images/check1.svg";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import check from "../../public/images/check1.svg";
 import HouseRow from "./HouseRowUser";
-export default function TerritoryGeneralUserView(props) {
-  const [val, setVal] = useState(null);
-  const [houses, setHouses] = useState(null);
-  const [user, setUser] = useState(null);
-  const [editableHouseID, setEditableHouseID] = useState(null);
+import { TerritoryEditAdmin } from "@/app/types/common";
+export default function TerritoryGeneralUserView(props: TerritoryEditAdmin) {
+  const [val, setVal] = useState<Territory | null>(null);
+  const [houses, setHouses] = useState<House[] | null>(null);
+  const [user, setUser] = useState<User[] | null>(null);
+  const [editableHouseID, setEditableHouseID] = useState<number | null>(null);
   const [update, setUpdate] = useState(false);
   const [location, setLocation] = useState("");
-  const makeEditable = useCallback((houseID) => {
+  const makeEditable = useCallback((houseID: number) => {
     setEditableHouseID(houseID);
   }, []);
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function TerritoryGeneralUserView(props) {
       setUser(res5);
     }
     brv();
-  }, [update]); // Ensure 'update' is the correct dependency
+  }, [update, props.congID, props.territoryID]); // Ensure 'update' is the correct dependency
 
   if (!val || !houses || !user) {
     return <h1>Checking Territory...</h1>;

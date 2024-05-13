@@ -1,4 +1,4 @@
-import { Territory, House, Observation } from "@prisma/client";
+import { Territory, House, Observation, User } from "@prisma/client";
 
 // Assuming `Territory` is imported from Prisma as shown
 
@@ -15,10 +15,30 @@ interface SelectObservationProps {
   options: Observation[];
   territoryID: string;
   congregationID: string;
-  userID: string;
   houseID: string;
 }
-
+interface SelectAddObservationProps {
+  uniqueOption: Observation;
+  options: Observation[];
+  houseID: string;
+  setLocalState: React.Dispatch<React.SetStateAction<LocalState>>;
+  handleChange: ChangeEventHandler<HTMLSelectElement>;
+  localState: LocalState;
+  isEditable: boolean;
+}
+interface SelectAdminObservationProps {
+  uniqueOption: Observation | null | undefined;
+  options: Observation[];
+  territoryID: string;
+  congregationID: string;
+  houseID: string;
+  houseID: string;
+  localState: House;
+  setLocalState: React.Dispatch<React.SetStateAction<House>>;
+  handleChange: ChangeEventHandler<HTMLSelectElement>;
+  localSave: boolean;
+  isEditable: boolean;
+}
 //HouseRow.tsx Types Below
 //-------------------------------------------------------
 type MakeEditableFunction = (houseID: number) => void;
@@ -34,7 +54,7 @@ type EmptyState = {
   Direction: string;
   StreetAd: string;
   comment: string | undefined | null;
-  observation: string | undefined | null;
+  observation: Observation | undefined | null;
   dateVisited: Date | undefined | null;
 };
 // Define the type for the function parameter and return type
@@ -50,4 +70,20 @@ type AddHouseRowProps = {
 type TerritoryEditAdmin = {
   territoryID: string;
   congID: string;
+};
+
+//Interact Types
+//-------------------------------
+interface LocalState {
+  Direction: string;
+  observation: Observation;
+  StreetAd: string;
+  comment: string;
+  dateVisited: string;
+}
+type SelectComponentProps = {
+  uniqueOption: User;
+  options: User[];
+  territoryId: string;
+  congregationId: string;
 };

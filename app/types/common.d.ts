@@ -22,6 +22,7 @@ interface SelectObservationProps {
 //HouseRow.tsx Types Below
 //-------------------------------------------------------
 type MakeEditableFunction = (houseID: number) => void;
+type BooleanFunction = (fact: boolean) => void;
 
 type HouseRowProps = {
   house: House;
@@ -37,3 +38,16 @@ type EmptyState = {
   dateVisited: Date | undefined | null;
 };
 // Define the type for the function parameter and return type
+
+type AddHouseRowProps = {
+  key: number;
+  makeEditable: MakeEditableFunction;
+  isEditable: boolean;
+  territoryID: string;
+  update: boolean;
+  setUpdate: BooleanFunction;
+};
+type TerritoryEditAdmin = {
+  territoryID: string;
+  congID: string;
+};

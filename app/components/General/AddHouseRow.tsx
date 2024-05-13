@@ -1,12 +1,14 @@
-import { Observation, Status } from "@prisma/client";
-import React, { useEffect, useMemo, useState } from "react";
+import { Observation } from "@prisma/client";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import SelectObservation from "../Interact/SelectAddObservation";
 import fetchAddHouse from "../fetch/fetchAddHouse";
 import plus from "../../public/images/plus.svg";
 import Image from "next/image";
 import ErrorParser from "@/app/utils/ErrorParse";
-const AddHouseRow = React.memo((props) => {
-  const [errorFormHandler, setErrorFormHandler] = useState({});
+import { ErrorFormHandler, OptionalHouse } from "@/app/types/error";
+import { AddHouseRowProps } from "@/app/types/common";
+const AddHouseRow = React.memo((props: AddHouseRowProps) => {
+  const [errorFormHandler, setErrorFormHandler] = useState<ErrorFormHandler<OptionalHouse>>({});
   const [localState, setLocalState] = useState({
     Direction: "",
     observation: Observation.EMPTY,
@@ -18,11 +20,11 @@ const AddHouseRow = React.memo((props) => {
   const saveHouseData = async () => {
     setErrorFormHandler({});
     if (!localState.StreetAd) {
-      setErrorFormHandler({ StreetAd: true, message: "Please input a valid value" });
+      setErrorFormHandler({ StreetAd: true, error: "Please input a valid value" });
       return;
     }
     if (!localState.Direction) {
-      setErrorFormHandler({ Direction: true, message: "Please input a valid value" });
+      setErrorFormHandler({ Direction: true, error: "Please input a valid value" });
 
       return;
     }
@@ -46,9 +48,12 @@ const AddHouseRow = React.memo((props) => {
     //In this case add Error handling for each tr tl comment
     if (!res.success) {
       console.log("parsing....");
-      const errorParts: string | null = ErrorParser(res.error);
+      const errorParts: {
+        field: string | null;
+        model: string | null;
+      } | null = ErrorParser(res.error);
       console.log("Error Field:", errorParts);
-      if (errorParts) {
+      if (errorParts && errorParts.model && errorParts.field) {
         setErrorFormHandler({
           [errorParts.model]: errorParts.model,
 
@@ -70,7 +75,7 @@ const AddHouseRow = React.memo((props) => {
       dateVisited: "",
     });
   }, [props.isEditable, props.update]);
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     console.log(name, value);
     setLocalState((prev) => ({ ...prev, [name]: value }));
@@ -97,7 +102,7 @@ const AddHouseRow = React.memo((props) => {
                 required
               />
               {errorFormHandler.StreetAd && (
-                <p className="text-red-500 text-xs italic">{errorFormHandler.message}</p>
+                <p className="text-red-500 text-xs italic">{errorFormHandler.error}</p>
               )}
             </label>
           </td>
@@ -113,7 +118,7 @@ const AddHouseRow = React.memo((props) => {
                 required
               />
               {errorFormHandler.Direction && (
-                <p className="text-red-500 text-xs italic">{errorFormHandler.message}</p>
+                <p className="text-red-500 text-xs italic">{errorFormHandler.error}</p>
               )}
             </label>
           </td>

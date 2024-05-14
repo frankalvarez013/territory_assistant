@@ -1,25 +1,30 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
-// Define an interface for the arguments your custom methods expect
-interface CustomQueryArgs {
-  args: {
-    data: Prisma.TerritoryCreateArgs["data"] & { congregationID: string };
-    where?: Prisma.TerritoryWhereUniqueInput;
-  };
-  query: (args: any) => Promise<any>; // Define a more specific type based on your actual usage
-}
+export type HouseCreateCustomArgs = {
+  args: Prisma.HouseCreateArgs;
+  query: (args: Prisma.HouseCreateArgs) => Promise<any>;
+};
 
-// Interface to extend Prisma with custom methods
-interface ExtendedPrismaClient extends PrismaClient {
+export type TerritoryCreateCustomArgs = {
+  args: Prisma.TerritoryCreateArgs;
+  query: (args: Prisma.TerritoryCreateArgs) => Promise<any>;
+};
+
+export type UserDeleteCustomArgs = {
+  args: Prisma.UserDeleteArgs;
+  query: (args: Prisma.UserDeleteArgs) => Promise<any>;
+};
+
+export type ExtendedPrismaClient = PrismaClient & {
   query: {
     territory: {
-      create: (params: CustomQueryArgs) => Promise<any>; // Define return type more specifically
+      create: (params: TerritoryCreateCustomArgs) => Promise<any>;
     };
     house: {
-      create: (params: CustomQueryArgs) => Promise<any>;
+      create: (params: HouseCreateCustomArgs) => Promise<any>;
     };
     user: {
-      delete: (params: CustomQueryArgs) => Promise<any>;
+      delete: (params: UserDeleteCustomArgs) => Promise<any>;
     };
   };
-}
+};

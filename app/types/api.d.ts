@@ -1,4 +1,5 @@
-import { Session } from "next-auth";
+import { ServerSessionOptions } from "http2";
+import { getServerSession, Session } from "next-auth";
 import { User } from "next-auth";
 export type ErrorResponse = {
   message: string;

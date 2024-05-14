@@ -1,20 +1,26 @@
-import { PrismaClient, TerritoryComment } from "@prisma/client";
+import { PrismaClient, TerritoryComment, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import {
+  HouseCreateCustomArgs,
+  TerritoryCreateCustomArgs,
+  UserDeleteCustomArgs,
+  ExtendedPrismaClient,
+} from "@/app/types/prisma";
+import { CustomSession } from "@/app/types/api";
 
-const prismaClientSingleton = () => {
-  return new PrismaClient().$extends({
+const prismaClientSingleton = (): ExtendedPrismaClient => {
+  const prisma = new PrismaClient();
+  const extendedPrisma: Partial<ExtendedPrismaClient> = {
     query: {
       territory: {
-        async create({ args, query }) {
+        async create({ args, query }: TerritoryCreateCustomArgs) {
           const { congregationID } = args.data;
-          //Fetch the nextTeritoryID for the given congregationID
+
           let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
-            where: {
-              congregationID: congregationID,
-            },
+            where: { congregationID: congregationID },
           });
-          //if congregationTerritoryCounter is there use it, if not create it
+
           if (congregationTerritoryCounter == null && congregationID) {
             congregationTerritoryCounter = await prisma.territoryCounter.create({
               data: {
@@ -23,34 +29,26 @@ const prismaClientSingleton = () => {
               },
             });
           }
-          console.log(congregationTerritoryCounter?.nextTerritoryID);
+
           if (
-            typeof congregationTerritoryCounter?.nextTerritoryID === typeof 1 &&
+            typeof congregationTerritoryCounter?.nextTerritoryID === "number" &&
             congregationTerritoryCounter != null
           ) {
-            //Use the nextTerritoryID for the new Territory
             args.data.territoryID = congregationTerritoryCounter.nextTerritoryID;
-            const bobo = await prisma.territoryCounter.update({
-              where: {
-                congregationID: congregationID,
-              },
-              data: {
-                nextTerritoryID: congregationTerritoryCounter?.nextTerritoryID + 1,
-              },
+            await prisma.territoryCounter.update({
+              where: { congregationID: congregationID },
+              data: { nextTerritoryID: congregationTerritoryCounter.nextTerritoryID + 1 },
             });
           }
+
           return query(args);
         },
       },
       house: {
-        async create({ args, query }) {
-          console.log("HELLO");
+        async create({ args, query }: HouseCreateCustomArgs) {
           const { territoryID, congregationID } = args.data;
 
           if (territoryID && congregationID) {
-            console.log("Find Counter...");
-
-            // Start a transaction to ensure all operations are successful
             const result = await prisma.$transaction(async (prisma) => {
               let houseCounter = await prisma.houseCounter.findUnique({
                 where: {
@@ -61,9 +59,7 @@ const prismaClientSingleton = () => {
                 },
               });
 
-              console.log("Check if HouseCounter is there: ", houseCounter);
               if (houseCounter === null) {
-                console.log("Create Counter");
                 houseCounter = await prisma.houseCounter.create({
                   data: {
                     territoryID: territoryID,
@@ -74,10 +70,8 @@ const prismaClientSingleton = () => {
               }
 
               if (houseCounter && houseCounter.nextHouseID) {
-                console.log("Update New Val");
                 args.data.houseID = houseCounter.nextHouseID;
 
-                // Update the counter only if the nextHouseID is available
                 await prisma.houseCounter.update({
                   where: {
                     territoryID_congregationID: {
@@ -85,36 +79,33 @@ const prismaClientSingleton = () => {
                       congregationID: congregationID,
                     },
                   },
-                  data: {
-                    nextHouseID: houseCounter.nextHouseID + 1,
-                  },
+                  data: { nextHouseID: houseCounter.nextHouseID + 1 },
                 });
               }
 
-              // Proceed with the main creation query only if all previous operations are successful
               return query(args);
             });
 
-            console.log("Transaction successful");
             return result;
           } else {
-            // Handle the case where territoryID or congregationID is not provided
-            console.log("TerritoryID or CongregationID is missing");
             throw new Error("TerritoryID and CongregationID are required.");
           }
         },
       },
       user: {
-        async delete({ args, query }) {
-          const session = await getServerSession(authOptions);
-          console.log("sesh in trans", session);
-          console.log(session?.user.id);
+        async delete({ args, query }: UserDeleteCustomArgs) {
+          const session = (await getServerSession(authOptions)) as CustomSession | null;
+
+          if (!session || !session.user || !session.user.id) {
+            throw new Error("User not authenticated or user ID missing in session.");
+          }
           const id = args.where.id;
+
           if (id) {
-            // Start a transaction to ensure all operations are successful
             const territories = await prisma.territory.findMany({
               where: { currentUserID: id },
             });
+
             const result = await Promise.all(
               territories.map((territory) =>
                 prisma.territory.update({
@@ -126,27 +117,26 @@ const prismaClientSingleton = () => {
                   },
                   data: {
                     activity: TerritoryComment.Available,
-                    currentUserID: session?.user.id,
+                    currentUserID: session?.user?.id,
                   },
                 })
               )
             );
 
-            // Proceed with the main creation query only if all previous operations are successful
             return query(args);
           } else {
-            // Handle the case where territoryID or congregationID is not provided
-            console.log("TerritoryID or CongregationID is missing");
-            throw new Error("TerritoryID and CongregationID are required.");
+            throw new Error("User ID is required.");
           }
         },
       },
     },
-  });
+  };
+
+  return extendedPrisma as ExtendedPrismaClient;
 };
 
 declare global {
-  var prisma: undefined | ReturnType<typeof prismaClientSingleton>;
+  var prisma: ExtendedPrismaClient | undefined;
 }
 
 const prisma = globalThis.prisma ?? prismaClientSingleton();

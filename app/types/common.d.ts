@@ -82,7 +82,7 @@ interface LocalState {
   dateVisited: string;
 }
 type SelectComponentProps = {
-  uniqueOption: User;
+  uniqueOption: User | { id: string; name: string };
   options: User[];
   territoryId: string;
   congregationId: string;

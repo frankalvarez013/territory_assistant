@@ -1,8 +1,9 @@
 import { getSession } from "next-auth/react";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { nextRequestToIncomingMessage } from "./app/utils/functions";
 // Middleware to check if the user is a general admin
-async function isGeneralAdmin(req) {
+async function isGeneralAdmin(req: NextRequest) {
   const allowedMethods = ["DELETE", "PATCH", "POST", "GET"];
   if (!allowedMethods.includes(req.method)) {
     return new Response("Method not allowed", { status: 405 });
@@ -10,7 +11,7 @@ async function isGeneralAdmin(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   // console.log("Checking isGeneralAdmin");
 
-  if (token.isGeneralAdmin) {
+  if (token && token.isGeneralAdmin) {
     // console.log("GAdmin - Approved!");
 
     return NextResponse.next();
@@ -19,10 +20,10 @@ async function isGeneralAdmin(req) {
 }
 
 // Middleware to check if the user is an admin
-async function isAdmin(req) {
+async function isAdmin(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   // console.log("checking isAdmin");
-  if (token.isAdmin) {
+  if (token && token.isAdmin) {
     // console.log("Admin - Approved!");
     return NextResponse.next();
   }
@@ -30,18 +31,19 @@ async function isAdmin(req) {
 }
 
 // Middleware for general authentication
-async function isAuthenticated(req) {
+async function isAuthenticated(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   // console.log("Checking Authentication");
-  const session = await getSession({ req });
-  if (token.user) {
+  const sessionReq = nextRequestToIncomingMessage(req);
+  const session = await getSession({ req: sessionReq });
+  if (token && session && session.user) {
     // console.log("Authenticated - Approved!");
     return NextResponse.next();
   }
   return null;
 }
 
-export async function middleware(req) {
+export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const method = req.method;
   if (pathname.startsWith("/api/congregation") && ["POST", "PATCH", "DELETE"].includes(method)) {

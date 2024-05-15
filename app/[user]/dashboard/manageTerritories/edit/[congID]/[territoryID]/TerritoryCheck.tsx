@@ -1,10 +1,11 @@
 import { useSession } from "next-auth/react";
 import TerritoryGeneralADMIN from "@/app/components/General/TerritoryGeneralADMIN";
 import TerritoryGeneralUser from "@/app/components/General/TerritoryGeneralUSER";
-
-export default function TerritoryCheck(props) {
-  const { data: session } = useSession();
-  if (session?.user.isAdmin) {
+import { TerritoryEditAdmin } from "@/app/types/common";
+import { CustomSession } from "@/app/types/api";
+export default function TerritoryCheck(props: TerritoryEditAdmin) {
+  const { data: session } = useSession() as { data: CustomSession };
+  if (session?.user?.isAdmin) {
     return (
       <div className="mt-28 mb-28">
         <TerritoryGeneralADMIN

@@ -5,17 +5,18 @@ import { redirect } from "next/navigation";
 import EditTerritories from "./editTerritories";
 import AddTerritories from "./AddTerritories";
 import QuestionCard from "../../../components/General/QuestionCard";
+import { CustomSession } from "@/app/types/api";
 export default async function Page() {
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as CustomSession | null;
   // console.log(session);
   if (!session) {
     redirect("/api/auth/signin");
   }
   return (
-    <DashboardLayout check={session.user.isAdmin}>
+    <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
         <div className=" h-5/6 flex gap-80">
-          {session.user.isAdmin ? (
+          {session?.user?.isAdmin ? (
             <div className=" m-auto w-[90%] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
               <div className="text-5xl">Create Territories</div>
               <div className="mt-10">
@@ -37,8 +38,8 @@ export default async function Page() {
             </div>
             <div className=" text-darkgrey mb-7 text-xl font-semibold flex gap-5 flex-col mt-5">
               <EditTerritories
-                congID={session.user.congID}
-                userID={session.user.id}
+                congID={session?.user?.congID!}
+                userID={session?.user?.id!}
               ></EditTerritories>
             </div>
           </div>

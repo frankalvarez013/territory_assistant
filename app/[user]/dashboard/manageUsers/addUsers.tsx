@@ -1,23 +1,26 @@
 import { useSession } from "next-auth/react";
 import fetchAddUser from "@/app/components/fetch/fetchAddUser";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Role } from "@prisma/client";
 import DeleteUserModal from "./deleteUserModal";
+import { CustomSession } from "@/app/types/api";
+import { UserErrorFormHandler } from "@/app/types/error";
 import CancelModal from "../CancelModal";
 export default function AddUsers() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession() as { data: CustomSession };
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(Role.Approved);
+  const [role, setRole] = useState<Role>(Role.Approved);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntity, setEntity] = useState({});
-  const [formErrorHandler, setFormErrorHandler] = useState({});
+  const [formErrorHandler, setFormErrorHandler] = useState<UserErrorFormHandler>({});
   var roles = Object.keys(Role).map((key) => key);
-  const handleChange = (e) => {
-    setRole(e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    let val = e.target.value as Role;
+    setRole(val);
   };
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault(); // This prevents the form from submitting traditionally
     setEntity({
       data: {

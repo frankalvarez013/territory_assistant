@@ -3,7 +3,8 @@ import { Dialog, Transition, Listbox } from "@headlessui/react";
 import userImg from "../../../public/images/user.svg";
 import Image from "next/image";
 import fetchDeleteUser from "../../../components/fetch/fetchDeleteUser";
-export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
+import { deleteUserModalProps } from "@/app/types/common";
+export default function DeleteUserModal({ user, isOpen, setIsOpen }: deleteUserModalProps) {
   function deleteModal() {
     console.log("?");
     fetchDeleteUser(user.id);
@@ -42,10 +43,7 @@ export default function DeleteUserModal({ user, isOpen, setIsOpen }) {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all flex flex-col gap-5">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
+                <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
                   Are you sure you want to delete this User?
                 </Dialog.Title>
                 <div>

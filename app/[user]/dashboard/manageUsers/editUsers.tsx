@@ -7,11 +7,13 @@ import trash from "../../../public/images/trash.svg";
 import edit from "../../../public/images/edit.svg";
 import EditUserModal from "./editUserModal";
 import DeleteUserModal from "./deleteUserModal";
+import { User } from "@prisma/client";
+import { CustomSession } from "@/app/types/api";
 export default function EditUsers() {
-  const { data: session } = useSession();
-  const [users, setUsers] = useState(null);
+  const { data: session } = useSession() as { data: CustomSession };
+  const [users, setUsers] = useState<User[] | null>(null);
   const [congregations, setcongregations] = useState(null);
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [isEditOpen, setisEditOpen] = useState(false);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function EditUsers() {
   return (
     <div className="flex flex-col gap-10 mt-10 ">
       {users.map((user, index) => {
-        if (user.id === session.user.id || user.isAdmin) {
+        if (user.id === session?.user?.id || user.isAdmin) {
           return;
         } else {
           return (
@@ -84,7 +86,7 @@ export default function EditUsers() {
         congregations={congregations}
       ></EditUserModal>
       <DeleteUserModal
-        user={user}
+        user={user!}
         isOpen={isDeleteOpen}
         setIsOpen={setisDeleteOpen}
       ></DeleteUserModal>

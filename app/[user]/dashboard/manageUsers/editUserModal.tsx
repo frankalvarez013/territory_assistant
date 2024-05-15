@@ -1,15 +1,22 @@
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, ChangeEvent, MouseEvent } from "react";
 import check from "../../../public/images/check.svg";
 import upDown from "../../../public/images/chevron-up-down.svg";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import userImg from "../../../public/images/user.svg";
 import Image from "next/image";
 import fetchEditUser from "../../../components/fetch/fetchEditUser";
-import { Role } from "@prisma/client";
+import { Congregation, Role } from "@prisma/client";
 import CancelModal from "../CancelModal";
-export default function EditUserModal({ user, isOpen, setIsOpen, congregations }) {
+import { EditUserModalProps } from "@/app/types/common";
+import { UserErrorFormHandler } from "@/app/types/error";
+export default function EditUserModal({
+  user,
+  isOpen,
+  setIsOpen,
+  congregations,
+}: EditUserModalProps) {
   const congregation = congregations.find(
-    (congregation) => congregation.id === user.congregationID
+    (congregation: Congregation) => congregation.id === user.congregationID
   );
   const [selected, setSelected] = useState(congregation);
   const [congregationID, setCongregationID] = useState(congregation.id);
@@ -17,7 +24,7 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [selectedEntity, setEntity] = useState({});
-  const [formErrorHandler, setFormErrorHandler] = useState({});
+  const [formErrorHandler, setFormErrorHandler] = useState<UserErrorFormHandler>({});
   const [deleteModal, setDeleteModal] = useState(false);
 
   console.log("start of modal...", user.Role);
@@ -29,11 +36,11 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
     }
   }, [user.Role]); // Dependency on user.Role to update state when it changes
   var roles = Object.keys(Role).map((key) => key);
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log("setting");
     setRole(e.target.value);
   };
-  function setEm(e) {
+  function setEm(e: ChangeEvent<HTMLSelectElement>) {
     setSelected(e);
     setCongregationID(e.id);
   }
@@ -42,7 +49,7 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
       setIsOpen(false);
     }
   }
-  const patchEditModal = async (e) => {
+  const patchEditModal = async (e: MouseEvent<HTMLButtonElement>) => {
     setFormErrorHandler({});
     setEntity({
       data: {
@@ -118,39 +125,41 @@ export default function EditUserModal({ user, isOpen, setIsOpen, congregations }
                           leaveTo="opacity-0"
                         >
                           <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                            {congregations.map((congregation, congregationIdx) => (
-                              <Listbox.Option
-                                key={congregationIdx}
-                                className={({ active }) =>
-                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                    active ? "bg-amber-100 text-amber-900" : "text-gray-900"
-                                  }`
-                                }
-                                value={congregation}
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={`block truncate ${
-                                        selected ? "font-medium" : "font-normal"
-                                      }`}
-                                    >
-                                      {congregation.congregationName}
-                                    </span>
-                                    {selected ? (
-                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                        <Image
-                                          src={check}
-                                          alt="User Symbol"
-                                          className="inline mr-5"
-                                          height={23}
-                                        ></Image>
+                            {congregations.map(
+                              (congregation: Congregation, congregationIdx: number) => (
+                                <Listbox.Option
+                                  key={congregationIdx}
+                                  className={({ active }) =>
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                      active ? "bg-amber-100 text-amber-900" : "text-gray-900"
+                                    }`
+                                  }
+                                  value={congregation}
+                                >
+                                  {({ selected }) => (
+                                    <>
+                                      <span
+                                        className={`block truncate ${
+                                          selected ? "font-medium" : "font-normal"
+                                        }`}
+                                      >
+                                        {congregation.congregationName}
                                       </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            ))}
+                                      {selected ? (
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                          <Image
+                                            src={check}
+                                            alt="User Symbol"
+                                            className="inline mr-5"
+                                            height={23}
+                                          ></Image>
+                                        </span>
+                                      ) : null}
+                                    </>
+                                  )}
+                                </Listbox.Option>
+                              )
+                            )}
                           </Listbox.Options>
                         </Transition>
                       </div>

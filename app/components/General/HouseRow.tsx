@@ -4,7 +4,7 @@ import SelectObservation from "../Interact/SelectObservationADMIN";
 import fetchEditHouse from "../fetch/fetchEditHouse";
 import ErrorParser from "@/app/utils/ErrorParse";
 import { EmptyState, HouseRowProps } from "@/app/types/common";
-import type { ErrorFormHandler, OptionalHouse } from "../../types/error.d.ts";
+import type { HouseErrorFormHandler } from "../../types/error.d.ts";
 const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps) => {
   const [localState, setLocalState] = useState({ ...house });
   const [emptyState, setEmptyState] = useState<EmptyState>({
@@ -16,7 +16,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
   });
   const [localSave, setLocalSave] = useState(false);
   const observationValues = useMemo(() => Object.values(Observation), []);
-  const [errorFormHandler, setErrorFormHandler] = useState<ErrorFormHandler<OptionalHouse>>({});
+  const [errorFormHandler, setErrorFormHandler] = useState<HouseErrorFormHandler>({});
   const saveHouseData = async () => {
     setErrorFormHandler({});
     const updatedState = { ...localState };

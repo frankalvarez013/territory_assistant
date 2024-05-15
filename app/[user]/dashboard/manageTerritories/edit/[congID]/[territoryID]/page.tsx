@@ -5,8 +5,10 @@ import TerritoryGeneralADMIN from "@/app/components/General/TerritoryGeneralADMI
 import Upload from "./upload";
 import { useEffect, useState } from "react";
 import TerritoryCheck from "./TerritoryCheck";
-export default function Page({ params }) {
-  const [image, setImage] = useState(null);
+import { TerritoryEditAdmin } from "@/app/types/common";
+import { Image as ObjImage } from "@prisma/client";
+export default function Page(params: TerritoryEditAdmin) {
+  const [image, setImage] = useState<ObjImage | null>(null);
   const [qrCode, setQrCode] = useState("");
   useEffect(() => {
     async function duv() {

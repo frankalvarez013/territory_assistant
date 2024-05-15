@@ -2,11 +2,18 @@
 import { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import ErrorParser from "@/app/utils/ErrorParse";
-export default function CancelModal({ isOpen, setIsOpen, entity, setFormErrorHandler }) {
+import { ErrorFormHandler, errorModal, errorParts } from "@/app/types/error";
+import { Congregation, House, Territory, User } from "@prisma/client";
+export default function CancelModal({
+  isOpen,
+  setIsOpen,
+  entity,
+  setFormErrorHandler,
+}: errorModal) {
   function closeEditModal() {
     setIsOpen(false);
   }
-  function dynamicCall(func, paramsObj) {
+  function dynamicCall(func: () => any, paramsObj: {}) {
     const args = Object.values(paramsObj);
     return func(...args);
   }
@@ -44,13 +51,13 @@ export default function CancelModal({ isOpen, setIsOpen, entity, setFormErrorHan
       const res = await dynamicCall(entity.function, entity.data);
       if (!res.success) {
         console.log("parsing....");
-        const errorParts: string | null = ErrorParser(res.error);
+        const errorParts: errorParts = ErrorParser(res.error);
         console.log("Error Field:", errorParts);
-        if (errorParts) {
+        if (errorParts && errorParts.model && errorParts.field) {
           setFormErrorHandler({
-            [errorParts.model]: errorParts.model,
+            [errorParts.model]: true,
 
-            [errorParts.field]: errorParts.field,
+            [errorParts.field]: true,
 
             error: `Login Failed`,
           });

@@ -1,4 +1,6 @@
-import { Territory, House, Observation, User } from "@prisma/client";
+import { Territory, House, Observation, User, Congregation } from "@prisma/client";
+import { SetStateAction } from "react";
+import DeleteUserModal from "../[user]/dashboard/manageUsers/deleteUserModal";
 
 // Assuming `Territory` is imported from Prisma as shown
 
@@ -17,6 +19,7 @@ interface SelectObservationProps {
   congregationID: string;
   houseID: string;
 }
+
 interface SelectAddObservationProps {
   uniqueOption: Observation;
   options: Observation[];
@@ -100,3 +103,26 @@ type QRCodeModalProps = {
   congregation: string;
   territory: string;
 };
+
+type PrivelegeCheck = {
+  congID: string;
+  userID: string;
+};
+
+type deleteUserModalProps = {
+  user: User;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+};
+type EditUserModalProps = DeleteUserModalProps & {
+  congregations: Congregation[];
+};
+
+interface ApprovalProps {
+  reqID: string;
+  territoryID: string;
+  houseID: string;
+  congregationID: string;
+  observation: string;
+  comment: string;
+}

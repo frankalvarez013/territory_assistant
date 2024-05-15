@@ -2,11 +2,12 @@
 import { useState } from "react";
 import fetchAddTerritory from "@/app/components/fetch/fetchAddTerritory";
 import CancelModal from "../CancelModal";
+import { TerritoryErrorFormHandler } from "@/app/types/error";
 export default function AddTerritories() {
   const [location, setLocation] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState({});
-  const [formErrorHandler, setFormErrorHandler] = useState({});
+  const [formErrorHandler, setFormErrorHandler] = useState<TerritoryErrorFormHandler>({});
   return (
     <div>
       <form>
@@ -14,7 +15,7 @@ export default function AddTerritories() {
           <label htmlFor="location">Location:</label>
           <input
             className={`block border-2 border-gray-400 ${
-              formErrorHandler.location && formErrorHandler.territory
+              formErrorHandler && formErrorHandler.location
                 ? `border-red-500 text-red-500`
                 : `border-gray-300`
             }`}
@@ -27,7 +28,7 @@ export default function AddTerritories() {
             }}
             required
           ></input>
-          {formErrorHandler.location && formErrorHandler.territory && (
+          {formErrorHandler && formErrorHandler.location && formErrorHandler.territory && (
             <p className="text-red-500 text-xs italic">
               {" "}
               This is already a registered Location with that name, please use another.

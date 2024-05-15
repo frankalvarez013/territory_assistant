@@ -4,10 +4,14 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import pinLocation from "../../../public/images/pinLocation.svg";
 import edit from "../../../public/images/edit.svg";
+import { PrivelegeCheck } from "@/app/types/common";
+import { Territory } from "@prisma/client";
+import { CustomSession } from "@/app/types/api";
 
-export default function EditTerritories(props) {
-  const [territories, setTerritories] = useState(null);
-  const { data: session } = useSession();
+export default function EditTerritories(props: PrivelegeCheck) {
+  const [territories, setTerritories] = useState<Territory[] | null>(null);
+  const { data: session, status } = useSession() as { data: CustomSession | null; status: string };
+
   useEffect(() => {
     async function duv() {
       const resUsers = await fetch("/api/territory");
@@ -28,8 +32,8 @@ export default function EditTerritories(props) {
     .sort((a, b) => a.territoryID - b.territoryID)
     .map((territory, index) => {
       if (
-        !session?.user.isAdmin &&
-        (territory.currentUser === null || territory.currentUser.id !== props.userID)
+        !session?.user?.isAdmin &&
+        (territory.currentUserID === null || territory.currentUserID !== props.userID)
       ) {
         return;
       }

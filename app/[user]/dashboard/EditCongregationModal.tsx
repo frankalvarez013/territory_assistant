@@ -1,5 +1,5 @@
 "use client";
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, ChangeEvent } from "react";
 import check from "../../public/images/check.svg";
 import upDown from "../../public/images/chevron-up-down.svg";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
@@ -11,21 +11,41 @@ import plus from "../../public/images/plus-circle.svg";
 import fetchAddUser from "@/app/components/fetch/fetchAddUser";
 import fetchEditUser from "@/app/components/fetch/fetchEditUser";
 import CancelModal from "./CancelModal";
-export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
+import {
+  CongregationErrorFormHandler,
+  congregationModalProps,
+  UserErrorFormHandler,
+} from "@/app/types/error";
+import { User } from "@prisma/client";
+export default function EditCongregationModal({
+  isOpen,
+  setIsOpen,
+  congregation,
+}: congregationModalProps) {
   const [congName, setCongName] = useState("");
   const [address, setAddress] = useState("");
   const [users, setUsers] = useState(null);
-  const [adminUsers, setAdminUsers] = useState(null);
-  const [selected, setSelected] = useState(null);
-  const [normalUsers, setNormalUsers] = useState(null);
+  const [adminUsers, setAdminUsers] = useState<User[] | null>(null);
+  const [selected, setSelected] = useState<User | null>(null);
+  const [normalUsers, setNormalUsers] = useState<User[] | null>(null);
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntity, setEntity] = useState({});
-  const [formErrorHandler, setFormErrorHandler] = useState({});
+  const [formErrorHandler, setFormErrorHandler] = useState<
+    UserErrorFormHandler | CongregationErrorFormHandler
+  >({});
+  function isUserErrorFormHandler(errorHandler: any): errorHandler is UserErrorFormHandler {
+    return (errorHandler as UserErrorFormHandler).user !== undefined;
+  }
 
-  const handleSubmit = async (e) => {
+  function isCongregationErrorFormHandler(
+    errorHandler: any
+  ): errorHandler is CongregationErrorFormHandler {
+    return (errorHandler as CongregationErrorFormHandler).congregation !== undefined;
+  }
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     setFormErrorHandler({});
     e.preventDefault(); // This prevents the form from submitting traditionally
     setEntity({
@@ -72,9 +92,9 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
 
         setUsers(data); // Set users with fetched data
         // Filter and set selected users after data is fetched and set
-        const result = data.filter((user) => user.isAdmin === true);
+        const result = data.filter((user: User) => user.isAdmin === true);
         const resultNormal = data.filter(
-          (user) => user.isAdmin === false && user.isGeneralAdmin === false
+          (user: User) => user.isAdmin === false && user.isGeneralAdmin === false
         );
 
         setAdminUsers(result);
@@ -188,7 +208,7 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                     Add User Admin
                     <div className="flex">
                       <div className="flex-grow">
-                        {normalUsers.length !== 0 && normalUsers !== null ? (
+                        {normalUsers !== null && normalUsers.length !== 0 ? (
                           <Listbox
                             value={selected ? selected : null}
                             onChange={(e) => {
@@ -287,13 +307,15 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           setEntity({
                             adminAction: true,
                             data: {
-                              name: selected.name,
-                              id: selected.id,
+                              name: selected!.name,
+                              id: selected!.id,
                               action: false,
                             },
-                            message: `Are you sure you want to make ${selected.name} into an Administrator?`,
+                            message: `Are you sure you want to make ${
+                              selected!.name
+                            } into an Administrator?`,
                             function: fetchEditUser,
-                            email: selected.email,
+                            email: selected!.email,
                           });
                           setDeleteModal(true);
                         }}
@@ -324,7 +346,9 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                         <label htmlFor="name">Name:</label>
                         <input
                           className={`block border-2 border-black ${
-                            formErrorHandler.name && formErrorHandler.user
+                            isUserErrorFormHandler(formErrorHandler) &&
+                            formErrorHandler.user &&
+                            formErrorHandler.name
                               ? `border-red-500 text-red-500`
                               : `border-gray-300`
                           }`}
@@ -337,17 +361,21 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
-                        {formErrorHandler.name && formErrorHandler.user && (
-                          <p className="text-red-500 text-xs italic">
-                            Change your Name to successfully create a new Email
-                          </p>
-                        )}
+                        {isUserErrorFormHandler(formErrorHandler) &&
+                          formErrorHandler.name &&
+                          formErrorHandler.user && (
+                            <p className="text-red-500 text-xs italic">
+                              Change your Name to successfully create a new Email
+                            </p>
+                          )}
                       </div>
                       <div>
                         <label htmlFor="email">Email:</label>
                         <input
                           className={`block border-2 border-black ${
-                            formErrorHandler.email && formErrorHandler.user
+                            isUserErrorFormHandler(formErrorHandler) &&
+                            formErrorHandler.email &&
+                            formErrorHandler.user
                               ? `border-red-500 `
                               : `border-gray-300`
                           }`}
@@ -360,18 +388,22 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
-                        {formErrorHandler.email && formErrorHandler.user && (
-                          <p className="text-red-500 text-xs italic">
-                            {" "}
-                            Change your email to successfully create a new Email
-                          </p>
-                        )}
+                        {isUserErrorFormHandler(formErrorHandler) &&
+                          formErrorHandler.email &&
+                          formErrorHandler.user && (
+                            <p className="text-red-500 text-xs italic">
+                              {" "}
+                              Change your email to successfully create a new Email
+                            </p>
+                          )}
                       </div>
                       <div>
                         <label htmlFor="password">Password:</label>
                         <input
                           className={`block border-2 border-black ${
-                            formErrorHandler.password && formErrorHandler.user
+                            isUserErrorFormHandler(formErrorHandler) &&
+                            formErrorHandler.password &&
+                            formErrorHandler.user
                               ? `border-red-500 text-red-500`
                               : `border-gray-300`
                           }`}
@@ -384,12 +416,14 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                           }}
                           required
                         ></input>
-                        {formErrorHandler.password && formErrorHandler.user && (
-                          <p className="text-red-500 text-xs italic">
-                            {" "}
-                            Change your password to successfully create a new Email
-                          </p>
-                        )}
+                        {isUserErrorFormHandler(formErrorHandler) &&
+                          formErrorHandler.password &&
+                          formErrorHandler.user && (
+                            <p className="text-red-500 text-xs italic">
+                              {" "}
+                              Change your password to successfully create a new Email
+                            </p>
+                          )}
                       </div>
                       <button
                         className="border-2 border-black rounded-3xl px-3 mt-2 hover:bg-black hover:text-white"
@@ -404,7 +438,9 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                       <label htmlFor="Name">Change Congregation Name</label>
                       <input
                         className={`border-[1px] border-gray-400 rounded-lg block ${
-                          formErrorHandler.name && formErrorHandler.congregation
+                          isCongregationErrorFormHandler(formErrorHandler) &&
+                          formErrorHandler.congregationName &&
+                          formErrorHandler.congregation
                             ? `border-red-500 text-red-500`
                             : `border-gray-300`
                         }`}
@@ -418,7 +454,9 @@ export default function EditUserModal({ isOpen, setIsOpen, congregation }) {
                       <label htmlFor="Name">Change Congregation Address</label>
                       <input
                         className={`border-[1px] border-gray-400 rounded-lg block ${
-                          formErrorHandler.address && formErrorHandler.congregation
+                          isCongregationErrorFormHandler(formErrorHandler) &&
+                          formErrorHandler.address &&
+                          formErrorHandler.congregation
                             ? `border-red-500 text-red-500`
                             : `border-gray-300`
                         }`}

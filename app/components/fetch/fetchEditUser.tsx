@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-
-export default async function fetchEditUser(id, updateInfo) {
+import { User } from "@prisma/client";
+export default async function fetchEditUser(id: string, updateInfo: any) {
   let res1 = null;
   console.log("updating", id, updateInfo);
   const obj: { [key: string]: any } = {};
@@ -29,6 +29,10 @@ export default async function fetchEditUser(id, updateInfo) {
     return { success: true, data };
   } catch (error) {
     console.error("In fetchAddUser - Failed to edit user", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    } else {
+      return { success: false, error: String(error) }; // Handle other types of errors
+    }
   }
 }

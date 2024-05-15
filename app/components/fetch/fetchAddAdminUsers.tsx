@@ -1,5 +1,5 @@
 import prisma from "@/prisma/client";
-export default async function fetchAddAdminUsers(congregation) {
+export default async function fetchAddAdminUsers(congregation: { id: string }) {
   console.log("wtf");
   const getAdminUsers = await prisma.user.findMany({
     where: {

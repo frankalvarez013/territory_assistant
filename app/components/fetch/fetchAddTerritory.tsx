@@ -1,6 +1,6 @@
 // import { hash } from "bcryptjs";
 
-export default async function fetchAddTerritory(location) {
+export default async function fetchAddTerritory(location: string) {
   console.log("INSIDE");
   try {
     const res = await fetch(`/api/territory`, {
@@ -18,7 +18,10 @@ export default async function fetchAddTerritory(location) {
 
     return { success: true, data };
   } catch (error) {
-    console.error("In fetchAddUser - Failed to edit user", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    } else {
+      return { success: false, error: String(error) }; // Handle other types of errors
+    }
   }
 }

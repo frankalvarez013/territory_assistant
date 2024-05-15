@@ -41,8 +41,9 @@ export default function EditUserModal({
     setRole(e.target.value);
   };
   function setEm(e: ChangeEvent<HTMLSelectElement>) {
-    setSelected(e);
-    setCongregationID(e.id);
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    setSelected(selectedOption); // Assuming setSelected can accept the option element
+    setCongregationID(selectedOption.id);
   }
   function closeEditModal() {
     if (!deleteModal) {

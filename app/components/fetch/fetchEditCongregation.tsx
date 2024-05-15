@@ -1,6 +1,7 @@
+import { Congregation } from "@prisma/client";
 import { useEffect, useState } from "react";
 
-export default async function fetchEditCongregation(id, updateInfo) {
+export default async function fetchEditCongregation(id: string, updateInfo: any) {
   let res1 = null;
   const obj: { [key: string]: any } = {};
   console.log(updateInfo);
@@ -25,6 +26,10 @@ export default async function fetchEditCongregation(id, updateInfo) {
     return { success: true, data };
   } catch (error) {
     console.error("Failed to edit congregation", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    } else {
+      return { success: false, error: String(error) }; // Handle other types of errors
+    }
   }
 }

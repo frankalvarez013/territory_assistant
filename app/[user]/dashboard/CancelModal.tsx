@@ -13,8 +13,11 @@ export default function CancelModal({
   function closeEditModal() {
     setIsOpen(false);
   }
-  function dynamicCall(func: () => any, paramsObj: {}) {
-    const args = Object.values(paramsObj);
+  function dynamicCall<T extends (...args: any[]) => any>(
+    func: T,
+    paramsObj: Record<string, any>
+  ): ReturnType<T> {
+    const args: any[] = Object.values(paramsObj);
     return func(...args);
   }
   async function patchEditModal() {

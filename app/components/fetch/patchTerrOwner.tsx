@@ -1,7 +1,7 @@
 export default async function handleUserChange(
-  territoryID,
-  userID,
-  congregationID
+  territoryID: number,
+  userID: string,
+  congregationID: string
 ) {
   try {
     const response = await fetch("/api/territory", {
@@ -24,5 +24,10 @@ export default async function handleUserChange(
     console.log("Territory updated successfully");
   } catch (error) {
     console.error(error);
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    } else {
+      return { success: false, error: String(error) }; // Handle other types of errors
+    }
   }
 }

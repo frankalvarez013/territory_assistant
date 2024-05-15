@@ -31,5 +31,10 @@ export default async function postRequest(
     console.log("Request created successfully");
   } catch (error) {
     console.error(error);
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    } else {
+      return { success: false, error: String(error) }; // Handle other types of errors
+    }
   }
 }

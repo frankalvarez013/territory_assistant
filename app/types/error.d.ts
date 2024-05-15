@@ -16,19 +16,31 @@ export type errorParts = {
   model: string | null;
 } | null;
 
+export type addCongregationProps = {
+  name: string;
+  address: string;
+};
+
+export type errorEntity<T> = {
+  function?: (...args: any[]) => any;
+  data?: T;
+  adminAction?: boolean;
+  addUser?: boolean;
+  email?: string;
+  message?: string;
+};
 export type errorModal = {
-  entity: {
-    function: () => any;
-    data: {
-      action?: boolean;
-      id?: string;
-    };
-    adminAction?: boolean;
-    addUser?: boolean;
-    email?: string;
-    message: string;
-  };
+  entity: errorEntity;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   setFormErrorHandler: Dispatch<SetStateAction<object>>;
+};
+export type congregationModalProps = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  congregation: Congregation;
+};
+export type loadingModal = {
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 };

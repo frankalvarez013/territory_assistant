@@ -1,11 +1,12 @@
 //use zod to check if the isAdmin is true or false "strings"
+import { House, Observation } from "@prisma/client";
 export default async function fetchAddHouse(
-  territoryID,
-  Direction,
-  StreetAd,
-  comment,
-  observation,
-  dateVisited
+  territoryID: number,
+  Direction: string,
+  StreetAd: string,
+  comment: string,
+  observation: Observation,
+  dateVisited?: Date
 ) {
   console.log(territoryID, Direction, StreetAd, comment, observation, dateVisited);
   try {
@@ -32,6 +33,10 @@ export default async function fetchAddHouse(
     return { success: true, data };
   } catch (error) {
     console.error("In EditHouseRow - Failed to edit House Row", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    } else {
+      return { success: false, error: String(error) }; // Handle other types of errors
+    }
   }
 }

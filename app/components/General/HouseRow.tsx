@@ -31,9 +31,9 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
       updatedState.houseID,
       updatedState.Direction,
       updatedState.StreetAd,
-      updatedState.comment,
+      updatedState.comment || undefined,
       updatedState.observation,
-      updatedState.dateVisited
+      updatedState.dateVisited || undefined
     );
     if (!res.success) {
       const errorParts: {

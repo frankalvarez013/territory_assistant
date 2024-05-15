@@ -7,12 +7,15 @@ import edit from "../../public/images/edit.svg";
 import EditCongregationModal from "./EditCongregationModal";
 import DeleteCongregationModal from "./CancelModal";
 import fetchDeleteCongregation from "../../components/fetch/fetchDeleteCongregation";
-export default function EditUsers() {
-  const [congregations, setcongregations] = useState(null);
-  const [selectedCongregation, setSelectedCongregation] = useState(null);
+import { Congregation } from "@prisma/client";
+import { CongregationErrorFormHandler } from "@/app/types/error";
+export default function EditCongregation() {
+  const [congregations, setCongregations] = useState<Congregation[] | null>(null);
+  const [selectedCongregation, setSelectedCongregation] = useState<Congregation | null>(null);
   const [isEditOpen, setisEditOpen] = useState(false);
   const [isDeleteOpen, setisDeleteOpen] = useState(false);
   const [setSelectedEntity, setEntity] = useState({});
+  const [formErrorHandler, setFormErrorHandler] = useState<CongregationErrorFormHandler>({});
   useEffect(() => {
     async function duv() {
       const res = await fetch(`/api/congregation`, {
@@ -22,7 +25,7 @@ export default function EditUsers() {
         },
       });
       const data = await res.json();
-      setcongregations(data);
+      setCongregations(data);
       if (data.length > 0) {
         setSelectedCongregation(data[0]);
       }
@@ -72,17 +75,18 @@ export default function EditUsers() {
           <div>No Congregation available</div>
         )
       ) : (
-        <div>{congregations.message || "An error occurred"}</div>
+        <div>{"An error occurred"}</div>
       )}
       <EditCongregationModal
         isOpen={isEditOpen}
         setIsOpen={setisEditOpen}
-        congregation={selectedCongregation}
+        congregation={selectedCongregation!}
       ></EditCongregationModal>
       <DeleteCongregationModal
         isOpen={isDeleteOpen}
         setIsOpen={setisDeleteOpen}
         entity={setSelectedEntity}
+        setFormErrorHandler={setFormErrorHandler}
       ></DeleteCongregationModal>
     </div>
   );

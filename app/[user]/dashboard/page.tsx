@@ -6,8 +6,10 @@ import DashboardLayout from "../../components/Layout/DashboardLayout";
 import TerritoryPreview from "../../[user]/dashboard/TerritoryPreview";
 import EditCongregation from "./EditCongregation";
 import AddCongregation from "./AddCongregation";
-export default async function Dashboard({ params }) {
-  const session = await getServerSession(authOptions);
+import { CustomSession } from "@/app/types/api";
+import { DashboardProps } from "@/app/types/common";
+export default async function Dashboard({ params }: { params: { user: string } }) {
+  const session = (await getServerSession(authOptions)) as CustomSession;
   if (!session) {
     redirect("/api/auth/signin");
   }
@@ -17,17 +19,14 @@ export default async function Dashboard({ params }) {
         <div className="h-full flex flex-col justify-center items-center">
           <div className=" w-10/12 h-5/6 flex flex-col">
             <div className="mt-10 ml-20">
-              <div className="text-5xl">Welcome, {session.user.name}</div>
+              <div className="text-5xl">Welcome, {session!.user!.name!}</div>
               <div className=" mt-5 font-light text-slate-500">
-                These are your assigned territories from INSERT TIME FRAME -
-                INSERT TIME FRAME
+                These are your assigned territories from INSERT TIME FRAME - INSERT TIME FRAME
               </div>
             </div>
             <div className=" m-auto w-[90%] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
-              <div className=" text-darkgrey mb-7 text-xl font-semibold">
-                Assigned Territories
-              </div>
-              <TerritoryPreview userID={session.user.id}></TerritoryPreview>
+              <div className=" text-darkgrey mb-7 text-xl font-semibold">Assigned Territories</div>
+              <TerritoryPreview userID={session!.user!.id!}></TerritoryPreview>
             </div>
           </div>
         </div>
@@ -39,45 +38,38 @@ export default async function Dashboard({ params }) {
         <div className="h-full flex flex-col justify-center items-center">
           <div className="w-10/12 h-5/6 flex flex-col">
             <div className="mt-10">
-              <div className="text-5xl mb-10">Welcome, {session.user.name}</div>
+              <div className="text-5xl mb-10">Welcome, {session!.user!.name}</div>
 
               <div className="pl-10 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
                 <div className=" font-light text-slate-500 mb-3">
-                  Welcome admin, this dashboard provides a view of all members
-                  who receive territory card assignments.
+                  Welcome admin, this dashboard provides a view of all members who receive territory
+                  card assignments.
                 </div>
                 <ol className="list-decimal ml-5">
                   <li>
-                    User the dropdown list under Publisher to assign territory
-                    cards then update assigned date, the expiration date will
-                    auto calculate.
+                    User the dropdown list under Publisher to assign territory cards then update
+                    assigned date, the expiration date will auto calculate.
                   </li>
                   <li>
-                    Each territory row will auto fill with the color yellow for
-                    assigned not expired territory cards.
+                    Each territory row will auto fill with the color yellow for assigned not expired
+                    territory cards.
                   </li>
                   <li>Light red for expired territory cards.</li>
+                  <li>Each territory assignment expires 120 days from the assigned date.</li>
                   <li>
-                    Each territory assignment expires 120 days from the assigned
-                    date.
+                    Once a territory expires, the comment column updates with an `Expired comment
+                    and the row highlights in light red.`
                   </li>
                   <li>
-                    Once a territory expires, the comment column updates with an
-                    `Expired comment and the row highlights in light red.`
-                  </li>
-                  <li>
-                    Available territories for reassignment will be filled wtih
-                    light green color. The publisher field is updated with to
-                    Available.
+                    Available territories for reassignment will be filled wtih light green color.
+                    The publisher field is updated with to Available.
                   </li>
                 </ol>
               </div>
             </div>
             <div className="h-full mt-10 p-10 border-greye border-2 rounded-2xl">
-              <div className=" text-darkgrey mb-7 text-xl font-semibold">
-                Assigned Territories
-              </div>
-              <TerritoryTransfer userID={session.user.id}></TerritoryTransfer>
+              <div className=" text-darkgrey mb-7 text-xl font-semibold">Assigned Territories</div>
+              <TerritoryTransfer></TerritoryTransfer>
             </div>
           </div>
         </div>
@@ -89,36 +81,30 @@ export default async function Dashboard({ params }) {
         <div className="h-full flex flex-col justify-center items-center">
           <div className="w-10/12 h-5/6 flex flex-col">
             <div className="mt-10">
-              <div className="text-5xl mb-10">Welcome, {session.user.name}</div>
+              <div className="text-5xl mb-10">Welcome, {session!.user!.name}</div>
 
               <div className="pl-10 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
                 <div className=" font-light text-slate-500 mb-3">
-                  Welcome General Admin! this dashboard provides a view of all
-                  congregations
+                  Welcome General Admin! this dashboard provides a view of all congregations
                 </div>
                 <ol className="list-decimal ml-5">
                   <li>
-                    User the dropdown list under Publisher to assign territory
-                    cards then update assigned date, the expiration date will
-                    auto calculate.
+                    User the dropdown list under Publisher to assign territory cards then update
+                    assigned date, the expiration date will auto calculate.
                   </li>
                   <li>
-                    Each territory row will auto fill with the color yellow for
-                    assigned not expired territory cards.
+                    Each territory row will auto fill with the color yellow for assigned not expired
+                    territory cards.
                   </li>
                   <li>Light red for expired territory cards.</li>
+                  <li>Each territory assignment expires 120 days from the assigned date.</li>
                   <li>
-                    Each territory assignment expires 120 days from the assigned
-                    date.
+                    Once a territory expires, the comment column updates with an `Expired comment
+                    and the row highlights in light red.`
                   </li>
                   <li>
-                    Once a territory expires, the comment column updates with an
-                    `Expired comment and the row highlights in light red.`
-                  </li>
-                  <li>
-                    Available territories for reassignment will be filled wtih
-                    light green color. The publisher field is updated with to
-                    Available.
+                    Available territories for reassignment will be filled wtih light green color.
+                    The publisher field is updated with to Available.
                   </li>
                 </ol>
               </div>

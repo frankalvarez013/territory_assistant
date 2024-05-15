@@ -1,4 +1,4 @@
-import { Observation } from "@prisma/client";
+import { Observation, Territory } from "@prisma/client";
 interface House {
   territoryID: any; // Replace `any` with a more specific type if possible
   StreetAd?: string;
@@ -21,7 +21,7 @@ const observationMapping: { [key: string]: Observation } = {
   "Candado": Observation.CANDADO,
   // Add other mappings as necessary
 };
-export default async function createExcelTerritory(sheetID, sheetName) {
+export default async function createExcelTerritory(sheetID: string, sheetName: string) {
   try {
     const response = await fetch("/api/sheets", {
       method: "POST",
@@ -61,7 +61,7 @@ export default async function createExcelTerritory(sheetID, sheetName) {
   }
 }
 
-function parseSheet(data, territory) {
+function parseSheet(data: [], territory: Territory) {
   const houses: House[] = data.slice(6, data.length - 1).map((item) => {
     const obj: House = {
       territoryID: territory.territoryID,
@@ -79,7 +79,7 @@ function parseSheet(data, territory) {
 
   return houses;
 }
-const postData = async (data) => {
+const postData = async (data: House) => {
   try {
     const response = await fetch("/api/house", {
       method: "POST", // or 'PUT'
@@ -93,7 +93,7 @@ const postData = async (data) => {
     console.error("Error:", error);
   }
 };
-const sendRequestsSequentially = async (dataArray) => {
+const sendRequestsSequentially = async (dataArray: House[]) => {
   for (const item of dataArray) {
     const response = await postData(item);
     console.log(response); // Process response as needed

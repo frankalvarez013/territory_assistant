@@ -1,8 +1,9 @@
 "use client";
 import { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
+import { loadingModal } from "@/app/types/error";
 
-export default function LoadingModal({ isOpen, setIsOpen }) {
+export default function LoadingModal({ isOpen, setIsOpen }: loadingModal) {
   function closeEditModal() {
     setIsOpen(false);
   }

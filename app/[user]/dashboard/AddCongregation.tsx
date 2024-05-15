@@ -2,12 +2,12 @@
 import { useState } from "react";
 import fetchAddCongregation from "@/app/components/fetch/fetchAddCongregation";
 import CancelModal from "./CancelModal";
-import { CongregationErrorFormHandler } from "@/app/types/error";
+import { addCongregationProps, CongregationErrorFormHandler, errorEntity } from "@/app/types/error";
 
 export default function AddCongregation() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [selectedEntity, SetSelectedEntity] = useState({});
+  const [selectedEntity, SetSelectedEntity] = useState<errorEntity<addCongregationProps>>({});
   const [deleteModal, setDeleteModal] = useState(false);
   const [formErrorHandler, setFormErrorHandler] = useState<CongregationErrorFormHandler>({});
 

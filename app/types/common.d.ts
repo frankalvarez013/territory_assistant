@@ -87,7 +87,7 @@ interface LocalState {
 type SelectComponentProps = {
   uniqueOption: User | { id: string; name: string };
   options: User[];
-  territoryId: string;
+  territoryId: number;
   congregationId: string;
 };
 
@@ -125,4 +125,13 @@ interface ApprovalProps {
   congregationID: string;
   observation: string;
   comment: string;
+}
+
+type DashboardProps = {
+  params: {
+    user: string;
+  };
+};
+interface ExtendedTerritory extends Territory {
+  currentUser: User;
 }

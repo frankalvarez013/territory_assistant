@@ -1,14 +1,13 @@
 import { hash } from "bcryptjs";
-
+import { Role, User } from "@prisma/client";
 export default async function fetchAddUser(
-  name,
-  email,
-  password,
-  congregationID,
-  Role,
+  name: string,
+  email: string,
+  password: string,
+  congregationID: string,
+  Role: Role,
   isAdmin = false
 ) {
-  let res1 = null;
   const hashPassword = await hash(password, 12);
   try {
     const res = await fetch(`/api/user`, {
@@ -33,6 +32,10 @@ export default async function fetchAddUser(
     return { success: true, data };
   } catch (error) {
     console.error("In fetchAddUser - Failed to edit user", error);
-    return { success: false, error: error.message };
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    } else {
+      return { success: false, error: String(error) }; // Handle other types of errors
+    }
   }
 }

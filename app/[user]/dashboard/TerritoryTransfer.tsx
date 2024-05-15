@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import SelectComponent from "../../components/Interact/selectTerrOwner";
-import { TerritoryComment } from "@prisma/client";
-export default function TerritoryTransfer(props) {
-  const [territories, setTerritories] = useState(null);
-  const [users, setUsers] = useState(null);
+import { Territory, TerritoryComment, User } from "@prisma/client";
+import { ExtendedTerritory } from "@/app/types/common";
+export default function TerritoryTransfer() {
+  const [territories, setTerritories] = useState<ExtendedTerritory[] | null>(null);
+  const [users, setUsers] = useState<User[] | null>(null);
   const [nullValKey, setNullValKey] = useState(0);
   useEffect(() => {
     async function fetchUserData() {
@@ -22,7 +23,7 @@ export default function TerritoryTransfer(props) {
       }
       const usersData = await resUsers.json();
       console.log("users", usersData);
-      const usersParsedData = usersData.filter((element) => {
+      const usersParsedData = usersData.filter((element: User) => {
         console.log(element.isAdmin);
         return element.isAdmin === false;
       });
@@ -46,10 +47,9 @@ export default function TerritoryTransfer(props) {
         </tr>
       </thead>
       <tbody>
-        {console.log("territories:", territories)}
         {territories
           .sort((a, b) => a.territoryID - b.territoryID)
-          .map((element) => (
+          .map((element: ExtendedTerritory) => (
             <tr
               key={element.territoryID}
               className={`border-t border-gray-200 ${
@@ -79,10 +79,14 @@ export default function TerritoryTransfer(props) {
                 )}
               </td>
               <td className="border-t border-gray-200 py-4 px-4">
-                {new Date(element.AssignedDate).toLocaleDateString("en-US")}
+                {element.AssignedDate
+                  ? new Date(element.AssignedDate).toLocaleDateString("en-US")
+                  : "..."}
               </td>
               <td className="border-t border-gray-200 py-4 px-4">
-                {new Date(element.ExperiationDate).toLocaleDateString("en-US")}
+                {element.ExperiationDate
+                  ? new Date(element.ExperiationDate).toLocaleDateString("en-US")
+                  : "..."}
               </td>
               <td className="border-t border-gray-200 py-4 px-4">{element.activity}</td>
             </tr>

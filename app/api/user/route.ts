@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
 import prisma from "@/prisma/client";
 import { TerritoryComment, User } from "@prisma/client";
-import { ErrorResponse } from "@/app/types/api";
+import { CustomSession, ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { Role } from "@prisma/client";
@@ -69,7 +69,7 @@ export async function POST(
 
 export async function GET(request: NextRequest, response: NextResponse) {
   const idParams = request.nextUrl.searchParams.get("id");
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as CustomSession;
   let getUser: User | User[] | null = null;
   try {
     if (idParams) {
@@ -92,7 +92,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       }
     } else {
       // console.log("Checking Admin Status...");
-      if (session?.user.isAdmin) {
+      if (session?.user!.isAdmin) {
         // console.log("Is admin");
         // console.log(session.user.congID);
         const getAdminUsers = await prisma.user.findMany({
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
         // console.log("returning...", getAdminUsers);
         return NextResponse.json(getAdminUsers, { status: 201 });
       }
-      if (session?.user.isGeneralAdmin) {
+      if (session?.user!.isGeneralAdmin) {
         const congID = request.nextUrl.searchParams.get("congID");
         getUser = await prisma.user.findMany({
           where: {
@@ -184,7 +184,7 @@ export async function PATCH(
         updatedTerritories = await prisma.territory.updateMany({
           where: {
             currentUserID: request.nextUrl.searchParams.get("id") ?? undefined,
-            congregationID: oldUser.congregationID,
+            congregationID: oldUser!.congregationID,
           },
           data: {
             currentUserID: null,
@@ -196,7 +196,7 @@ export async function PATCH(
           updatedTerritories = await prisma.territory.updateMany({
             where: {
               currentUserID: request.nextUrl.searchParams.get("id") ?? undefined,
-              congregationID: oldUser.congregationID,
+              congregationID: oldUser!.congregationID,
             },
             data: {
               currentUserID: null,
@@ -219,12 +219,19 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(request, response) {
+export async function DELETE(
+  request: NextRequest
+): Promise<NextResponse<User | ZodIssue[] | ErrorResponse>> {
   console.log("inside ROUTE");
   console.log(request.nextUrl.searchParams.entries());
   const id = request.nextUrl.searchParams.get("id");
   console.log(id);
-
+  if (id! || id === null) {
+    console.error(`ID is necessary for DELETE Transaction`);
+    return NextResponse.json({
+      message: `ID is necessary for DELETE Transaction`,
+    });
+  }
   try {
     console.log("check");
     const deletedUser = await prisma.user.delete({

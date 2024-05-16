@@ -17,7 +17,9 @@ const updateTerritorySchema = z.object({
   dateLength: z.string().min(1).max(255).optional(),
   location: z.string().min(1).max(255).optional(),
 });
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
   const validation = createTerritorySchema.safeParse(body);
   const timeUserKeepsTerritory = 30;
@@ -29,8 +31,8 @@ export async function POST(request: NextRequest) {
   const endDate = ExperiationDateCalculator(date, timeUserKeepsTerritory);
   try {
     console.log("Logging Admin...");
-    const session = await getServerSession(authOptions);
-    if (session?.user.isAdmin) {
+    const session = (await getServerSession(authOptions)) as CustomSession;
+    if (session?.user?.isAdmin) {
       console.log("Creating Terr");
       const newTerritory = await prisma.territory.create({
         data: {
@@ -38,16 +40,16 @@ export async function POST(request: NextRequest) {
           location: body.location,
           AssignedDate: date,
           ExperiationDate: endDate,
-          congregationID: session.user.congID,
-          currentUserID: session.user.id,
+          congregationID: session.user.congID!,
+          currentUserID: session.user.id!,
         },
       });
       console.log("finished....");
       return NextResponse.json(
         {
           ...newTerritory,
-          AssignedDate: date.toISOString(),
-          ExperiationDate: endDate.toISOString(),
+          AssignedDate: date,
+          ExperiationDate: endDate,
         },
         { status: 201 }
       );
@@ -62,9 +64,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+  return NextResponse.json({ message: `Territory POST Transaction failed:\n ` }, { status: 500 });
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse<Territory | Territory[] | ErrorResponse>> {
   console.log("inside GET");
   const terrID = request.nextUrl.searchParams.get("terrID");
   const congID = request.nextUrl.searchParams.get("congID");
@@ -163,9 +168,9 @@ export async function PATCH(
       } else {
         if (key === "currentUserID") {
           console.log("Checking if its a current User...");
-          const user: User = await prisma.user.findUnique({
+          const user: User | null = await prisma.user.findUnique({
             where: {
-              id: validation.data.currentUserID,
+              id: validation.data.currentUserID!,
             },
           });
           if (user) {

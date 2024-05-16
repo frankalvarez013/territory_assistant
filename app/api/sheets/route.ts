@@ -33,14 +33,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json(response.data, { status: 201 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { message: "Error accessing Google Sheets" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Error accessing Google Sheets" }, { status: 500 });
   }
 }
-export async function GET(req, res) {}
+export async function GET(req: NextRequest, res: NextResponse) {}
 
-export async function PATCH(req, res) {}
+export async function PATCH(req: NextRequest, res: NextResponse) {}
 
-export async function DELETE(req, res) {}
+export async function DELETE(req: NextRequest, res: NextResponse) {}

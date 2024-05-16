@@ -2,7 +2,9 @@
 import { uploadImage } from "../../utils/cloudinary";
 import { Buffer } from "buffer";
 import fs from "fs";
+import { NextRequest, NextResponse } from "next/server";
 import path from "path";
+import prisma from "@/prisma/client";
 export const config = {
   api: {
     bodyParser: false,
@@ -10,8 +12,7 @@ export const config = {
 };
 function makeid(length = 10) {
   var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -19,7 +20,7 @@ function makeid(length = 10) {
   return result;
 }
 
-async function ensureDirectoryExists(dirPath) {
+async function ensureDirectoryExists(dirPath: string) {
   try {
     await fs.promises.access(dirPath, fs.constants.F_OK);
   } catch (e) {
@@ -27,14 +28,14 @@ async function ensureDirectoryExists(dirPath) {
   }
 }
 
-export async function POST(req) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     console.log("trying...");
     const form = await req.formData();
     const file = form.get("image");
-    const congregationID = form.get("congregationID");
-    const territoryID = parseInt(form.get("territoryID"), 10);
-    if (!file) {
+    const congregationID = form.get("congregationID")!.toString();
+    const territoryID = parseInt(form.get("territoryID")!.toString(), 10);
+    if (!file || !(file instanceof Blob)) {
       throw new Error("File not found in the form data");
     }
     console.log("form data", form, "file", file);

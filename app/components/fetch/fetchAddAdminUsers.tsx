@@ -7,6 +7,6 @@ export default async function fetchAddAdminUsers(congregation: { id: string }) {
     },
   });
   console.log("inside fetch,", getAdminUsers);
-  const data = await getAdminUsers.json();
+  const data = await getAdminUsers;
   return data;
 }

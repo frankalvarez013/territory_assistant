@@ -40,7 +40,7 @@ export default async function Dashboard({ params }: { params: { user: string } }
             <div className="mt-10">
               <div className="text-5xl mb-10">Welcome, {session!.user!.name}</div>
 
-              <div className="pl-10 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
+              <div className="pl-10 pr-5 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
                 <div className=" font-light text-slate-500 mb-3">
                   Welcome admin, this dashboard provides a view of all members who receive territory
                   card assignments.
@@ -67,9 +67,11 @@ export default async function Dashboard({ params }: { params: { user: string } }
                 </ol>
               </div>
             </div>
-            <div className="h-full mt-10 p-10 border-greye border-2 rounded-2xl">
-              <div className=" text-darkgrey mb-7 text-xl font-semibold">Assigned Territories</div>
-              <TerritoryTransfer></TerritoryTransfer>
+            <div className="mt-10 pt-2 px-2 md:p-10 sm:p-0 border-greye border-2 rounded-2xl">
+              <div className="text-darkgrey mb-7 text-xl font-semibold">Assigned Territories</div>
+              <div className="min-w-full">
+                <TerritoryTransfer />
+              </div>
             </div>
           </div>
         </div>

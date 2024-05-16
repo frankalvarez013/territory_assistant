@@ -1,12 +1,14 @@
 import fetchDeleteRequest from "./fetchDeleteRequest";
-export default async function FetchAcceptRequest(
+import { Request } from "@prisma/client";
+type RequestParamsWithoutIdApproval = Omit<Request, "id" | "approval">;
+export default async function FetchAcceptRequest({
   territoryID,
   houseID,
   congregationID,
   observation,
   comment,
-  reqID
-) {
+  reqID,
+}: RequestParamsWithoutIdApproval & { reqID: string }) {
   const res = await fetch(`/api/request`, {
     method: "PATCH",
     headers: {

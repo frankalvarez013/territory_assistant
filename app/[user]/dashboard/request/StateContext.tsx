@@ -1,7 +1,8 @@
 // Use "use client" if you're in a Next.js environment that supports it
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
+import { Territory } from "@prisma/client";
+import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
 
 interface StateContextType {
   territories: any[];
@@ -9,9 +10,13 @@ interface StateContextType {
   updateItems: () => Promise<void>;
 }
 
+interface StateProviderProps {
+  children: ReactNode;
+}
+
 const StateContext = createContext<StateContextType | null>(null);
 
-export const StateProvider = ({ children }) => {
+export const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
   const [territories, setTerritories] = useState<any[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
 
@@ -23,8 +28,7 @@ export const StateProvider = ({ children }) => {
     }
     const terrData = await response.json();
     setTerritories(terrData);
-    console.log("Are You Checking MF");
-    const fetchPromises = terrData.map((territory) =>
+    const fetchPromises = terrData.map((territory: Territory) =>
       fetch(
         `/api/request?territoryID=${territory.territoryID}&congID=${territory.congregationID}`
       ).then((response) => response.json())
@@ -41,4 +45,10 @@ export const StateProvider = ({ children }) => {
 };
 
 // Custom hook to use the state context
-export const useStateContext = () => useContext(StateContext);
+export const useStateContext = (): StateContextType => {
+  const context = useContext(StateContext);
+  if (context === null) {
+    throw new Error("useStateContext must be used within a StateProvider");
+  }
+  return context;
+};

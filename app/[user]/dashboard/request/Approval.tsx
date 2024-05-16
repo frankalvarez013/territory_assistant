@@ -4,18 +4,19 @@ import { useStateContext } from "./StateContext";
 import fetchAcceptRequest from "./fetchAcceptRequest";
 import fetchDeleteRequest from "./fetchDeleteRequest";
 import { ChangeEvent } from "react";
+import { Observation } from "@prisma/client";
 export default function Approval(props: ApprovalProps) {
   const { updateItems } = useStateContext();
   const handleAcceptChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.id === "accept") {
-      await fetchAcceptRequest(
-        props.territoryID,
-        props.houseID,
-        props.congregationID,
-        props.observation,
-        props.comment,
-        props.reqID
-      );
+      await fetchAcceptRequest({
+        territoryID: parseInt(props.territoryID, 10),
+        houseID: parseInt(props.houseID, 10),
+        congregationID: props.congregationID,
+        observation: props.observation as Observation | null,
+        comment: props.comment,
+        reqID: props.reqID,
+      });
     } else {
       await fetchDeleteRequest(props.reqID);
     }

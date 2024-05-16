@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export default async function fetchDeleteRequest(id) {
+export default async function fetchDeleteRequest(id: string) {
   const res = await fetch(`/api/request?id=${id}`, {
     method: "DELETE",
     headers: {

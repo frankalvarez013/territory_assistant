@@ -3,80 +3,19 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState, createContext } from "react";
 import Approval from "./Approval";
 import { useStateContext } from "./StateContext";
-// export default function RequestView(props) {
-//   const context = useStateContext();
-
-//   if (!context) {
-//     return <div>Loading ...</div>;
-//   }
-//   const { territories, requests, updateItems } = context;
-
-//   useEffect(() => {
-//     updateItems();
-//   }, [updateItems]);
-
-//   if (!territories || !requests) {
-//     console.log("wtf");
-//     return <div>Loading territory data...</div>;
-//   }
-//   return territories.map((element, index) => (
-//     <table key={index} className="w-full m-auto border-collapse text-center">
-//       <thead>
-//         <tr>
-//           <th className="border-b border-gray-200 py-4 px-4">
-//             Approval Status
-//           </th>
-//           <th className="border-b border-gray-200 py-4 px-4">Territory ID</th>
-
-//           <th className="border-b border-gray-200 py-4 px-4">House ID</th>
-//           <th className="border-b border-gray-200 py-4 px-4">Observation</th>
-//           <th className="border-b border-gray-200 py-4 px-4">Comment</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {requests[0].map((element) => (
-//           <tr key={element.id}>
-//             <td className="border-t border-gray-200 py-4 px-4">
-//               <Approval
-//                 reqID={element.id}
-//                 territoryID={element.territoryID}
-//                 houseID={element.houseID}
-//                 congregationID={element.congregationID}
-//                 observation={element.observation}
-//                 comment={element.comment}
-//               ></Approval>
-//             </td>
-//             <td className="border-t border-gray-200 py-4 px-4">
-//               {element.territoryID}
-//             </td>
-//             <td className="border-t border-gray-200 py-4 px-4">
-//               {element.houseID}
-//             </td>
-//             <td className="border-t border-gray-200 py-4 px-4">
-//               {element.observation}
-//             </td>
-//             <td className="border-t border-gray-200 py-4 px-4">
-//               {element.comment}
-//             </td>
-//           </tr>
-//         ))}
-//       </tbody>
-//     </table>
-//   ));
-// }
-export default function RequestView(props) {
+import { CustomSession } from "@/app/types/api";
+import { PrivelegeCheck } from "@/app/types/common";
+export default function RequestView(props: PrivelegeCheck) {
   const context = useStateContext();
-  const { data: session, status } = useSession();
-  if (!context) {
-    return <div>Loading...</div>;
-  }
-
+  const { data: session } = useSession() as { data: CustomSession };
   const { territories, requests, updateItems } = context;
-
   useEffect(() => {
     updateItems();
   }, [updateItems]);
 
+  if (!context) {
+    return <div>Loading...</div>;
+  }
   // Check if territories or requests are not loaded or if requests array is empty
   if (!territories || !requests) {
     return <div>Loading Request data...</div>;
@@ -90,73 +29,83 @@ export default function RequestView(props) {
     if (!territoryRequests || !Array.isArray(territoryRequests)) {
       return null; // or some placeholder indicating no data for this territory
     }
-    if (
-      element.currentUser === null ||
-      element.currentUser.id !== session?.user.id
-    ) {
-      return;
+    if (element.currentUser === null || element.currentUser.id !== session?.user!.id) {
+      return null;
     }
 
     return (
-      <div key={index}>
-        <div className=" text-2xl font-medium text-gray-500">
-          Territory {element.territoryID}
-        </div>
-        <table
-          key={index}
-          className="w-full m-auto border-collapse text-center"
-        >
-          <thead>
-            <tr>
-              <th className="border-b border-gray-200 py-4 px-4">
-                Approval Status
-              </th>
-              <th className="border-b border-gray-200 py-4 px-4">House ID</th>
-              <th className="border-b border-gray-200 py-4 px-4">
-                Observation
-              </th>
-              <th className="border-b border-gray-200 py-4 px-4">Comment</th>
-            </tr>
-          </thead>
-          <tbody>
-            {territoryRequests.map((element) => (
-              <tr key={element.id}>
-                <td className="border-t border-gray-200 py-4 px-4">
-                  <Approval
-                    reqID={element.id}
-                    territoryID={element.territoryID}
-                    houseID={element.houseID}
-                    congregationID={element.congregationID}
-                    observation={element.observation}
-                    comment={element.comment}
-                  ></Approval>
-                </td>
+      <div key={index} className="mb-8">
+        <div className="text-2xl font-medium text-gray-500">Territory {element.territoryID}</div>
 
-                <td className="border-t border-gray-200 py-4 px-4">
-                  {element.houseID}
-                </td>
-                <td className="border-t border-gray-200 py-4 px-4">
-                  {element.observation}
-                </td>
-                <td className="border-t border-gray-200 py-4 px-4">
-                  {element.comment}
-                </td>
+        {/* Desktop Layout */}
+        <div className="hidden md:block">
+          <table key={index} className="w-full m-auto border-collapse text-center">
+            <thead>
+              <tr>
+                <th className="border-b border-gray-200 py-4 px-4">Approval Status</th>
+                <th className="border-b border-gray-200 py-4 px-4">House ID</th>
+                <th className="border-b border-gray-200 py-4 px-4">Observation</th>
+                <th className="border-b border-gray-200 py-4 px-4">Comment</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {territoryRequests.map((request) => (
+                <tr key={request.id}>
+                  <td className="border-t border-gray-200 py-4 px-4">
+                    <Approval
+                      reqID={request.id}
+                      territoryID={request.territoryID}
+                      houseID={request.houseID}
+                      congregationID={request.congregationID}
+                      observation={request.observation}
+                      comment={request.comment}
+                    />
+                  </td>
+                  <td className="border-t border-gray-200 py-4 px-4">{request.houseID}</td>
+                  <td className="border-t border-gray-200 py-4 px-4">{request.observation}</td>
+                  <td className="border-t border-gray-200 py-4 px-4">{request.comment}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="block md:hidden">
+          {territoryRequests.map((request) => (
+            <div key={request.id} className="mb-4 p-4 border rounded-lg">
+              <div className="mb-2">
+                <strong>Approval Status:</strong>
+                <Approval
+                  reqID={request.id}
+                  territoryID={request.territoryID}
+                  houseID={request.houseID}
+                  congregationID={request.congregationID}
+                  observation={request.observation}
+                  comment={request.comment}
+                />
+              </div>
+              <div className="mb-2">
+                <strong>House ID:</strong> {request.houseID}
+              </div>
+              <div className="mb-2">
+                <strong>Observation:</strong> {request.observation}
+              </div>
+              <div className="mb-2">
+                <strong>Comment:</strong> {request.comment}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   });
-  if (
-    territoriesResults.every(
-      (result) => result === null || result === undefined
-    )
-  ) {
+
+  if (territoriesResults.every((result) => result === null || result === undefined)) {
     return (
       <div>
-        Looks like you have no territories to accept Requests! Contact your
-        administrator if you need assistance
+        Looks like you have no territories to accept Requests! Contact your administrator if you
+        need assistance
       </div>
     );
   } else {

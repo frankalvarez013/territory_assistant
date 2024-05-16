@@ -1,7 +1,13 @@
 import prisma from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { Image as Immage } from "@prisma/client";
-export async function GET(request: NextRequest, response: NextResponse) {
+import type { Image } from "@prisma/client";
+import { ErrorResponse } from "@/app/types/api";
+
+export async function GET(
+  request: NextRequest,
+  response: NextResponse
+): Promise<NextResponse<Image | ErrorResponse>> {
   const territoryID = request.nextUrl.searchParams.get("territoryID");
 
   const congregationID = request.nextUrl.searchParams.get("congregationID");
@@ -29,4 +35,5 @@ export async function GET(request: NextRequest, response: NextResponse) {
       message: `IMAGE GET transaction failed:\n ${e}`,
     });
   }
+  return NextResponse.json({ message: "IMAGE Record not found" });
 }

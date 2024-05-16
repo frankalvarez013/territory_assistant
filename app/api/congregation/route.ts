@@ -65,7 +65,9 @@ export async function GET(
   return NextResponse.json(getCongregation, { status: 200 });
 }
 
-export async function PATCH(request, res) {
+export async function PATCH(
+  request: NextRequest
+): Promise<NextResponse<Congregation | ErrorResponse | ZodIssue[]>> {
   const body: Congregation = await request.json();
 
   const validation = updateCongregationSchema.safeParse(body);
@@ -94,7 +96,9 @@ export async function PATCH(request, res) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest
+): Promise<NextResponse<Congregation | ErrorResponse | ZodIssue[]>> {
   const idParam = request.nextUrl.searchParams.get("id");
   if (!idParam) {
     return NextResponse.json({ message: "No ID provided" }, { status: 400 });

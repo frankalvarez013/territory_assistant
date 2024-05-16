@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
 import prisma from "@/prisma/client";
 import type { House } from "@prisma/client";
-import { ErrorResponse } from "@/app/types/api";
+import { CustomSession, ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 const createHouseSchema = z.object({
@@ -57,7 +57,7 @@ export async function POST(
 ): Promise<NextResponse<House | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
   const validation = createHouseSchema.safeParse(body);
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as CustomSession;
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
@@ -67,7 +67,7 @@ export async function POST(
         houseID: 1,
         territoryID: validation.data.territoryID,
         Direction: validation.data.Direction,
-        congregationID: session?.user.congID,
+        congregationID: session?.user?.congID!,
         StreetAd: validation.data.StreetAd,
         dateVisited: validation.data.dateVisited,
         comment: validation.data.comment,
@@ -118,7 +118,9 @@ export async function GET(
   return NextResponse.json(getHouse, { status: 201 });
 }
 
-export async function PATCH(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest
+): Promise<NextResponse<House | ErrorResponse | ZodIssue[]>> {
   const idParam = request.nextUrl.searchParams.get("territoryID");
   const congID = request.nextUrl.searchParams.get("congregationID");
   const idHouseParam = request.nextUrl.searchParams.get("houseID");
@@ -154,6 +156,7 @@ export async function PATCH(request: NextRequest) {
     console.error("House PATCH failed:", e);
     return NextResponse.json({ message: `House PATCH failed:\n ${e}` }, { status: 409 });
   }
+  return NextResponse.json({ message: `Shouldn't appear...` }, { status: 409 });
 }
 
 export async function DELETE(request: NextRequest): Promise<NextResponse<House | ErrorResponse>> {

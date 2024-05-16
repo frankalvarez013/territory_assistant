@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+import { z, ZodIssue } from "zod";
 import prisma from "@/prisma/client";
-import { Request } from "@prisma/client";
+import { House, Request } from "@prisma/client";
 import { Observation } from "@prisma/client";
+import { ErrorResponse } from "@/app/types/api";
 const createRequestSchema = z.object({
   territoryID: z.number().positive().finite(),
   houseID: z.number().positive().finite(),
@@ -19,7 +20,9 @@ const updateRequestSchema = z.object({
   comment: z.string().min(0).max(255).optional(),
   approval: z.boolean(),
 });
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<Request | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
   console.log(body);
   const validation = createRequestSchema.safeParse(body);
@@ -45,7 +48,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest, response: NextResponse) {
+export async function GET(
+  request: NextRequest,
+  response: NextResponse
+): Promise<NextResponse<Request | Request[] | ErrorResponse | ZodIssue[]>> {
   const terrID = request.nextUrl.searchParams.get("territoryID");
   const congID = request.nextUrl.searchParams.get("congID");
   const terrIDCheck = terrID ? parseInt(terrID) : undefined;
@@ -76,10 +82,12 @@ export async function GET(request: NextRequest, response: NextResponse) {
     });
   }
 }
-export async function PATCH(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest
+): Promise<NextResponse<House | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
   const validation = updateRequestSchema.safeParse(body);
-  let updatedHouse = {};
+  let updatedHouse: House | null = null;
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
@@ -105,16 +113,18 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest
+): Promise<NextResponse<Request | ErrorResponse | ZodIssue[]>> {
   const idParam = request.nextUrl.searchParams.get("id");
   const id = idParam ? parseInt(idParam, 10) : undefined;
   try {
-    const deletedUser = await prisma.request.delete({
+    const deletedRequest = await prisma.request.delete({
       where: {
         id: id,
       },
     });
-    return NextResponse.json(deletedUser, { status: 201 });
+    return NextResponse.json(deletedRequest, { status: 201 });
   } catch (e) {
     return NextResponse.json({
       message: `User DELETE Transaction Failed: ${e}`,

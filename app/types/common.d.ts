@@ -71,10 +71,15 @@ type AddHouseRowProps = {
   setUpdate: BooleanFunction;
 };
 type TerritoryEditAdmin = {
+  params: {
+    territoryID: string;
+    congID: string;
+  };
+};
+type TerritoryCheckProps = {
   territoryID: string;
   congID: string;
 };
-
 //Interact Types
 //-------------------------------
 interface LocalState {

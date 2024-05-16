@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
+import { PrismaClient, Prisma } from "@prisma/client";
 import prisma from "@/prisma/client";
 import type { Congregation, Territory, User } from "@prisma/client";
-import { ErrorResponse, territoryJSON } from "@/app/types/api";
+import { CustomSession, ErrorResponse, territoryJSON } from "@/app/types/api";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { TerritoryComment } from "@prisma/client";
@@ -64,19 +65,22 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  console.log("inside GET");
   const terrID = request.nextUrl.searchParams.get("terrID");
   const congID = request.nextUrl.searchParams.get("congID");
   const terrIdCheck = terrID ? parseInt(terrID) : undefined;
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as CustomSession;
   let getTerritory: Territory | Territory[] | null = null;
   let getCong: Congregation | null = null;
   try {
     if (congID && terrID) {
+      console.log("checking... congID", congID, "terrID", terrID);
       getCong = await prisma.congregation.findUnique({
         where: {
           id: congID,
         },
       });
+      console.log(getCong);
       if (typeof terrIdCheck === "number" && getCong) {
         getTerritory = await prisma.territory.findUnique({
           where: {
@@ -95,26 +99,41 @@ export async function GET(request: NextRequest) {
       }
       return NextResponse.json(getTerritory, { status: 201 });
     }
-
     getTerritory = await prisma.territory.findMany({
       where: {
-        congregationID: session.user.congID,
+        congregationID: session!.user!.congID,
       },
       include: {
         currentUser: true,
       },
     });
-
+    console.log("bruh here is the info:", getTerritory);
     if (!getTerritory) {
       return NextResponse.json({ message: "Territory Record not found" });
     }
     // console.log(getTerritory);
     return NextResponse.json(getTerritory, { status: 201 });
   } catch (e) {
-    return NextResponse.json(
-      { message: `Territory GET Transaction failed:\n ${e}` },
-      { status: 500 }
-    );
+    console.error("bruh", e);
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      return NextResponse.json({ message: `DB error occured:\n ${e}` }, { status: 500 });
+    } else if (e instanceof Prisma.PrismaClientUnknownRequestError) {
+      return NextResponse.json(
+        { message: `Unknown database error occurred:\n ${e}` },
+        { status: 500 }
+      );
+    } else if (e instanceof Prisma.PrismaClientRustPanicError) {
+      return NextResponse.json({ message: `Rust panic error occurred:\n ${e}` }, { status: 500 });
+    } else if (e instanceof Prisma.PrismaClientInitializationError) {
+      return NextResponse.json(
+        { message: `Database initialization error occurred:\n ${e}` },
+        { status: 500 }
+      );
+    } else if (e instanceof Prisma.PrismaClientValidationError) {
+      return NextResponse.json({ message: `Validation error occurred:\n ${e}` }, { status: 500 });
+    } else {
+      return NextResponse.json({ message: `Internal Server Error:\n ${e}` }, { status: 500 });
+    }
   }
 }
 

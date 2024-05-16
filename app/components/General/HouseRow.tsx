@@ -73,7 +73,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
     <tr
       key={house.houseID}
       tabIndex={0}
-      className=" border-gray-200 focus-within:bg-slate-400 focus-within:outline-none"
+      className=" border-gray-200 focus-within:bg-slate-300 focus-within:outline-none"
       onClick={() => makeEditable(house.houseID)}
     >
       {isEditable ? (
@@ -100,7 +100,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
                 type="text"
                 placeholder={house.StreetAd}
                 onChange={(e) => handleChange(e)}
-                value={localState.StreetAd}
               />
               {errorFormHandler && errorFormHandler.StreetAd && (
                 <p className="text-red-500 text-xs italic">
@@ -155,7 +154,10 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
           </td>
 
           <td className="focus-within:bg-none focus:bg-none bg-none">
-            <button className="border-black border-2 rounded-2xl px-1 " onClick={saveHouseData}>
+            <button
+              className="border-black border-2 rounded-2xl px-1 hover:bg-green-300 hover:border-green-300"
+              onClick={saveHouseData}
+            >
               Save
             </button>
           </td>

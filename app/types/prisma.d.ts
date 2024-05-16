@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 export type HouseCreateCustomArgs = {
   args: Prisma.HouseCreateArgs;

@@ -6,9 +6,9 @@ import { ExtendedTerritory } from "@/app/types/common";
 export default function TerritoryTransfer() {
   const [territories, setTerritories] = useState<ExtendedTerritory[] | null>(null);
   const [users, setUsers] = useState<User[] | null>(null);
-  const [nullValKey, setNullValKey] = useState(0);
   useEffect(() => {
     async function fetchUserData() {
+      console.log("wtf");
       const response = await fetch(`/api/territory`);
       if (!response.ok) {
         console.error("Failed to fetch territories data");

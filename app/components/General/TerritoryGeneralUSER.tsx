@@ -5,8 +5,8 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import Image from "next/image";
 import check from "../../public/images/check1.svg";
 import HouseRow from "./HouseRowUser";
-import { TerritoryEditAdmin } from "@/app/types/common";
-export default function TerritoryGeneralUserView(props: TerritoryEditAdmin) {
+import { TerritoryCheckProps, TerritoryEditAdmin } from "@/app/types/common";
+export default function TerritoryGeneralUserView(props: TerritoryCheckProps) {
   const [val, setVal] = useState<Territory | null>(null);
   const [houses, setHouses] = useState<House[] | null>(null);
   const [user, setUser] = useState<User[] | null>(null);

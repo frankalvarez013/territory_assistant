@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import TerritoryCheck from "./TerritoryCheck";
 import { TerritoryEditAdmin } from "@/app/types/common";
 import { Image as ObjImage } from "@prisma/client";
-export default function Page(params: TerritoryEditAdmin) {
+export default function Page({ params }: TerritoryEditAdmin) {
   const [image, setImage] = useState<ObjImage | null>(null);
   const [qrCode, setQrCode] = useState("");
   useEffect(() => {

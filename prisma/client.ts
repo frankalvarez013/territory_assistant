@@ -1,4 +1,4 @@
-import { PrismaClient, TerritoryComment, Prisma } from "@prisma/client";
+import { PrismaClient, TerritoryComment } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import {
@@ -10,11 +10,13 @@ import {
 import { CustomSession } from "@/app/types/api";
 
 const prismaClientSingleton = (): ExtendedPrismaClient => {
-  const prisma = new PrismaClient();
-  const extendedPrisma: Partial<ExtendedPrismaClient> = {
-    query: {
-      territory: {
-        async create({ args, query }: TerritoryCreateCustomArgs) {
+  const prisma = new PrismaClient() as ExtendedPrismaClient;
+
+  // Adding custom methods to the existing Prisma client
+  prisma.query = {
+    territory: {
+      async create({ args, query }: TerritoryCreateCustomArgs) {
+        try {
           const { congregationID } = args.data;
 
           let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
@@ -42,10 +44,15 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
           }
 
           return query(args);
-        },
+        } catch (error) {
+          console.error("Error in territory.create:", error);
+          throw error; // Re-throw the error to be caught in the API handler
+        }
       },
-      house: {
-        async create({ args, query }: HouseCreateCustomArgs) {
+    },
+    house: {
+      async create({ args, query }: HouseCreateCustomArgs) {
+        try {
           const { territoryID, congregationID } = args.data;
 
           if (territoryID && congregationID) {
@@ -90,10 +97,15 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
           } else {
             throw new Error("TerritoryID and CongregationID are required.");
           }
-        },
+        } catch (error) {
+          console.error("Error in house.create:", error);
+          throw error; // Re-throw the error to be caught in the API handler
+        }
       },
-      user: {
-        async delete({ args, query }: UserDeleteCustomArgs) {
+    },
+    user: {
+      async delete({ args, query }: UserDeleteCustomArgs) {
+        try {
           const session = (await getServerSession(authOptions)) as CustomSession | null;
 
           if (!session || !session.user || !session.user.id) {
@@ -127,12 +139,15 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
           } else {
             throw new Error("User ID is required.");
           }
-        },
+        } catch (error) {
+          console.error("Error in user.delete:", error);
+          throw error; // Re-throw the error to be caught in the API handler
+        }
       },
     },
   };
 
-  return extendedPrisma as ExtendedPrismaClient;
+  return prisma;
 };
 
 declare global {
@@ -141,6 +156,6 @@ declare global {
 
 const prisma = globalThis.prisma ?? prismaClientSingleton();
 
-export default prisma;
-
 if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
+
+export default prisma;

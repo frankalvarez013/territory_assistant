@@ -9,8 +9,9 @@ import HouseRow from "./HouseRow";
 import AddHouseRow from "./AddHouseRow";
 import fetchEditTerritory from "../fetch/fetchEditTerritory";
 import Upload from "@/app/[user]/dashboard/manageTerritories/edit/[congID]/[territoryID]/upload";
-import { TerritoryEditAdmin } from "@/app/types/common";
-export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
+import { TerritoryCheckProps, TerritoryEditAdmin } from "@/app/types/common";
+export default function TerritoryGeneralView(props: TerritoryCheckProps) {
+  console.log(props);
   const [val, setVal] = useState<Territory | null>(null);
   const [houses, setHouses] = useState<House[] | null>(null);
   const [user, setUser] = useState<User[] | null>(null);
@@ -29,6 +30,7 @@ export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
         },
       });
       const res1 = await res.json();
+      console.log("territory", res1);
       setVal(res1);
 
       if (!res1 || !res1.currentUserID) {

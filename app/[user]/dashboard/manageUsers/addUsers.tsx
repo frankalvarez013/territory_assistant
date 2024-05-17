@@ -47,7 +47,7 @@ export default function AddUsers() {
               formErrorHandler.name && formErrorHandler.user
                 ? `border-red-500 text-red-500`
                 : `border-gray-300`
-            }`}
+            } w-full min-w max-w-72`} // Responsive width classes with min and max width
             type="text"
             id="name"
             name="name"
@@ -56,7 +56,7 @@ export default function AddUsers() {
               setName(e.target.value);
             }}
             required
-          ></input>
+          />
         </div>
         <div>
           <label htmlFor="email">Email:</label>
@@ -65,7 +65,7 @@ export default function AddUsers() {
               formErrorHandler.email && formErrorHandler.user
                 ? `border-red-500 text-red-500`
                 : `border-gray-300`
-            }`}
+            } w-full min-w max-w-72`}
             type="email"
             id="email"
             name="email"
@@ -84,7 +84,7 @@ export default function AddUsers() {
         <div>
           <label htmlFor="password">Password:</label>
           <input
-            className="block border-2 border-gray-300"
+            className="block border-2 border-gray-300 w-full min-w max-w-72"
             type="password"
             id="password"
             name="password"

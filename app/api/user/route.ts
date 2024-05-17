@@ -203,10 +203,7 @@ export async function PATCH(
               activity: TerritoryComment.Available,
             },
           });
-          console.log("wtf");
-          console.log("bruh", updatedTerritories);
         } catch (e) {
-          console.log("territories updated???");
           console.log(e);
         }
       }

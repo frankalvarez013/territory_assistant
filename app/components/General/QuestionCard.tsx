@@ -22,7 +22,7 @@ const Question = (props: Question) => {
     // console.log(isHidden);
   };
   return (
-    <div className="flex flex-col gap-2  w-96">
+    <div className="flex flex-col gap-2  max-w-96">
       <div
         className="flex justify-between hover:cursor-pointer hover:text-orangeJ"
         onClick={toggleVisibility}

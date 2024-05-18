@@ -15,9 +15,9 @@ export default async function Page() {
   return (
     <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
-        <div className=" h-5/6 flex gap-80">
+        <div className=" h-5/6 flex flex-row justify-around items-center flex-wrap">
           {session?.user?.isAdmin ? (
-            <div className=" m-auto w-[90%] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
+            <div className="  w-[45%] min-w-[420px] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
               <div className="text-5xl">Create Territories</div>
               <div className="mt-10">
                 <QuestionCard Question="Create Territory Via Excel Sheet"></QuestionCard>
@@ -31,7 +31,7 @@ export default async function Page() {
             </div>
           ) : null}
 
-          <div className=" m-auto w-[90%] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
+          <div className=" w-[45%] min-w-[420px] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
             <div className="text-5xl">View Territories</div>
             <div className=" mt-5 font-light text-slate-500">
               Click on one of the territories to edit it

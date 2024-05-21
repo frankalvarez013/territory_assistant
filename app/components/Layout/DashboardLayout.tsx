@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <body className={`${inter.className} min-h-screen `}>
       <Providers>
         <InnerHeader></InnerHeader>
-        <main className="pt-16 h-full">{children}</main>
+        <main className="pt-16 w-full overflow-auto">{children}</main>
       </Providers>
     </body>
   );

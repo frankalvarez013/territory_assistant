@@ -35,7 +35,7 @@ export default function Page({ params }: TerritoryEditAdmin) {
   console.log(qrCode);
   return (
     <DashboardLayout>
-      <main className="flex flex-col mt-10 justify-center items-center">
+      <div className="flex flex-col mt-10 justify-center items-center">
         <div className="flex justify-evenly mb-10 items-center gap-20">
           <header className="text-6xl text-center">EDIT Territory {params.territoryID}</header>
           <button className="">
@@ -48,7 +48,7 @@ export default function Page({ params }: TerritoryEditAdmin) {
         />
 
         <TerritoryCheck territoryID={params.territoryID} congID={params.congID}></TerritoryCheck>
-      </main>
+      </div>
     </DashboardLayout>
   );
 }

@@ -200,7 +200,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
               />
             </label>
           </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200 ">
+          <td className="py-1 px-2 border-r border-b border-gray-200 " style={{ width: "300px" }}>
             <SelectObservation
               uniqueOption={emptyState.observation}
               options={observationValues}

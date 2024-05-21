@@ -1,0 +1,18 @@
+/* Parent container */
+.table-container {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Table styling */
+.table {
+  width: 100%;
+  table-layout: fixed; /* Ensures the table does not exceed the parent container width */
+}
+
+/* Optional: Styling for table cells */
+.table td {
+  overflow: hidden; /* Ensures content within cells does not overflow */
+  text-overflow: ellipsis; /* Adds ellipsis if content overflows */
+  white-space: nowrap; /* Prevents text from wrapping */
+}

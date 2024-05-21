@@ -33,7 +33,7 @@ export default function Page({ params }: TerritoryParams) {
   });
   return (
     <DashboardLayout>
-      <main className="flex flex-col mt-10 justify-center items-center">
+      <div className="flex flex-col mt-10 lg:justify-center lg:items-center w-full overflow-auto">
         <div className="flex justify-evenly mb-10 items-center gap-20">
           <header className="text-6xl text-center">Territory {params.territoryID}</header>
           <button className="">
@@ -52,6 +52,7 @@ export default function Page({ params }: TerritoryParams) {
           src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/v${image.version}/${image.publicId}.${image.format}`}
           key={image.publicId}
           alt="f"
+          className="w-[40rem] m-auto"
         />
         <div className="mt-28 mb-28">
           <TerritoryGeneralView
@@ -65,7 +66,7 @@ export default function Page({ params }: TerritoryParams) {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
         ></QrCodeModal>
-      </main>
+      </div>
     </DashboardLayout>
   );
 }

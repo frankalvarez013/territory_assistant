@@ -72,13 +72,13 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
   }
   // console.log("user: ", user);
   return (
-    <div className="overflow-x-auto w-full">
+    <div className="min-w-[65rem]">
       <Upload congregationID={props.congID} territoryID={props.territoryID}></Upload>
       <div className="table">
         <table className="table">
           <thead>
             <tr>
-              <th colSpan={6} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
+              <th colSpan={5} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
                 REGISTRO DE CASA EN CASA
               </th>
             </tr>
@@ -121,7 +121,7 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
                 </button>
               </th>
 
-              <th colSpan={3} className="py-2 px-4 border-b border-gray-200">
+              <th colSpan={2} className="py-2 px-4 border-b border-gray-200">
                 TERRITORIO: {val.territoryID}
               </th>
             </tr>
@@ -131,7 +131,7 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
                 {user[0].name}
               </th>
 
-              <th colSpan={2} className="py-1 px-2 border-r border-b border-gray-200">
+              <th colSpan={1} className="py-1 px-2 border-r border-b border-gray-200">
                 Expira:
               </th>
               <th className="py-1 border-b px-2">
@@ -142,15 +142,13 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
             </tr>
             <tr className="bg-blue-200">
               <th className=" px-2 border-r border-gray-200">Actualización:</th>
-              <th colSpan={5} className=" px-2">
+              <th colSpan={4} className=" px-2">
                 {val.activity}
               </th>
             </tr>
           </thead>
           <tbody className="text-center">
             <tr className=" bg-blue-400 text-black underline font-bold">
-              <td className="py-1 px-2 border-r border-gray-200">Status</td>
-
               <td className="py-1 px-2 border-r border-gray-200">Direccion</td>
               <td className="py-1 px-2 border-r border-gray-200">Calle</td>
               <td className="py-1 px-2 border-r border-gray-200">Observacion</td>
@@ -169,6 +167,13 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
                   isEditable={editableHouseID === element.houseID}
                 />
               ))}
+            <tr className=" bg-blue-400 my-20 text-black underline font-bold">
+              Add a New House <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
             <AddHouseRow
               key={200}
               makeEditable={makeEditable}

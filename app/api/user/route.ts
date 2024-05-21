@@ -223,7 +223,7 @@ export async function DELETE(
   console.log(request.nextUrl.searchParams.entries());
   const id = request.nextUrl.searchParams.get("id");
   console.log(id);
-  if (id! || id === null) {
+  if (!id || id === null) {
     console.error(`ID is necessary for DELETE Transaction`);
     return NextResponse.json({
       message: `ID is necessary for DELETE Transaction`,

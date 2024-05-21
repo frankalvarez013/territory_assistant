@@ -35,7 +35,7 @@ export default function Page({ params }: TerritoryEditAdmin) {
   console.log(qrCode);
   return (
     <DashboardLayout>
-      <div className="flex flex-col mt-10 justify-center items-center">
+      <div className="flex flex-col mt-10 lg:justify-center lg:items-center overflow-x-auto">
         <div className="flex justify-evenly mb-10 items-center gap-20">
           <header className="text-6xl text-center">EDIT Territory {params.territoryID}</header>
           <button className="">
@@ -45,6 +45,7 @@ export default function Page({ params }: TerritoryEditAdmin) {
         <img
           src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/v${image.version}/${image.publicId}.${image.format}`}
           key={image.publicId}
+          alt="oi"
         />
 
         <TerritoryCheck territoryID={params.territoryID} congID={params.congID}></TerritoryCheck>

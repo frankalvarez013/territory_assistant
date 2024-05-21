@@ -91,8 +91,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
                 ? "🟢"
                 : "🔴"
               : ""}
-          </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="direction">
               {" "}
               <input
@@ -177,8 +175,6 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
                 ? "🟢"
                 : "🔴"
               : ""}
-          </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="streetAd">
               {" "}
               <input

@@ -35,7 +35,7 @@ function SelectObservation(props: SelectAddObservationProps) {
       name="observation"
     >
       <option value={props.uniqueOption}>
-        {invertedObservationMapping[props.uniqueOption] || ""}
+        {invertedObservationMapping[props.uniqueOption] || "Add Observation"}
       </option>
       {props.options.map((option, index) => {
         if (option !== props.uniqueOption) {

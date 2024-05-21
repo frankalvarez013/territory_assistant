@@ -89,7 +89,6 @@ const AddHouseRow = React.memo((props: AddHouseRowProps) => {
     >
       {props.isEditable ? (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200">Add New Houses: </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="direction">
               {" "}
@@ -145,8 +144,7 @@ const AddHouseRow = React.memo((props: AddHouseRowProps) => {
               />
             </label>
           </td>
-          <td className="py-1 px-2 border-b "></td>
-
+          <td></td>
           <td className="focus-within:bg-none focus:bg-none bg-none focus-within:bg-transparent bg-transparent focus:bg-white">
             <button onClick={saveHouseData}>
               <Image src={plus} height={30} alt="plus"></Image>
@@ -155,7 +153,6 @@ const AddHouseRow = React.memo((props: AddHouseRowProps) => {
         </>
       ) : (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200">Add New Houses: </td>
           <td className="py-1 px-2 border-r border-b border-gray-200">
             <label htmlFor="streetAd">
               {" "}
@@ -185,7 +182,7 @@ const AddHouseRow = React.memo((props: AddHouseRowProps) => {
               <input name="comment" type="text" placeholder={"Add Comment"} value={""} />
             </label>
           </td>
-          <td className="py-1 px-2 border-b "></td>
+          <td className="py-1 px-2 "></td>
         </>
       )}
     </tr>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { User } from "@prisma/client";
 export default async function DeleteUser(id: string) {
-  console.log("Invoking Func");
+  console.log("Invoking Func", id);
   let res1 = await fetch(`/api/user?id=${id}`, {
     method: "DELETE",
     headers: {

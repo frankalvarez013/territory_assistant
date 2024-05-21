@@ -13,6 +13,5 @@
 /* Optional: Styling for table cells */
 .table td {
   overflow: hidden; /* Ensures content within cells does not overflow */
-  text-overflow: ellipsis; /* Adds ellipsis if content overflows */
   white-space: nowrap; /* Prevents text from wrapping */
 }

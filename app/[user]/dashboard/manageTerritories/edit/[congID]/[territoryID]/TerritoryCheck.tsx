@@ -7,7 +7,7 @@ export default function TerritoryCheck(props: TerritoryCheckProps) {
   const { data: session } = useSession() as { data: CustomSession };
   if (session?.user?.isAdmin) {
     return (
-      <div className="mt-28 mb-28">
+      <div className="mt-28 mb-28 px-10 overflow-x-auto">
         <TerritoryGeneralADMIN
           congID={props.congID}
           territoryID={props.territoryID}
@@ -16,7 +16,7 @@ export default function TerritoryCheck(props: TerritoryCheckProps) {
     );
   } else {
     return (
-      <div className="mt-28 mb-28">
+      <div className="mt-28 mb-28 px-10 overflow-x-auto">
         <TerritoryGeneralUser
           congID={props.congID}
           territoryID={props.territoryID}

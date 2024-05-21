@@ -62,6 +62,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
       {isEditable ? (
         <>
           <td className="py-1 px-2 border-r border-b border-gray-200">
+            {" "}
             {house.status === Status.LLEGA
               ? house.observation === Observation.INGLES ||
                 house.observation === Observation.OTRO_IDIOMA ||
@@ -74,8 +75,8 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
                 ? "🟢"
                 : "🔴"
               : ""}
+            {house.StreetAd}
           </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200">{house.StreetAd}</td>
           <td className="py-1 px-2 border-r border-b border-gray-200">{house.Direction}</td>
           <td className="py-1 px-2 border-r border-b border-gray-200 ">
             <SelectObservation
@@ -109,21 +110,23 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
       ) : (
         <>
           <td className="py-1 px-2 border-r border-b border-gray-200">
-            {house.status === Status.LLEGA
-              ? house.observation === Observation.INGLES ||
-                house.observation === Observation.OTRO_IDIOMA ||
-                house.observation === Observation.DUERME_DE_DIA ||
-                house.observation === Observation.TESTIGOS
-                ? "🔵"
-                : house.observation === Observation.CANDADO ||
-                  house.observation === Observation.EMPTY ||
-                  house.observation === Observation.PERRO_EN_CASA
-                ? "🟢"
-                : "🔴"
-              : ""}
-          </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200 text-gray-400">
-            {house.StreetAd}
+            <div className=" w-min m-auto">
+              {" "}
+              {house.status === Status.LLEGA
+                ? house.observation === Observation.INGLES ||
+                  house.observation === Observation.OTRO_IDIOMA ||
+                  house.observation === Observation.DUERME_DE_DIA ||
+                  house.observation === Observation.TESTIGOS
+                  ? "🔵"
+                  : house.observation === Observation.CANDADO ||
+                    house.observation === Observation.EMPTY ||
+                    house.observation === Observation.PERRO_EN_CASA
+                  ? "🟢"
+                  : "🔴"
+                : ""}{" "}
+              {"   "}
+              {house.StreetAd}
+            </div>
           </td>
           <td className="py-1 px-2 border-r border-b border-gray-200 text-gray-400">
             {house.Direction}

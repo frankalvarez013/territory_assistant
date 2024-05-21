@@ -8,6 +8,7 @@ import QrCodeModal from "./QrCodeModal";
 import { useEffect, useState } from "react";
 import { TerritoryEditAdmin, TerritoryParams } from "@/app/types/common";
 import { Image as Imaage } from "@prisma/client";
+import "./styles.css";
 export default function Page({ params }: TerritoryParams) {
   const [isOpen, setIsOpen] = useState(false);
   const [image, setImage] = useState<Imaage>({
@@ -54,7 +55,7 @@ export default function Page({ params }: TerritoryParams) {
           alt="f"
           className="w-[40rem] m-auto"
         />
-        <div className="mt-28 mb-28">
+        <div className="mt-28 mb-28 px-10 overflow-x-auto scroll-container">
           <TerritoryGeneralView
             congID={params.congID}
             territoryID={params.territoryID}

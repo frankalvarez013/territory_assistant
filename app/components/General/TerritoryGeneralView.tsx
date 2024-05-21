@@ -3,7 +3,11 @@ import SelectObservation from "../Interact/SelectObservation";
 import { useEffect, useState } from "react";
 import { TerritoryEditAdmin, TerritoryWithHouses } from "@/app/types/common";
 import "./styles.css";
-export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
+type terrcongProps = {
+  territoryID: string;
+  congID: string;
+};
+export default function TerritoryGeneralView(props: terrcongProps) {
   const [territory, setTerritory] = useState<TerritoryWithHouses | null>(null);
   const [user, setUser] = useState<User[] | null>(null);
   useEffect(() => {
@@ -34,12 +38,12 @@ export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
   }
   const observationValues: Observation[] = Object.values(Observation);
   return (
-    <div className="min-w-[65rem]">
+    <div className="min-w-[65rem] ">
       <div className="table ">
         <table className="table ">
           <thead>
             <tr>
-              <th colSpan={6} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
+              <th colSpan={5} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
                 REGISTRO DE CASA EN CASA
               </th>
             </tr>
@@ -49,7 +53,7 @@ export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
                 {territory.location}
               </th>
 
-              <th colSpan={3} className="py-2 px-4 border-l border-gray-200">
+              <th colSpan={2} className="py-2 px-4 border-l border-gray-200">
                 TERRITORIO: {territory.territoryID}
               </th>
             </tr>
@@ -60,9 +64,7 @@ export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
               </th>
 
               <th colSpan={2} className="py-1 px-2 border-r border-gray-200">
-                Expira:
-              </th>
-              <th className="py-1 px-2">
+                Expira:{" "}
                 {territory.ExperiationDate
                   ? new Date(territory.ExperiationDate).toLocaleDateString("en-US")
                   : "No Expiration Date"}
@@ -70,7 +72,7 @@ export default function TerritoryGeneralView(props: TerritoryEditAdmin) {
             </tr>
             <tr className="bg-blue-200">
               <th className=" px-2 border-r border-gray-200">Actualización:</th>
-              <th colSpan={5} className=" px-2">
+              <th colSpan={4} className=" px-2">
                 {territory.activity}
               </th>
             </tr>

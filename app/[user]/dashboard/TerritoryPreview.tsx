@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function TerritoryPreview(props: { userID: string }) {
   const [user, setUser] = useState<[User, Territory[]] | null>(null);
+
   useEffect(() => {
     async function fetchUserData() {
       const response = await fetch(`/api/user?id=${props.userID}`);
@@ -15,42 +16,44 @@ export default function TerritoryPreview(props: { userID: string }) {
       setUser(userData);
     }
     fetchUserData();
-  }, []);
+  }, [props.userID]);
+
   if (!user) return <div>Loading user data...</div>;
-  // console.log("check", user);
 
   return (
-    <table className="w-full m-auto border-collapse text-center">
-      <thead>
-        <tr>
-          <th className="border-b border-gray-200 py-4 px-4">Territory</th>
-          <th className="border-b border-gray-200 py-4 px-4">Location</th>
-          <th className="border-b border-gray-200 py-4 px-4">Assigned Date</th>
-          <th className="border-b border-gray-200 py-4 px-4">Expiration Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {user[1].map((element) => (
-          <tr key={element.territoryID}>
-            <td className="border-t border-gray-200 py-4 px-4 hover:underline hover:to-blue-300">
-              <a href={`/territory/${element.congregationID}/${element.territoryID}`}>
-                {element.territoryID}
+    <div className="p-4">
+      {user[1].map((element) => (
+        <div
+          key={element.territoryID}
+          className="mb-4 p-4 border border-gray-200 rounded-lg shadow-sm"
+        >
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
+            <h3 className="text-lg font-semibold">
+              <a
+                href={`/territory/${element.congregationID}/${element.territoryID}`}
+                className="hover:underline hover:text-blue-500"
+              >
+                Territory: # {element.territoryID}
               </a>
-            </td>
-            <td className="border-t border-gray-200 py-4 px-4">{element.location}</td>
-            <td className="border-t border-gray-200 py-4 px-4">
+            </h3>
+            <span className="text-sm text-gray-600">Address: {element.location}</span>
+          </div>
+          <div className="text-sm text-gray-500">
+            <div>
+              <strong>Assigned Date:</strong>{" "}
               {element.AssignedDate
                 ? new Date(element.AssignedDate).toLocaleDateString("en-US")
                 : "..."}
-            </td>
-            <td className="border-t border-gray-200 py-4 px-4">
+            </div>
+            <div>
+              <strong>Expiration Date:</strong>{" "}
               {element.ExperiationDate
                 ? new Date(element.ExperiationDate).toLocaleDateString("en-US")
                 : "..."}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

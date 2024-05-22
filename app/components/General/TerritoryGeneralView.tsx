@@ -38,7 +38,7 @@ export default function TerritoryGeneralView(props: terrcongProps) {
   }
   const observationValues: Observation[] = Object.values(Observation);
   return (
-    <div className="min-w-[65rem] ">
+    <div className="min-w-[48rem]">
       <div className="table ">
         <table className="table ">
           <thead>

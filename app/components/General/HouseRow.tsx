@@ -78,7 +78,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
     >
       {isEditable ? (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200">
+          <td className="py-1 px-2 border-r border-b border-gray-200 w-min">
             {house.status === Status.LLEGA
               ? house.observation === Observation.INGLES ||
                 house.observation === Observation.OTRO_IDIOMA ||
@@ -162,7 +162,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
         </>
       ) : (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200">
+          <td className="py-1 px-2 border-r border-b border-gray-200 w-min">
             {house.status === Status.LLEGA
               ? house.observation === Observation.INGLES ||
                 house.observation === Observation.OTRO_IDIOMA ||

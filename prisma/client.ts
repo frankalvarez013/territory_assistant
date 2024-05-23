@@ -48,15 +48,11 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
               typeof congregationTerritoryCounter?.nextTerritoryID === "number" &&
               congregationTerritoryCounter != null
             ) {
-              args.data.territoryID = congregationTerritoryCounter.nextTerritoryID;
+              args.data.territoryID = congregationTerritoryCounter.nextTerritoryID + 1;
               console.log(
                 "Updating territory counter to:",
                 congregationTerritoryCounter.nextTerritoryID + 1
               );
-              await prisma.territoryCounter.update({
-                where: { congregationID: congregationID },
-                data: { nextTerritoryID: congregationTerritoryCounter.nextTerritoryID + 1 },
-              });
             }
 
             return query(args);

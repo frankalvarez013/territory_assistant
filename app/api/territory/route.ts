@@ -34,6 +34,7 @@ export async function POST(
     const session = (await getServerSession(authOptions)) as CustomSession;
     if (session?.user?.isAdmin) {
       console.log("Creating Terr");
+      console.log(defaultVal);
       const newTerritory = await prisma.query.territory.create({
         args: {
           data: {
@@ -48,6 +49,26 @@ export async function POST(
         query: (args) => prisma.territory.create(args),
       });
       console.log("finished....");
+      try {
+        let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
+          where: { congregationID: session.user.congID! },
+        });
+        if (congregationTerritoryCounter) {
+          await prisma.territoryCounter.update({
+            where: { congregationID: session.user.congID! },
+            data: { nextTerritoryID: congregationTerritoryCounter?.nextTerritoryID },
+          });
+        }
+      } catch (e) {
+        console.error("Error creating new territory:\n", e);
+
+        // Return an error response
+        return NextResponse.json(
+          { message: `TerritoryCounter UPDATE Transaction failed:\n ${e}` },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
         {
           ...newTerritory,

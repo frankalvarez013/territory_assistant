@@ -28,7 +28,7 @@ model User {
   isGeneralAdmin Boolean      @default(false)
   Role            Role        @default(Approved)
   congregationID String
-  congregation   Congregation @relation(fields: [congregationID], references: [id], onDelete: Cascade)
+  congregation   Congregation @relation(fields: [congregationID], references: [id])
   Territory      Territory[]
 
   @@id([id, congregationID])

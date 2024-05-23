@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Transition } from "@headlessui/react";
 import { MenuIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/outline";
+
 export const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="flex items-center flex-col" onBlur={() => setIsOpen(!isOpen)}>
-      <div className="">
+    <nav className="relative flex items-center justify-between flex-wrap py-2 bg-[rgb(65,105,225)]">
+      <div className="flex items-center flex-shrink-0 text-white mr-6">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center px-3 py-2 rounded border-2 border-white hover:text-black hover:border-black"
@@ -19,46 +19,36 @@ export const Nav = () => {
           )}
         </button>
       </div>
-      <Transition
-        show={isOpen}
-        enter="transition duration-200 ease-out"
-        enterFrom="opacity-0 scale-95"
-        enterTo="opacity-100 scale-100"
-        leave="transition duration-200 ease-in"
-        leaveFrom="opacity-100 scale-100"
-        leaveTo="opacity-0 scale-95"
-      >
-        {(ref) => (
-          <div ref={ref} className="w-full bg-[rgb(65,105,225)]">
-            <div className="text-sm flex flex-col">
-              <a
-                href="#responsive-header"
-                className="block mt-4 lg:inline-block lg:mt-0  hover:text-black mr-4"
-              >
-                Dashboard
-              </a>
-              <a
-                href="#responsive-header"
-                className="block mt-4 lg:inline-block lg:mt-0  hover:text-black mr-4"
-              >
-                Manage Territories
-              </a>
-              <a
-                href="#responsive-header"
-                className="block mt-4 lg:inline-block lg:mt-0  hover:text-black"
-              >
-                Manage Requests
-              </a>{" "}
-              <a
-                href="#responsive-header"
-                className="block mt-4 lg:inline-block lg:mt-0  hover:text-white"
-              >
-                Sign Out
-              </a>
-            </div>
+      {isOpen && (
+        <div className="absolute top-14 right-0  min-w-min bg-[rgb(65,105,225)] shadow-lg z-50">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a
+              href="#responsive-header"
+              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-black hover:bg-gray-200"
+            >
+              Dashboard
+            </a>
+            <a
+              href="#responsive-header"
+              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-black hover:bg-gray-200"
+            >
+              Manage Territories
+            </a>
+            <a
+              href="#responsive-header"
+              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-black hover:bg-gray-200"
+            >
+              Manage Requests
+            </a>
+            <a
+              href="#responsive-header"
+              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-black hover:bg-gray-200"
+            >
+              Sign Out
+            </a>
           </div>
-        )}
-      </Transition>
+        </div>
+      )}
     </nav>
   );
 };

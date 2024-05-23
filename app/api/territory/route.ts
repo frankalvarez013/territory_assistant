@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodIssue, z } from "zod";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "@/prisma/client";
 import type { Congregation, Territory, User } from "@prisma/client";
 import { CustomSession, ErrorResponse, territoryJSON } from "@/app/types/api";
@@ -34,15 +34,18 @@ export async function POST(
     const session = (await getServerSession(authOptions)) as CustomSession;
     if (session?.user?.isAdmin) {
       console.log("Creating Terr");
-      const newTerritory = await prisma.territory.create({
-        data: {
-          territoryID: defaultVal,
-          location: body.location,
-          AssignedDate: date,
-          ExperiationDate: endDate,
-          congregationID: session.user.congID!,
-          currentUserID: session.user.id!,
+      const newTerritory = await prisma.query.territory.create({
+        args: {
+          data: {
+            territoryID: defaultVal,
+            location: body.location,
+            AssignedDate: date,
+            ExperiationDate: endDate,
+            congregationID: session.user.congID!,
+            currentUserID: session.user.id!,
+          },
         },
+        query: (args) => prisma.territory.create(args),
       });
       console.log("finished....");
       return NextResponse.json(

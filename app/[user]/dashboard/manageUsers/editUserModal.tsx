@@ -26,13 +26,10 @@ export default function EditUserModal({
   const [selectedEntity, setEntity] = useState({});
   const [formErrorHandler, setFormErrorHandler] = useState<UserErrorFormHandler>({});
   const [deleteModal, setDeleteModal] = useState(false);
-
-  console.log("start of modal...", user.Role);
   const [role, setRole] = useState("");
   useEffect(() => {
     if (user.Role) {
       setRole(user.Role);
-      console.log("updated role in effect...", user.Role);
     }
   }, [user.Role]); // Dependency on user.Role to update state when it changes
   var roles = Object.keys(Role).map((key) => key);

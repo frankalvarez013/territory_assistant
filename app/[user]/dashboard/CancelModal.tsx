@@ -82,7 +82,7 @@ export default function CancelModal({
             body: JSON.stringify({ email, subject, message }),
           });
         }
-        // window.location.reload();
+        window.location.reload();
       }
     } else {
       console.log("no Function!!");

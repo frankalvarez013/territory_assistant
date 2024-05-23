@@ -219,10 +219,8 @@ export async function PATCH(
 export async function DELETE(
   request: NextRequest
 ): Promise<NextResponse<User | ZodIssue[] | ErrorResponse>> {
-  console.log("inside ROUTE");
-  console.log(request.nextUrl.searchParams.entries());
   const id = request.nextUrl.searchParams.get("id");
-  console.log(id);
+
   if (!id || id === null) {
     console.error(`ID is necessary for DELETE Transaction`);
     return NextResponse.json({
@@ -230,15 +228,17 @@ export async function DELETE(
     });
   }
   try {
-    console.log("check");
-    const deletedUser = await prisma.user.delete({
-      where: {
-        //id is not recognized...
-        id: id,
-        isGeneralAdmin: false,
+    const deletedUser = await prisma.query.user.delete({
+      args: {
+        where: {
+          //id is not recognized...
+          id: id,
+          isGeneralAdmin: false,
+        },
       },
+      query: (args) => prisma.user.delete(args),
     });
-    console.log("rip");
+
     return NextResponse.json(deletedUser, { status: 201 });
   } catch (e) {
     console.log(e);

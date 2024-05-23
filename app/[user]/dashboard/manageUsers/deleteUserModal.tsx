@@ -6,7 +6,6 @@ import fetchDeleteUser from "../../../components/fetch/fetchDeleteUser";
 import { deleteUserModalProps } from "@/app/types/common";
 export default function DeleteUserModal({ user, isOpen, setIsOpen }: deleteUserModalProps) {
   function deleteModal() {
-    console.log("?");
     fetchDeleteUser(user.id);
     setIsOpen(false);
     // window.location.reload();

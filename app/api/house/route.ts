@@ -62,17 +62,20 @@ export async function POST(
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
   try {
-    const newHouse = await prisma.house.create({
-      data: {
-        houseID: 1,
-        territoryID: validation.data.territoryID,
-        Direction: validation.data.Direction,
-        congregationID: session?.user?.congID!,
-        StreetAd: validation.data.StreetAd,
-        dateVisited: validation.data.dateVisited,
-        comment: validation.data.comment,
-        observation: validation.data.observation,
+    const newHouse = await prisma.query.house.create({
+      args: {
+        data: {
+          houseID: 1,
+          territoryID: validation.data.territoryID,
+          Direction: validation.data.Direction,
+          congregationID: session?.user?.congID!,
+          StreetAd: validation.data.StreetAd,
+          dateVisited: validation.data.dateVisited,
+          comment: validation.data.comment,
+          observation: validation.data.observation,
+        },
       },
+      query: (args) => prisma.house.create(args),
     });
     return NextResponse.json(newHouse, { status: 201 });
   } catch (e) {

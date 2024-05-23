@@ -6,7 +6,12 @@ export const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="relative flex items-center justify-between flex-wrap py-2 bg-[rgb(65,105,225)]">
+    <nav
+      className="relative flex items-center justify-between flex-wrap py-2 bg-[rgb(65,105,225)]"
+      onBlur={() => {
+        setIsOpen(false);
+      }}
+    >
       <div className="flex items-center flex-shrink-0 text-white mr-6">
         <button
           onClick={() => setIsOpen(!isOpen)}

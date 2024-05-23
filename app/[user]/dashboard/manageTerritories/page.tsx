@@ -15,7 +15,7 @@ export default async function Page() {
   return (
     <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
-        <div className=" h-5/6 flex flex-row justify-around items-center flex-wrap">
+        <div className="mt-24 h-5/6 flex flex-row justify-around items-center flex-wrap">
           {session?.user?.isAdmin ? (
             <div className="  w-[45%] min-w-[420px] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
               <div className="text-5xl">Create Territories</div>

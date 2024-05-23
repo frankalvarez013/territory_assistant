@@ -22,37 +22,43 @@ export default function TerritoryPreview(props: { userID: string }) {
 
   return (
     <div className="p-4">
-      {user[1].map((element) => (
-        <div
-          key={element.territoryID}
-          className="mb-4 p-4 border border-gray-200 rounded-lg shadow-sm"
+      {user[1].map((element, id) => (
+        <a
+          key={id}
+          href={`/territory/${element.congregationID}/${element.territoryID}`}
+          className="hover:underline hover:text-blue-500"
         >
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-            <h3 className="text-lg font-semibold">
-              <a
-                href={`/territory/${element.congregationID}/${element.territoryID}`}
-                className="hover:underline hover:text-blue-500"
-              >
-                Territory: # {element.territoryID}
-              </a>
-            </h3>
-            <span className="text-sm text-gray-600">Address: {element.location}</span>
-          </div>
-          <div className="text-sm text-gray-500">
-            <div>
-              <strong>Assigned Date:</strong>{" "}
-              {element.AssignedDate
-                ? new Date(element.AssignedDate).toLocaleDateString("en-US")
-                : "..."}
+          <div
+            key={element.territoryID}
+            className="mb-4 p-4 border border-blue-500 rounded-lg shadow-sm"
+          >
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
+              <h3 className="text-lg font-semibold">
+                <a
+                  href={`/territory/${element.congregationID}/${element.territoryID}`}
+                  className="hover:underline hover:text-blue-500"
+                >
+                  Territory: # {element.territoryID}
+                </a>
+              </h3>
+              <span className="text-sm text-gray-600">Address: {element.location}</span>
             </div>
-            <div>
-              <strong>Expiration Date:</strong>{" "}
-              {element.ExperiationDate
-                ? new Date(element.ExperiationDate).toLocaleDateString("en-US")
-                : "..."}
+            <div className="text-sm text-gray-500">
+              <div>
+                <strong>Assigned Date:</strong>{" "}
+                {element.AssignedDate
+                  ? new Date(element.AssignedDate).toLocaleDateString("en-US")
+                  : "..."}
+              </div>
+              <div>
+                <strong>Expiration Date:</strong>{" "}
+                {element.ExperiationDate
+                  ? new Date(element.ExperiationDate).toLocaleDateString("en-US")
+                  : "..."}
+              </div>
             </div>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   );

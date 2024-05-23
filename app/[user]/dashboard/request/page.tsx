@@ -16,7 +16,7 @@ export default async function Page() {
     <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
         <div className=" w-10/12 h-5/6 flex flex-col">
-          <div className="mt-10 ml-20">
+          <div className="mt-24 ml-20">
             <div className="text-5xl">Welcome, {session.user!.name}</div>
             <div className=" mt-5 font-light text-slate-500">
               Accept Or Deny Requests sent to Territories that belong to you.

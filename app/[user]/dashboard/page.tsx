@@ -13,16 +13,16 @@ export default async function Dashboard({ params }: { params: { user: string } }
   if (!session) {
     redirect("/api/auth/signin");
   }
+  const capitalizedName =
+    session!.user!.name!.charAt(0).toUpperCase() + session!.user!.name!.slice(1);
   if (params.user === "user") {
     return (
       <DashboardLayout>
         <div className="h-full flex flex-col justify-center items-center">
           <div className=" w-10/12 h-5/6 flex flex-col">
-            <div className="mt-10 ml-20">
-              <div className="text-5xl">Welcome, {session!.user!.name!}</div>
-              <div className=" mt-5 font-light text-slate-500">
-                These are your assigned territories from INSERT TIME FRAME - INSERT TIME FRAME
-              </div>
+            <div className="ml-0 mt-16 md:ml-20">
+              <div className="text-5xl">Welcome, {capitalizedName}</div>
+              <div className=" mt-5  text-slate-400">These are your assigned territories</div>
             </div>
             <div className=" m-auto w-[90%] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
               <div className=" text-darkgrey mb-7 text-xl font-semibold">Assigned Territories</div>
@@ -37,11 +37,11 @@ export default async function Dashboard({ params }: { params: { user: string } }
       <DashboardLayout>
         <div className="h-full flex flex-col justify-center items-center">
           <div className="w-10/12 h-5/6 flex flex-col">
-            <div className="mt-10">
-              <div className="text-5xl mb-10">Welcome, {session!.user!.name}</div>
+            <div className="ml-0 mt-16 md:ml-20">
+              <div className="text-5xl mb-10">Welcome, {capitalizedName}</div>
 
               <div className="pl-10 pr-5 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
-                <div className=" font-light text-slate-500 mb-3">
+                <div className=" text-slate-400 mb-3">
                   Welcome admin, this dashboard provides a view of all members who receive territory
                   card assignments.
                 </div>
@@ -82,8 +82,8 @@ export default async function Dashboard({ params }: { params: { user: string } }
       <DashboardLayout>
         <div className="h-full flex flex-col justify-center items-center">
           <div className="w-10/12 h-5/6 flex flex-col">
-            <div className="mt-10">
-              <div className="text-5xl mb-10">Welcome, {session!.user!.name}</div>
+            <div className="ml-0 mt-16 md:ml-20">
+              <div className="text-5xl mb-10">Welcome, {capitalizedName}</div>
 
               <div className="pl-10 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
                 <div className=" font-light text-slate-500 mb-3">

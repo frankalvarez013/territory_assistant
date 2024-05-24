@@ -85,11 +85,11 @@ export default async function Dashboard({ params }: { params: { user: string } }
             <div className="ml-0 mt-16 md:ml-20">
               <div className="text-5xl mb-10">Welcome, {capitalizedName}</div>
 
-              <div className="pl-10 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles">
-                <div className=" font-light text-slate-500 mb-3">
+              <div className="pl-10 py-8 justify-center flex flex-col rounded-[2rem] shadow-all-angles pr-10">
+                <div className=" font-light text-slate-500">
                   Welcome General Admin! this dashboard provides a view of all congregations
                 </div>
-                <ol className="list-decimal ml-5">
+                <ol className="list-decimal ml-5 mr-4">
                   <li>
                     User the dropdown list under Publisher to assign territory cards then update
                     assigned date, the expiration date will auto calculate.
@@ -114,18 +114,19 @@ export default async function Dashboard({ params }: { params: { user: string } }
             <div className="h-full mt-10 p-10 border-greye border-2 rounded-2xl">
               <div className=" text-darkgrey mb-7 text-xl font-semibold">
                 All Congregations
-                <div className="h-full flex flex-col justify-center items-center">
-                  <div className=" h-5/6 flex gap-80">
-                    <div className=" m-auto w-[90%] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
-                      <div className="text-5xl">Create Congregations</div>
-                      <div className="mt-10"></div>
+                <div className="h-full flex flex-col">
+                  <div className=" h-5/6 flex justify-around flex-wrap">
+                    <div className="  h-full mt-10 p-4 lg:p-10 border-greye border-2 rounded-2xl">
+                      <div className="lg:text-4xl md:text-4xl text-3xl whitespace-normal">
+                        Create Congregations
+                      </div>
 
-                      <div className=" text-darkgrey mb-7 text-xl font-semibold mt-2">
+                      <div className="mt-10 text-darkgrey mb-7 text-xl font-semibold ">
                         <AddCongregation></AddCongregation>
                       </div>
                     </div>
-                    <div className=" m-auto w-[90%] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
-                      <div className="text-5xl">View Congregations</div>
+                    <div className="  h-full mt-10 px-5 pt-8 lg:p-10 border-greye border-2 rounded-2xl">
+                      <div className="lg:text-4xl text-3xl">View Congregations</div>
                       <div className=" mt-5 font-light text-slate-500">
                         <EditCongregation></EditCongregation>
                       </div>

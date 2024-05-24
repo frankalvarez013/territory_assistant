@@ -104,7 +104,7 @@ type TerritoryParams = {
 };
 type QRCodeModalProps = {
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<Boolean>>;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   congregation: string;
   territory: string;
 };

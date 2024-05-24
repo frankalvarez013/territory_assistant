@@ -15,7 +15,6 @@ export default function QrCodeModal(props: QRCodeModalProps) {
       setQrCode(imageUrl);
     }
     GETQR();
-    console.log("FU");
   }, [props.congregation, props.territory]);
   function closeEditModal() {
     props.setIsOpen(false);

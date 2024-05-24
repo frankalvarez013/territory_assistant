@@ -1,8 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth, { Awaitable, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
+import { CustomSession } from "@/app/types/api";
 const prisma = new PrismaClient();
+type yoyo =
+  | ((params: { url: string; baseUrl: string; session: CustomSession }) => Awaitable<string>)
+  | undefined;
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
@@ -62,6 +66,7 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
+
     async redirect({ url, baseUrl, session }) {
       if (session) {
         if (session.user.isAdmin) {

@@ -34,12 +34,12 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
               where: { congregationID: congregationID },
             });
 
-            if (congregationTerritoryCounter == null && congregationID) {
+            if (congregationTerritoryCounter === null && congregationID) {
               console.log("Creating new territory counter");
               congregationTerritoryCounter = await prisma.territoryCounter.create({
                 data: {
                   congregationID: congregationID,
-                  nextTerritoryID: 1,
+                  nextTerritoryID: 0,
                 },
               });
             }
@@ -50,8 +50,10 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
             ) {
               args.data.territoryID = congregationTerritoryCounter.nextTerritoryID + 1;
               console.log(
-                "Updating territory counter to:",
-                congregationTerritoryCounter.nextTerritoryID + 1
+                "Updating territoryID from:",
+                congregationTerritoryCounter.nextTerritoryID,
+                "to",
+                args.data.territoryID
               );
             }
 

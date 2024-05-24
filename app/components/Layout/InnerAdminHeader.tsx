@@ -32,7 +32,7 @@ export default function InnerHeader() {
 
   // Conditional rendering based on the user's role
   return (
-    <header className="bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex lg:justify-around pl-14 lg:px-0 items-center justify-between fixed w-full z-10 text-white">
+    <header className="bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex lg:justify-around pl-5 md:pl-10 lg:pl-14 lg:px-0 items-center justify-between fixed w-full z-10 text-white">
       <a href={`/${check}/dashboard`} className="flex justify-center items-center gap-2">
         <Image alt="Territory Assistant Logo" src={logo} width={50} height={50} />
         <div className="w-20">Territory Assistant</div>

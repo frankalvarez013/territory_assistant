@@ -6,7 +6,7 @@ import AddUsers from "./addUsers";
 export default function Page() {
   return (
     <DashboardLayout>
-      <div className="h-full flex flex-row justify-around items-center flex-wrap">
+      <div className="h-full mt-10 flex flex-row justify-around items-center flex-wrap">
         <div className="mt-5 mb-7 p-10 border-greye border-2 rounded-2xl">
           <div className="text-5xl">Create Users</div>
           <div className=" mt-5 font-light text-slate-500">

@@ -34,7 +34,6 @@ export async function POST(
     const session = (await getServerSession(authOptions)) as CustomSession;
     if (session?.user?.isAdmin) {
       console.log("Creating Terr");
-      console.log(defaultVal);
       const newTerritory = await prisma.query.territory.create({
         args: {
           data: {
@@ -48,15 +47,16 @@ export async function POST(
         },
         query: (args) => prisma.territory.create(args),
       });
-      console.log("finished....");
+      console.log("finished Adding Territory....");
       try {
         let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
           where: { congregationID: session.user.congID! },
         });
+        console.log("changing this counter to +=1", congregationTerritoryCounter);
         if (congregationTerritoryCounter) {
           await prisma.territoryCounter.update({
             where: { congregationID: session.user.congID! },
-            data: { nextTerritoryID: congregationTerritoryCounter?.nextTerritoryID },
+            data: { nextTerritoryID: congregationTerritoryCounter?.nextTerritoryID + 1 },
           });
         }
       } catch (e) {
@@ -94,7 +94,6 @@ export async function POST(
 export async function GET(
   request: NextRequest
 ): Promise<NextResponse<Territory | Territory[] | ErrorResponse>> {
-  console.log("inside GET");
   const terrID = request.nextUrl.searchParams.get("terrID");
   const congID = request.nextUrl.searchParams.get("congID");
   const terrIdCheck = terrID ? parseInt(terrID) : undefined;
@@ -103,13 +102,11 @@ export async function GET(
   let getCong: Congregation | null = null;
   try {
     if (congID && terrID) {
-      console.log("checking... congID", congID, "terrID", terrID);
       getCong = await prisma.congregation.findUnique({
         where: {
           id: congID,
         },
       });
-      console.log(getCong);
       if (typeof terrIdCheck === "number" && getCong) {
         getTerritory = await prisma.territory.findUnique({
           where: {
@@ -136,7 +133,6 @@ export async function GET(
         currentUser: true,
       },
     });
-    console.log("bruh here is the info:", getTerritory);
     if (!getTerritory) {
       return NextResponse.json({ message: "Territory Record not found" });
     }

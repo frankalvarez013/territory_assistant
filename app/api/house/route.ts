@@ -4,7 +4,8 @@ import prisma from "@/prisma/client";
 import type { House } from "@prisma/client";
 import { CustomSession, ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
+
 const createHouseSchema = z.object({
   territoryID: z.number(),
   StreetAd: z.string().min(1).max(255),

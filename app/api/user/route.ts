@@ -4,7 +4,8 @@ import prisma from "@/prisma/client";
 import { TerritoryComment, User } from "@prisma/client";
 import { CustomSession, ErrorResponse } from "@/app/types/api";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
+
 import { Role } from "@prisma/client";
 const createUserSchema = z.object({
   name: z.string().min(1).max(255),

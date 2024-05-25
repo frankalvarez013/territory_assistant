@@ -1,6 +1,6 @@
 import DashboardLayout from "@/app/components/Layout/DashboardLayout";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
 import { redirect } from "next/navigation";
 import EditTerritories from "./editTerritories";
 import AddTerritories from "./AddTerritories";

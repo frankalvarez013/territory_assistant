@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
+
 import { redirect } from "next/navigation";
 import TerritoryTransfer from "./TerritoryTransfer";
 import DashboardLayout from "../../components/Layout/DashboardLayout";

@@ -1,15 +1,12 @@
-// app/api/upload/route.ts
 import { uploadImage } from "../../utils/cloudinary";
 import { Buffer } from "buffer";
 import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import prisma from "@/prisma/client";
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+
+// No need for the config export anymore
+
 function makeid(length = 10) {
   var result = "";
   var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -28,7 +25,7 @@ async function ensureDirectoryExists(dirPath: string) {
   }
 }
 
-export async function POST(req: NextRequest): Promise<Response> {
+export const POST = async (req: NextRequest): Promise<Response> => {
   try {
     console.log("trying...");
     const form = await req.formData();
@@ -91,4 +88,4 @@ export async function POST(req: NextRequest): Promise<Response> {
       status: 500,
     });
   }
-}
+};

@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { nextRequestToIncomingMessage } from "./app/utils/functions";
@@ -35,11 +35,13 @@ async function isAuthenticated(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   // console.log("Checking Authentication");
   const sessionReq = nextRequestToIncomingMessage(req);
-  const session = await getSession({ req: sessionReq });
-  if (token && session && session.user) {
-    // console.log("Authenticated - Approved!");
-    return NextResponse.next();
-  }
+  // const session = await getSession({ req: sessionReq });
+  // if (token && session && session.user) {
+  //   // console.log("Authenticated - Approved!");
+  //   return NextResponse.next();
+  // }
+  return NextResponse.next();
+
   return null;
 }
 

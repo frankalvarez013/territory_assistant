@@ -5,7 +5,8 @@ import prisma from "@/prisma/client";
 import type { Congregation, Territory, User } from "@prisma/client";
 import { CustomSession, ErrorResponse, territoryJSON } from "@/app/types/api";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
+
 import { TerritoryComment } from "@prisma/client";
 const createTerritorySchema = z.object({
   location: z.string().min(1).max(255),

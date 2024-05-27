@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("authorizing...");
+        console.log("Authorizing...");
         if (!credentials?.email || !credentials.password) {
           return null;
         }
@@ -63,17 +63,27 @@ export const authOptions: NextAuthOptions = {
       };
     },
     async redirect({ url, baseUrl }) {
-      const response = await fetch(`${baseUrl}/api/auth/session`);
-      const { user } = await response.json();
-      if (user) {
-        if (user.isAdmin) {
-          return `${baseUrl}/admin/dashboard`;
-        } else if (user.isGeneralAdmin) {
-          return `${baseUrl}/gAdmin/dashboard`;
+      try {
+        console.log("Redirect callback - baseUrl:", baseUrl);
+        const response = await fetch(`${baseUrl}/api/auth/session`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch session - Status: ${response.status}`);
         }
-        return `${baseUrl}/user/dashboard`;
+        const data = await response.json();
+        const { user } = data;
+        if (user) {
+          if (user.isAdmin) {
+            return `${baseUrl}/admin/dashboard`;
+          } else if (user.isGeneralAdmin) {
+            return `${baseUrl}/gAdmin/dashboard`;
+          }
+          return `${baseUrl}/user/dashboard`;
+        }
+        return `${baseUrl}/`;
+      } catch (error) {
+        console.error("Error in redirect callback:", error);
+        return baseUrl; // Fallback to baseUrl in case of error
       }
-      return `${baseUrl}/`;
     },
     jwt: ({ token, user }) => {
       if (user) {

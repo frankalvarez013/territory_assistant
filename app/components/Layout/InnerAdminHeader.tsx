@@ -11,7 +11,7 @@ export default function InnerHeader() {
   let check = null;
 
   // console.log("Status and Session:", status, session);
-  console.log(session.user);
+  // console.log(session.user);
   if (session?.user) {
     if (session.user.isAdmin) {
       check = "admin";

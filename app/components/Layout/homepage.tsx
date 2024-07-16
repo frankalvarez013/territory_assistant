@@ -28,7 +28,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="relative h-auto min-[428px]:h-full flex flex-wrap p-10 justify-evenly items-center text-2xl text-white text bg-[url('./public/images/mountains.jpg')] bg-opacity-10 bg-cover pt-20">
+    <div className="h-auto min-[428px]:h-full flex flex-wrap p-10 justify-evenly items-center text-2xl text-white text bg-[url('./public/images/mountains.jpg')] bg-opacity-10 bg-cover pt-20">
       <div className="absolute inset-0 bg-slate-500 bg-opacity-70"></div>
       <div className="z-10 gap-y-3 flex flex-col">
         <h5 className="font-thin">Welcome to</h5>

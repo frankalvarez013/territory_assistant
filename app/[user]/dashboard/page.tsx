@@ -19,7 +19,7 @@ export default async function Dashboard({ params }: { params: { user: string } }
   if (params.user === "user") {
     return (
       <DashboardLayout>
-        <div className="h-full flex flex-col justify-center items-center">
+        <div className=" h-full flex flex-col justify-center items-center">
           <div className=" w-10/12 h-5/6 flex flex-col">
             <div className="ml-0 mt-16 md:ml-20">
               <div className="text-5xl">Welcome, {capitalizedName}</div>

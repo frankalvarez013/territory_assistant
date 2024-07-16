@@ -118,7 +118,7 @@ export default async function Dashboard({ params }: { params: { user: string } }
                 <div className="h-full flex flex-col">
                   <div className=" h-5/6 flex justify-around flex-wrap">
                     <div className="  h-full mt-10 p-4 lg:p-10 border-greye border-2 rounded-2xl">
-                      <div className="lg:text-4xl md:text-4xl text-3xl whitespace-normal">
+                      <div className="lg:text-4xl md:text-4xl text-2xl whitespace-normal">
                         Create Congregations
                       </div>
 
@@ -127,7 +127,7 @@ export default async function Dashboard({ params }: { params: { user: string } }
                       </div>
                     </div>
                     <div className="  h-full mt-10 px-5 pt-8 lg:p-10 border-greye border-2 rounded-2xl">
-                      <div className="lg:text-4xl text-3xl">View Congregations</div>
+                      <div className="lg:text-4xl md:text-4xl text-2xl ">View Congregations</div>
                       <div className=" mt-5 font-light text-slate-500">
                         <EditCongregation></EditCongregation>
                       </div>

@@ -10,8 +10,7 @@ const config: Config = {
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       boxShadow: {
         "all-angles":
@@ -19,8 +18,15 @@ const config: Config = {
       },
       colors: {
         "regal-blue": "rgb(65,105,225)",
-        greye: "rgb(221,221,221)",
-        darkgrey: "rgb(68,68,68)",
+        "greye": "rgb(221,221,221)",
+        "darkgrey": "rgb(68,68,68)",
+      },
+      screens: {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
+        "2xl": "1536px",
       },
     },
   },

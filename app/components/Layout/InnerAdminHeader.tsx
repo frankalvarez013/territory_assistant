@@ -11,17 +11,18 @@ export default function InnerHeader() {
   let check = null;
 
   // console.log("Status and Session:", status, session);
-
+  console.log(session.user);
   if (session?.user) {
     if (session.user.isAdmin) {
       check = "admin";
     } else if (session.user.isGeneralAdmin) {
+      console.log("bruv");
       check = "gAdmin";
     } else {
       check = "user";
     }
   }
-
+  console.log(check);
   // Early return for when there's no user role determined
   if (!check) {
     console.log("NOT INSIDE - No user role determined");
@@ -32,39 +33,63 @@ export default function InnerHeader() {
 
   // Conditional rendering based on the user's role
   return (
-    <header className="bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex lg:justify-around pl-5 md:pl-10 lg:pl-14 lg:px-0 items-center justify-between fixed w-full z-10 text-white">
+    <header className="bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex md:justify-around pl-5 md:pl-10 md:px-0 items-center justify-between fixed w-full z-10 text-white">
       <a href={`/${check}/dashboard`} className="flex justify-center items-center gap-2">
         <Image alt="Territory Assistant Logo" src={logo} width={50} height={50} />
         <div className="w-20">Territory Assistant</div>
       </a>
-      <div className="lg:hidden">
-        <Nav></Nav>
-      </div>
-
       {check === "gAdmin" && (
-        <nav className="justify-end gap-10 basis-1/2 hidden lg:flex">
-          <LogoutButton />
-        </nav>
+        <>
+          <nav className="justify-end gap-10 basis-1/2 hidden md:flex">
+            <LogoutButton />
+          </nav>
+          <div className="md:hidden">
+            <Nav>
+              <LogoutButton />
+            </Nav>
+          </div>
+        </>
       )}
-
       {check === "admin" && (
-        <nav className="justify-end gap-10  hidden lg:flex basis-1/2">
-          <a href={`/${check}/dashboard`}>Dashboard</a>
-          <a href={`/${check}/dashboard/request`}>Requests</a>
-          <a href={`/${check}/dashboard/manageUsers`}>Manage Users</a>
-          <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
-          <a href={`/${check}/dashboard/contact`}>Contact</a>
-          <LogoutButton />
-        </nav>
+        <>
+          <nav className="justify-end gap-10  hidden md:flex basis-1/2">
+            <a href={`/${check}/dashboard`}>Dashboard</a>
+            <a href={`/${check}/dashboard/request`}>Requests</a>
+            <a href={`/${check}/dashboard/manageUsers`}>Manage Users</a>
+            <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
+            <a href={`/${check}/dashboard/contact`}>Contact</a>
+            <LogoutButton />
+          </nav>
+          <div className="md:hidden">
+            <Nav>
+              <a href={`/${check}/dashboard`}>Dashboard</a>
+              <a href={`/${check}/dashboard/request`}>Requests</a>
+              <a href={`/${check}/dashboard/manageUsers`}>Manage Users</a>
+              <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
+              <a href={`/${check}/dashboard/contact`}>Contact</a>
+              <LogoutButton />
+            </Nav>
+          </div>
+        </>
       )}
 
       {check === "user" && (
-        <nav className="justify-end gap-10  hidden lg:flex basis-1/2">
-          <a href={`/${check}/dashboard`}>Dashboard</a>
-          <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
-          <a href={`/${check}/dashboard/request`}>Manage Requests</a>
-          <LogoutButton />
-        </nav>
+        <>
+          <nav className="justify-end gap-10  hidden md:flex basis-1/2">
+            <a href={`/${check}/dashboard`}>Dashboard</a>
+            <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
+            <a href={`/${check}/dashboard/request`}>Manage Requests</a>
+            <LogoutButton />
+          </nav>
+          <div className="md:hidden">
+            <Nav>
+              <a href={`/${check}/dashboard`}>Dashboard</a>
+              <a href={`/${check}/dashboard/manageTerritories`}>Manage Territories</a>
+              <a href={`/${check}/dashboard/request`}>Manage Requests</a>
+              <LogoutButton />
+            </Nav>
+          </div>
+        </>
       )}
     </header>
   );

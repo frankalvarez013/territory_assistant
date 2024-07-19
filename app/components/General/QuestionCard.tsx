@@ -40,12 +40,12 @@ const Question = (props: Question) => {
         ) : (
           <form action="" className=" " onSubmit={handleSubmit}>
             <h1 className="text-black mb-4">
-              Make sure you share the Service Account Email in the excel file or else it won&apos;t
-              work.
+              Make sure you share the Service Account Email in the google sheets file or else it
+              won&apos;t work.
             </h1>
             <h1>Service Account Email: generalserv@vast-reality-401722.iam.gserviceaccount.com</h1>
             <label htmlFor="sheetID" className="text-black font-semibold">
-              Insert Excel Sheet ID
+              Insert JUST the Google Sheet ID - see example in input bar
             </label>
             <br />
             <input

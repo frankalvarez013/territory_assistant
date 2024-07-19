@@ -33,7 +33,8 @@ export default function CancelModal({
           });
           let subject = "Territory Assistant: Admin Priveleges Granted";
           let message = `You have been given the Administration Role for your Congregation! Use the listed url to access the website and login with your credentials:
-           <u>territoryAssistant.com/admin/dashboard`;
+           <a href="https://territoryAssistant.app/signIn">TerritoryAssistant.app`;
+
           let email = entity.email;
           console.log("bro", entity);
           const response = await fetch("/api/sendEmail", {
@@ -72,7 +73,7 @@ export default function CancelModal({
         if (entity.addUser) {
           let subject = "Territory Assistant: User Priveleges Granted";
           let message = `You have been given a User Role for your Congregation! Use the listed url to access the website and login with your credentials:
-         <u>territoryAssistant.com/user/dashboard`;
+         <a href="https://territoryAssistant.app/signIn">TerritoryAssistant.app</a>`;
           let email = entity.email;
           const response = await fetch("/api/sendEmail", {
             method: "POST",

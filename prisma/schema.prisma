@@ -125,7 +125,7 @@ model House {
   territoryID    String
   congregationID String
   Direction      String
-  StreetAd       String       @unique @db.VarChar(255)
+  StreetAd       String       @db.VarChar(255)
   observation    Observation  @default(EMPTY)
   status         Status       @default(LLEGA)
   comment        String?      @db.VarChar(255)

@@ -15,7 +15,7 @@ export default async function Page() {
   return (
     <DashboardLayout>
       <div className="h-full flex flex-col justify-center items-center">
-        <div className="mt-24 h-5/6 flex flex-row justify-around items-center flex-wrap">
+        <div className="mt-24 h-5/6 flex flex-row justify-around flex-wrap">
           {session?.user?.isAdmin ? (
             <div className="  w-[45%] min-w-[420px] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
               <div className="text-5xl">Create Territories</div>
@@ -31,12 +31,12 @@ export default async function Page() {
             </div>
           ) : null}
 
-          <div className=" w-[45%] min-w-[420px] h-full mt-10 p-10 border-greye border-2 rounded-2xl">
+          <div className=" w-[45%] min-w-[420px] h-full mt-10 px-10 pt-10 border-greye border-2 rounded-2xl">
             <div className="text-5xl">View Territories</div>
             <div className=" mt-5 font-light text-slate-500">
               Click on one of the territories to edit it
             </div>
-            <div className=" text-darkgrey mb-7 text-xl font-semibold flex gap-5 flex-col mt-5">
+            <div className=" text-darkgrey mb-4 text-xl font-semibold flex gap-5 flex-col mt-5 overflow-x-hidden overflow-y-scroll h-[33rem]">
               <EditTerritories
                 congID={session?.user?.congID!}
                 userID={session?.user?.id!}

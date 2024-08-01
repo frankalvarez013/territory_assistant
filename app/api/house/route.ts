@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/utils/authOptions";
 
 const createHouseSchema = z.object({
-  territoryID: z.number(),
+  territoryID: z.string().min(1).max(255),
   StreetAd: z.string().min(1).max(255),
   dateVisited: z.date().optional(),
   comment: z.string().max(255).optional(),
@@ -93,7 +93,7 @@ export async function GET(
   const houseidParam = request.nextUrl.searchParams.get("houseID");
 
   const houseID = houseidParam ? parseInt(houseidParam) : undefined;
-  const territoryID = idParam ? parseInt(idParam) : undefined;
+  const territoryID = idParam ? idParam : undefined;
   let getHouse: House | House[] | null = null;
   if (territoryID && houseID && congID) {
     getHouse = await prisma.house.findUnique({
@@ -128,7 +128,7 @@ export async function PATCH(
   const idParam = request.nextUrl.searchParams.get("territoryID");
   const congID = request.nextUrl.searchParams.get("congregationID");
   const idHouseParam = request.nextUrl.searchParams.get("houseID");
-  const territoryID = idParam ? parseInt(idParam) : undefined;
+  const territoryID = idParam ? idParam : undefined;
   const houseID = idHouseParam ? parseInt(idHouseParam) : undefined;
   const body = await request.json();
   const validation = updateHouseSchema.safeParse(body);
@@ -167,7 +167,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse<House |
   const idParam = request.nextUrl.searchParams.get("terrId");
   const streetdAdParam = request.nextUrl.searchParams.get("streetAd");
   const streetAd = streetdAdParam ? streetdAdParam : undefined;
-  const territoryID = idParam ? parseInt(idParam) : undefined;
+  const territoryID = idParam ? idParam : undefined;
   try {
     const deletedHouse = await prisma.house.delete({
       where: {

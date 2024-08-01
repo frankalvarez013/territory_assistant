@@ -12,7 +12,7 @@ import "./styles.css";
 export default function Page({ params }: TerritoryParams) {
   const [isOpen, setIsOpen] = useState(false);
   const [image, setImage] = useState<Imaage>({
-    territoryID: 0, // Assuming `0` can be a default placeholder value
+    territoryID: "0", // Assuming `0` can be a default placeholder value
     congregationID: "",
     publicId: "",
     format: "",

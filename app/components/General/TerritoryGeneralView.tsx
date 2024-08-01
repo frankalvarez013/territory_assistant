@@ -101,7 +101,7 @@ export default function TerritoryGeneralView(props: terrcongProps) {
                             element.observation === Observation.PERRO_EN_CASA
                             ? "🟢"
                             : "🔴"
-                          : "🔴" || "🔴"}
+                          : "🔴"}
                       </div>
                       {element.StreetAd}
                     </td>

@@ -12,7 +12,7 @@ import Upload from "@/app/[user]/dashboard/manageTerritories/edit/[congID]/[terr
 import { TerritoryCheckProps, TerritoryEditAdmin } from "@/app/types/common";
 import "./styles.css";
 export default function TerritoryGeneralView(props: TerritoryCheckProps) {
-  console.log(props);
+  console.log(props, "props");
   const [val, setVal] = useState<Territory | null>(null);
   const [houses, setHouses] = useState<House[] | null>(null);
   const [user, setUser] = useState<User[] | null>(null);
@@ -31,6 +31,7 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
         },
       });
       const res1 = await res.json();
+      console.log(props.congID, props.territoryID);
       console.log("territory", res1);
       setVal(res1);
 
@@ -98,7 +99,7 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
                 </label>
                 <button
                   onClick={(e) => {
-                    fetchEditTerritory(parseInt(props.territoryID, 10), props.congID, location);
+                    fetchEditTerritory(props.territoryID, props.congID, location);
                   }}
                   className="ml-3"
                 >

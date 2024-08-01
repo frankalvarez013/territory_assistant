@@ -50,7 +50,7 @@ enum TerritoryComment {
 }
 
 model Territory {
-  territoryID     Int
+  territoryID     String
   location        String           @unique @db.VarChar(255)
   houses          House[]
   AssignedDate    DateTime?
@@ -68,7 +68,7 @@ model Territory {
 }
 
 model Image {
-  territoryID    Int
+  territoryID    String
   congregationID String
   publicId       String    @unique
   format         String
@@ -103,7 +103,7 @@ model Request {
   id             Int          @id @default(autoincrement())
   observation    Observation?
   comment        String?
-  territoryID    Int
+  territoryID    String
   houseID        Int
   congregationID String
   approval       Boolean?
@@ -112,7 +112,7 @@ model Request {
 }
 
 model HouseCounter {
-  territoryID    Int
+  territoryID    String
   congregationID String
   nextHouseID    Int
 
@@ -122,7 +122,7 @@ model HouseCounter {
 
 model House {
   houseID        Int
-  territoryID    Int
+  territoryID    String
   congregationID String
   Direction      String
   StreetAd       String       @unique @db.VarChar(255)

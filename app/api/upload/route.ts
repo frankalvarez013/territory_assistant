@@ -31,7 +31,7 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     const form = await req.formData();
     const file = form.get("image");
     const congregationID = form.get("congregationID")!.toString();
-    const territoryID = parseInt(form.get("territoryID")!.toString(), 10);
+    const territoryID = form.get("territoryID")!.toString();
     if (!file || !(file instanceof Blob)) {
       throw new Error("File not found in the form data");
     }

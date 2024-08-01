@@ -1,7 +1,7 @@
 //use zod to check if the isAdmin is true or false "strings"
 import { House, Observation } from "@prisma/client";
 export default async function fetchAddHouse(
-  territoryID: number,
+  territoryID: string,
   Direction: string,
   StreetAd: string,
   comment: string,

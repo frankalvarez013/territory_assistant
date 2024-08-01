@@ -10,7 +10,7 @@ export default function Approval(props: ApprovalProps) {
   const handleAcceptChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.id === "accept") {
       await fetchAcceptRequest({
-        territoryID: parseInt(props.territoryID, 10),
+        territoryID: props.territoryID,
         houseID: parseInt(props.houseID, 10),
         congregationID: props.congregationID,
         observation: props.observation as Observation | null,

@@ -5,7 +5,7 @@ import { House, Request } from "@prisma/client";
 import { Observation } from "@prisma/client";
 import { ErrorResponse } from "@/app/types/api";
 const createRequestSchema = z.object({
-  territoryID: z.number().positive().finite(),
+  territoryID: z.string().min(1).max(255),
   houseID: z.number().positive().finite(),
   congregationID: z.string().min(1).max(255),
   observation: z.nativeEnum(Observation).optional(),
@@ -13,7 +13,7 @@ const createRequestSchema = z.object({
   //use zode to check if the isAdmin is true or false "strings"
 });
 const updateRequestSchema = z.object({
-  territoryID: z.number().positive().finite(),
+  territoryID: z.string().min(1).max(255),
   houseID: z.number().positive().finite(),
   congregationID: z.string().min(1).max(255),
   observation: z.nativeEnum(Observation).optional(),
@@ -54,7 +54,7 @@ export async function GET(
 ): Promise<NextResponse<Request | Request[] | ErrorResponse | ZodIssue[]>> {
   const terrID = request.nextUrl.searchParams.get("territoryID");
   const congID = request.nextUrl.searchParams.get("congID");
-  const terrIDCheck = terrID ? parseInt(terrID) : undefined;
+  const terrIDCheck = terrID ? terrID : undefined;
   let getRequest: Request | Request[] | null = null;
   try {
     if (terrIDCheck && congID) {

@@ -5,6 +5,7 @@ import CancelModal from "../CancelModal";
 import { TerritoryErrorFormHandler } from "@/app/types/error";
 export default function AddTerritories() {
   const [location, setLocation] = useState("");
+  const [territoryID, setTerritoryID] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState({});
   const [formErrorHandler, setFormErrorHandler] = useState<TerritoryErrorFormHandler>({});
@@ -12,6 +13,28 @@ export default function AddTerritories() {
     <div>
       <form>
         <div>
+          <label htmlFor="territoryID">Territory Number:</label>
+          <input
+            className={`block border-2 border-gray-400 ${
+              formErrorHandler && formErrorHandler.territoryID
+                ? `border-red-500 text-red-500`
+                : `border-gray-300`
+            }`}
+            type="text"
+            id="territoryID"
+            name="territoryID"
+            value={territoryID}
+            onChange={(e) => {
+              setTerritoryID(e.target.value);
+            }}
+            required
+          ></input>
+          {formErrorHandler && formErrorHandler.territoryID && (
+            <p className="text-red-500 text-xs italic">
+              {" "}
+              This is already a registered Number with that ID, please use another.
+            </p>
+          )}
           <label htmlFor="location">Location:</label>
           <input
             className={`block border-2 border-gray-400 ${
@@ -42,6 +65,7 @@ export default function AddTerritories() {
             event?.preventDefault();
             setSelectedEntity({
               data: {
+                territoryID: territoryID,
                 location: location,
               },
 

@@ -1,6 +1,6 @@
 // import { hash } from "bcryptjs";
 
-export default async function fetchAddTerritory(location: string) {
+export default async function fetchAddTerritory(territoryID: string, location: string) {
   console.log("INSIDE");
   try {
     const res = await fetch(`/api/territory`, {
@@ -8,7 +8,7 @@ export default async function fetchAddTerritory(location: string) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ location }),
+      body: JSON.stringify({ territoryID, location }),
     });
     if (!res.ok) {
       const errorData = await res.json();

@@ -1,5 +1,5 @@
 export default async function handleUserChange(
-  territoryID: number,
+  territoryID: string,
   userID: string,
   congregationID: string
 ) {

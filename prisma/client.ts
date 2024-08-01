@@ -24,45 +24,50 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
 
     // Adding custom methods to the existing Prisma client
     prisma.query = {
+      // territory: {
+      //   async create({ args, query }: TerritoryCreateCustomArgs) {
+      //     console.log("Prisma territory.create method called");
+      //     try {
+      //       console.log("Arguments:", args);
+      //       const { congregationID } = args.data;
+
+      //       let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
+      //         where: { congregationID: congregationID },
+      //       });
+
+      //       if (congregationTerritoryCounter === null && congregationID) {
+      //         console.log("Creating new territory counter");
+      //         congregationTerritoryCounter = await prisma.territoryCounter.create({
+      //           data: {
+      //             congregationID: congregationID,
+      //             nextTerritoryID: 0,
+      //           },
+      //         });
+      //       }
+
+      //       if (
+      //         typeof congregationTerritoryCounter?.nextTerritoryID === "number" &&
+      //         congregationTerritoryCounter != null
+      //       ) {
+      //         args.data.territoryID = congregationTerritoryCounter.nextTerritoryID + 1;
+      //         console.log(
+      //           "Updating territoryID from:",
+      //           congregationTerritoryCounter.nextTerritoryID,
+      //           "to",
+      //           args.data.territoryID
+      //         );
+      //       }
+
+      //       return query(args);
+      //     } catch (error) {
+      //       console.error("Error in territory.create:", error);
+      //       throw error;
+      //     }
+      //   },
+      // },
       territory: {
         async create({ args, query }: TerritoryCreateCustomArgs) {
-          console.log("Prisma territory.create method called");
-          try {
-            console.log("Arguments:", args);
-            const { congregationID } = args.data;
-
-            let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
-              where: { congregationID: congregationID },
-            });
-
-            if (congregationTerritoryCounter === null && congregationID) {
-              console.log("Creating new territory counter");
-              congregationTerritoryCounter = await prisma.territoryCounter.create({
-                data: {
-                  congregationID: congregationID,
-                  nextTerritoryID: 0,
-                },
-              });
-            }
-
-            if (
-              typeof congregationTerritoryCounter?.nextTerritoryID === "number" &&
-              congregationTerritoryCounter != null
-            ) {
-              args.data.territoryID = congregationTerritoryCounter.nextTerritoryID + 1;
-              console.log(
-                "Updating territoryID from:",
-                congregationTerritoryCounter.nextTerritoryID,
-                "to",
-                args.data.territoryID
-              );
-            }
-
-            return query(args);
-          } catch (error) {
-            console.error("Error in territory.create:", error);
-            throw error;
-          }
+          return query(args);
         },
       },
       house: {

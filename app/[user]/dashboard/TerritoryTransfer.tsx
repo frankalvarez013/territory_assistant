@@ -48,7 +48,16 @@ export default function TerritoryTransfer() {
           </thead>
           <tbody>
             {territories
-              .sort((a, b) => a.territoryID - b.territoryID)
+              .sort((a, b) => {
+                const numA = parseInt(a.territoryID, 10);
+                const numB = parseInt(b.territoryID, 10);
+
+                if (numA !== numB) {
+                  return numA - numB;
+                }
+
+                return a.territoryID.localeCompare(b.territoryID);
+              })
               .map((element: ExtendedTerritory) => (
                 <tr
                   key={element.territoryID}
@@ -92,7 +101,16 @@ export default function TerritoryTransfer() {
 
       <div className="block md:hidden min-w-full ">
         {territories
-          .sort((a, b) => a.territoryID - b.territoryID)
+          .sort((a, b) => {
+            const numA = parseInt(a.territoryID, 10);
+            const numB = parseInt(b.territoryID, 10);
+
+            if (numA !== numB) {
+              return numA - numB;
+            }
+
+            return a.territoryID.localeCompare(b.territoryID);
+          })
           .map((element: ExtendedTerritory) => (
             <div
               key={element.territoryID}

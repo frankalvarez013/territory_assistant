@@ -29,7 +29,14 @@ export default function EditTerritories(props: PrivelegeCheck) {
     return <h1>...Checking</h1>;
   }
   const territoryResults = territories
-    .sort((a, b) => a.territoryID - b.territoryID)
+    .sort((a, b) => {
+      const numA = parseInt(a.territoryID, 10);
+      const numB = parseInt(b.territoryID, 10);
+      if (numA !== numB) {
+        return numA - numB;
+      }
+      return a.territoryID.localeCompare(b.territoryID);
+    })
     .map((territory, index) => {
       if (
         !session?.user?.isAdmin &&

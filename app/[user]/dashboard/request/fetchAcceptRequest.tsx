@@ -15,7 +15,7 @@ export default async function FetchAcceptRequest({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      territoryID: +territoryID,
+      territoryID: territoryID,
       houseID: +houseID,
       congregationID: congregationID,
       observation: observation,

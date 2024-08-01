@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 
-export default function FetchTerritory(id: number) {
+export default function FetchTerritory(id: string) {
   console.log(id);
   useEffect(() => {
     async function brv() {

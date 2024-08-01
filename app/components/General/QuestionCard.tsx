@@ -8,14 +8,16 @@ type Question = {
 const Question = (props: Question) => {
   const [isHidden, setIsHidden] = useState(true);
   const [sheetID, setsheetID] = useState("");
+  const [territoryID, setTerritoryID] = useState("");
+
   const [sheetName, setsheetName] = useState("");
   const [loadingModal, setLoadingModal] = useState(false);
   const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     console.log(sheetID, sheetName);
     setLoadingModal(true);
-    const res = await createExcelTerritory(sheetID, sheetName);
-    window.location.reload();
+    const res = await createExcelTerritory(sheetID, sheetName, territoryID);
+    // window.location.reload();
   };
   const toggleVisibility = () => {
     setIsHidden(!isHidden);
@@ -75,6 +77,18 @@ const Question = (props: Question) => {
                 setsheetName(event.target.value);
               }}
             />
+            <label htmlFor="territoryID">Territory Number:</label>
+            <input
+              className={`block border-2 border-gray-400 `}
+              type="text"
+              id="territoryID"
+              name="territoryID"
+              value={territoryID}
+              onChange={(e) => {
+                setTerritoryID(e.target.value);
+              }}
+              required
+            ></input>
             <br />
             <button
               className="mt-5 bg-blue-400 text-black p-3 rounded-3xl"

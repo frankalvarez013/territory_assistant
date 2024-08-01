@@ -9,10 +9,12 @@ import { authOptions } from "@/app/utils/authOptions";
 
 import { TerritoryComment } from "@prisma/client";
 const createTerritorySchema = z.object({
+  territoryID: z.string().min(1).max(255),
   location: z.string().min(1).max(255),
 });
+
 const updateTerritorySchema = z.object({
-  territoryID: z.number().positive().finite(),
+  territoryID: z.string().min(1).max(255),
   congregationID: z.string().min(1).max(255),
   currentUserID: z.string().min(1).max(255).optional(),
   dateLength: z.string().min(1).max(255).optional(),
@@ -24,7 +26,6 @@ export async function POST(
   const body = await request.json();
   const validation = createTerritorySchema.safeParse(body);
   const timeUserKeepsTerritory = 30;
-  const defaultVal = 1;
   const date = new Date();
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
@@ -38,8 +39,8 @@ export async function POST(
       const newTerritory = await prisma.query.territory.create({
         args: {
           data: {
-            territoryID: defaultVal,
-            location: body.location,
+            territoryID: validation.data.territoryID,
+            location: validation.data.location,
             AssignedDate: date,
             ExperiationDate: endDate,
             congregationID: session.user.congID!,
@@ -49,26 +50,6 @@ export async function POST(
         query: (args) => prisma.territory.create(args),
       });
       console.log("finished Adding Territory....");
-      try {
-        let congregationTerritoryCounter = await prisma.territoryCounter.findUnique({
-          where: { congregationID: session.user.congID! },
-        });
-        console.log("changing this counter to +=1", congregationTerritoryCounter);
-        if (congregationTerritoryCounter) {
-          await prisma.territoryCounter.update({
-            where: { congregationID: session.user.congID! },
-            data: { nextTerritoryID: congregationTerritoryCounter?.nextTerritoryID + 1 },
-          });
-        }
-      } catch (e) {
-        console.error("Error creating new territory:\n", e);
-
-        // Return an error response
-        return NextResponse.json(
-          { message: `TerritoryCounter UPDATE Transaction failed:\n ${e}` },
-          { status: 500 }
-        );
-      }
 
       return NextResponse.json(
         {
@@ -97,7 +78,8 @@ export async function GET(
 ): Promise<NextResponse<Territory | Territory[] | ErrorResponse>> {
   const terrID = request.nextUrl.searchParams.get("terrID");
   const congID = request.nextUrl.searchParams.get("congID");
-  const terrIdCheck = terrID ? parseInt(terrID) : undefined;
+  const terrIdCheck = terrID ? terrID : undefined;
+  console.log(terrID, congID);
   const session = (await getServerSession(authOptions)) as CustomSession;
   let getTerritory: Territory | Territory[] | null = null;
   let getCong: Congregation | null = null;
@@ -108,7 +90,8 @@ export async function GET(
           id: congID,
         },
       });
-      if (typeof terrIdCheck === "number" && getCong) {
+      if (terrIdCheck && getCong) {
+        console.log("");
         getTerritory = await prisma.territory.findUnique({
           where: {
             territoryID_congregationID: {
@@ -120,6 +103,7 @@ export async function GET(
             houses: true,
           },
         });
+        console.log("oi", getCong);
       }
       if (!getTerritory) {
         return NextResponse.json({ message: "Territory Record not found" });
@@ -260,7 +244,7 @@ export async function DELETE(
   request: NextRequest
 ): Promise<NextResponse<Territory | ErrorResponse>> {
   const terrId = request.nextUrl.searchParams.get("terrId");
-  const terrIdCheck = terrId ? parseInt(terrId) : undefined;
+  const terrIdCheck = terrId ? terrId : undefined;
   const congId = request.nextUrl.searchParams.get("congId");
   const congIdCheck = congId ? congId : undefined;
   if (typeof terrIdCheck === typeof 0 && congIdCheck && terrIdCheck != null) {

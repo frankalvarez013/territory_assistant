@@ -35,7 +35,7 @@ const AddHouseRow = React.memo((props: AddHouseRowProps) => {
     if (!localState.comment || !localState.comment.trim()) localState.comment = localState.comment;
     console.log("Saving", localState, "terrID: ", props.territoryID);
     const res = await fetchAddHouse(
-      parseInt(props.territoryID),
+      props.territoryID,
       localState.Direction,
       localState.StreetAd,
       localState.comment,

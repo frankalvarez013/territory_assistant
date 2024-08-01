@@ -6,7 +6,7 @@ export type ErrorResponse = {
 };
 
 export type territoryJSON = {
-  territoryID: number;
+  territoryID: string;
   location: string;
   AssignedDate: string | null;
   ExperiationDate: string | null;

@@ -1,5 +1,5 @@
 export default async function editTerritory(
-  territoryID: number,
+  territoryID: string,
   congregationID: string,
   location: string
 ) {

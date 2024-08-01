@@ -21,7 +21,11 @@ const observationMapping: { [key: string]: Observation } = {
   "Candado": Observation.CANDADO,
   // Add other mappings as necessary
 };
-export default async function createExcelTerritory(sheetID: string, sheetName: string) {
+export default async function createExcelTerritory(
+  sheetID: string,
+  sheetName: string,
+  territoryID: string
+) {
   try {
     const response = await fetch("/api/sheets", {
       method: "POST",
@@ -48,6 +52,7 @@ export default async function createExcelTerritory(sheetID: string, sheetName: s
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        territoryID: territoryID,
         location: data.values[2][2],
       }),
     });

@@ -56,6 +56,9 @@ export default async function createExcelTerritory(
         location: data.values[2][2],
       }),
     });
+    if (!createTerritory.ok) {
+      throw new Error(`Failed to create territory: ${createTerritory.statusText}`);
+    }
     const territory = await createTerritory.json();
     const totalObj = parseSheet(data.values, territory);
 

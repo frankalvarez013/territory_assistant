@@ -9,11 +9,12 @@ export default function AddTerritories() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState({});
   const [formErrorHandler, setFormErrorHandler] = useState<TerritoryErrorFormHandler>({});
+  console.log("Error Handler: ", formErrorHandler);
   return (
     <div>
       <form>
         <div>
-          <label htmlFor="territoryID">Territory Number:</label>
+          <label htmlFor="territoryID">Add New Territory #:</label>
           <input
             className={`block border-2 border-gray-400 ${
               formErrorHandler && formErrorHandler.territoryID
@@ -29,13 +30,13 @@ export default function AddTerritories() {
             }}
             required
           ></input>
-          {formErrorHandler && formErrorHandler.territoryID && (
+          {formErrorHandler && (
             <p className="text-red-500 text-xs italic">
               {" "}
               This is already a registered Number with that ID, please use another.
             </p>
           )}
-          <label htmlFor="location">Location:</label>
+          <label htmlFor="location">Add New Location:</label>
           <input
             className={`block border-2 border-gray-400 ${
               formErrorHandler && formErrorHandler.location

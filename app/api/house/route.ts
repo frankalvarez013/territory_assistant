@@ -164,21 +164,32 @@ export async function PATCH(
 }
 
 export async function DELETE(request: NextRequest): Promise<NextResponse<House | ErrorResponse>> {
-  const idParam = request.nextUrl.searchParams.get("terrId");
-  const streetdAdParam = request.nextUrl.searchParams.get("streetAd");
-  const streetAd = streetdAdParam ? streetdAdParam : undefined;
+  const idParam = request.nextUrl.searchParams.get("terrID");
+  const houseIDParam = request.nextUrl.searchParams.get("houseID");
+  const congIDParam = request.nextUrl.searchParams.get("congID");
   const territoryID = idParam ? idParam : undefined;
-  try {
-    const deletedHouse = await prisma.house.delete({
-      where: {
-        territoryID: territoryID ?? undefined,
-        StreetAd: streetAd ?? undefined,
-      },
-    });
-    return NextResponse.json(deletedHouse, { status: 201 });
-  } catch (e) {
+  const houseID = houseIDParam ? parseInt(houseIDParam, 10) : undefined;
+  const congID = congIDParam ? congIDParam : undefined;
+  if (territoryID && houseID && congID) {
+    try {
+      const deletedHouse = await prisma.house.delete({
+        where: {
+          territoryID_houseID_congregationID: {
+            territoryID: territoryID,
+            houseID: houseID,
+            congregationID: congID,
+          },
+        },
+      });
+      return NextResponse.json(deletedHouse, { status: 201 });
+    } catch (e) {
+      return NextResponse.json({
+        message: `House DELETE Transaction failed:\n ${e}`,
+      });
+    }
+  } else {
     return NextResponse.json({
-      message: `House DELETE Transaction failed:\n ${e}`,
+      message: `House DELETE Transaction failed:`,
     });
   }
 }

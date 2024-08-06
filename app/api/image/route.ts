@@ -14,11 +14,10 @@ export async function GET(
   let getImage: Immage | null = null;
   try {
     if (territoryID && congregationID) {
-      const parsedTerrId = parseInt(territoryID, 10);
       getImage = await prisma.image.findUnique({
         where: {
           territoryID_congregationID: {
-            territoryID: parsedTerrId,
+            territoryID: territoryID,
             congregationID: congregationID,
           },
         },

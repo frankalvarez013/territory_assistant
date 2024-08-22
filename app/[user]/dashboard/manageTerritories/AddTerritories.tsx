@@ -9,7 +9,6 @@ export default function AddTerritories() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState({});
   const [formErrorHandler, setFormErrorHandler] = useState<TerritoryErrorFormHandler>({});
-  console.log("Error Handler: ", formErrorHandler);
   return (
     <div>
       <form>
@@ -30,7 +29,7 @@ export default function AddTerritories() {
             }}
             required
           ></input>
-          {formErrorHandler && (
+          {formErrorHandler && formErrorHandler.territoryID && (
             <p className="text-red-500 text-xs italic">
               {" "}
               This is already a registered Number with that ID, please use another.

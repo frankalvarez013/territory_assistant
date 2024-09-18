@@ -2,7 +2,7 @@ import { Observation } from "@prisma/client";
 
 export default async function postRequest(
   houseID: number,
-  territoryID: number,
+  territoryID: string,
   congregationID: string,
   observation: string,
   comment: string

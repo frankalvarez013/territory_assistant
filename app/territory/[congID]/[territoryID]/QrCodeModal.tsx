@@ -4,7 +4,6 @@ import Image from "next/image";
 import { QRCodeModalProps } from "@/app/types/common";
 
 export default function QrCodeModal(props: QRCodeModalProps) {
-  console.log("bruv", props.congregation, props.territory);
   const [qrCode, setQrCode] = useState("");
   useEffect(() => {
     async function GETQR() {
@@ -23,7 +22,6 @@ export default function QrCodeModal(props: QRCodeModalProps) {
   if (!qrCode) {
     return <h1>Loading</h1>;
   }
-  console.log("OI", qrCode);
   return (
     <Transition appear show={props.isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeEditModal} onClick={closeEditModal}>

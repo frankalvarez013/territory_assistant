@@ -16,16 +16,13 @@ export default function InnerHeader() {
     if (session.user.isAdmin) {
       check = "admin";
     } else if (session.user.isGeneralAdmin) {
-      console.log("bruv");
       check = "gAdmin";
     } else {
       check = "user";
     }
   }
-  console.log(check);
   // Early return for when there's no user role determined
   if (!check) {
-    console.log("NOT INSIDE - No user role determined");
     return (
       <header className="bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white"></header>
     );

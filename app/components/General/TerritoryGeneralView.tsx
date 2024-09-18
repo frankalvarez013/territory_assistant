@@ -48,13 +48,15 @@ export default function TerritoryGeneralView(props: terrcongProps) {
               </th>
             </tr>
             <tr className="bg-blue-200 border-b border-gray-200 py-4 px-4">
-              <th className="border-r border-gray-200">Calles</th>
+              <th className="border-r border-gray-200">
+                <b>Calles</b>
+              </th>
               <th colSpan={2} className="border-r border-gray-200">
                 {territory.location}
               </th>
 
               <th colSpan={2} className="py-2 px-4 border-l border-gray-200  ">
-                TERRITORIO: {territory.territoryID}
+                <b>TERRITORIO:</b> {territory.territoryID}
               </th>
             </tr>
             <tr className="bg-blue-200 border-l border-b border-gray-200 py-4 px-4">

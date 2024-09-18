@@ -10,7 +10,7 @@ function SelectObservation(props: SelectObservationProps) {
         const houseID = e.target.id;
         onUserChange(
           parseInt(houseID, 10),
-          parseInt(props.territoryID, 10),
+          props.territoryID,
           props.congregationID,
           e.target.value,
           ""

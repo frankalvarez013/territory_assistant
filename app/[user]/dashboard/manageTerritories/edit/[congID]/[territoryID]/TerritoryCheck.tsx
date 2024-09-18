@@ -1,3 +1,4 @@
+"use client";
 import { useSession } from "next-auth/react";
 import TerritoryGeneralADMIN from "@/app/components/General/TerritoryGeneralADMIN";
 import TerritoryGeneralUser from "@/app/components/General/TerritoryGeneralUSER";

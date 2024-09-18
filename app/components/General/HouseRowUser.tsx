@@ -77,7 +77,9 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
               : ""}
             {house.StreetAd}
           </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200">{house.Direction}</td>
+          <td className="py-1 px-2 border-r border-b border-gray-200 min-w-[150px] whitespace-nowrap overflow-hidden text-ellipsis ">
+            {house.Direction}
+          </td>
           <td className="py-1 px-2 border-r border-b border-gray-200 ">
             <SelectObservation
               uniqueOption={emptyState.observation}

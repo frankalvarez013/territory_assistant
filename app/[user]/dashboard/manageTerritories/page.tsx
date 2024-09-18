@@ -8,7 +8,6 @@ import QuestionCard from "../../../components/General/QuestionCard";
 import { CustomSession } from "@/app/types/api";
 export default async function Page() {
   const session = (await getServerSession(authOptions)) as CustomSession | null;
-  // console.log(session);
   if (!session) {
     redirect("/api/auth/signin");
   }

@@ -4,7 +4,7 @@ import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import prisma from "@/prisma/client";
-
+import sharp from "sharp";
 // No need for the config export anymore
 
 function makeid(length = 10) {
@@ -47,9 +47,15 @@ export const POST = async (req: NextRequest): Promise<Response> => {
     const fileData = await file.arrayBuffer();
     const buffer = Buffer.from(fileData);
 
+    const image = sharp(buffer);
+    const metadata = await image.metadata();
+
+    const width = metadata.width;
+    const height = metadata.height;
+
     // Convert the buffer to Base64 and save the image
     const base64Data = buffer.toString("base64");
-    uploadImage(base64Data, "jpg")
+    uploadImage(base64Data, "jpg", width, height)
       .then(async (imageData) => {
         console.log("Image uploaded successfully:", imageData);
         console.log("upserting...");

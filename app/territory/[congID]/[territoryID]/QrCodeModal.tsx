@@ -4,11 +4,12 @@ import Image from "next/image";
 import { QRCodeModalProps } from "@/app/types/common";
 
 export default function QrCodeModal(props: QRCodeModalProps) {
+  console.log("bruv", props.congregation, props.territory);
   const [qrCode, setQrCode] = useState("");
   useEffect(() => {
     async function GETQR() {
       const resQRCode = await fetch(
-        `https://quickchart.io/qr?text=http://localhost:3000/props.territory/${props.congregation}/${props.territory}`
+        `https://quickchart.io/qr?text=https://www.territoryassistant.app/territory/${props.congregation}/${props.territory}`
       );
       const imageBlob = await resQRCode.blob(); // Process response as a Blob
       const imageUrl = URL.createObjectURL(imageBlob); // Create a local URL to the blob object

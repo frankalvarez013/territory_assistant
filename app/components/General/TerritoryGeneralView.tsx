@@ -38,9 +38,9 @@ export default function TerritoryGeneralView(props: terrcongProps) {
   }
   const observationValues: Observation[] = Object.values(Observation);
   return (
-    <div className="min-w-[48rem]">
+    <div className="min-w-[35rem]">
       <div className="table ">
-        <table className="table ">
+        <table className="table md:text-base text-[.75rem]/[1.25rem]">
           <thead>
             <tr>
               <th colSpan={5} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
@@ -53,7 +53,7 @@ export default function TerritoryGeneralView(props: terrcongProps) {
                 {territory.location}
               </th>
 
-              <th colSpan={2} className="py-2 px-4 border-l border-gray-200">
+              <th colSpan={2} className="py-2 px-4 border-l border-gray-200  ">
                 TERRITORIO: {territory.territoryID}
               </th>
             </tr>
@@ -78,12 +78,11 @@ export default function TerritoryGeneralView(props: terrcongProps) {
             </tr>
           </thead>
           <tbody className="text-center">
-            <tr className=" bg-blue-400 text-black underline font-bold ">
+            <tr className=" bg-blue-400 text-black underline font-bold">
               <td className="py-1 px-2 border-r border-gray-200">Direccion</td>
               <td className="py-1 px-2 border-r border-gray-200">Calle</td>
               <td className="py-1 px-2 border-r border-gray-200">Observacion</td>
               <td className="py-1 px-2 border-r border-gray-200">Comentario</td>
-
               <td className="py-1 px-2">Fecha de Visita</td>
             </tr>
             {territory.houses
@@ -91,7 +90,7 @@ export default function TerritoryGeneralView(props: terrcongProps) {
               .sort((a: House, b: House) => a.houseID - b.houseID) // Sort the copy based on houseID
               .map((element: House) => {
                 return (
-                  <tr key={element.houseID} className=" border-b border-gray-200">
+                  <tr key={element.houseID} className=" border-b border-gray-200 ">
                     <td className="py-1 px-2 border-r border-gray-200 flex">
                       <div className="">
                         {" "}
@@ -105,8 +104,10 @@ export default function TerritoryGeneralView(props: terrcongProps) {
                       </div>
                       {element.StreetAd}
                     </td>
-                    <td className="py-1 px-2 border-r border-gray-200">{element.Direction}</td>
-                    <td className="py-1 px-2 border-r border-gray-200">
+                    <td className="py-1 px-2 border-r border-gray-200 min-w-[150px] whitespace-nowrap overflow-hidden text-ellipsis ">
+                      {element.Direction}
+                    </td>
+                    <td className="py-1 px-2 border-r border-gray-200 ">
                       <SelectObservation
                         uniqueOption={element.observation}
                         options={observationValues}

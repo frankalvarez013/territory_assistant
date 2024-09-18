@@ -5,7 +5,7 @@ import React from "react";
 function SelectObservation(props: SelectObservationProps) {
   return (
     <select
-      className=" bg-white  border-2 rounded-xl px-3"
+      className=" bg-white  border-2 rounded-xl px-3 w-full  whitespace-nowrap overflow-hidden text-ellipsis"
       onChange={(e) => {
         const houseID = e.target.id;
         onUserChange(

@@ -36,7 +36,7 @@ export default function Page({ params }: TerritoryParams) {
     <DashboardLayout>
       <div className="flex flex-col mt-10 lg:justify-center lg:items-center w-full overflow-auto">
         <div className="flex justify-evenly mb-10 items-center gap-20">
-          <header className="text-2xl md:text-4xl lg:text-6xl text-center">
+          <header className="text-5xl md:text-5xl lg:text-6xl font-bold text-center">
             Territory {params.territoryID}
           </header>
           <button className="">

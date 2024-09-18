@@ -1,5 +1,4 @@
 import { Observation, Territory, Status, House, User } from "@prisma/client";
-
 import cancel from "../../public/images/cancel.svg";
 import check1 from "../../public/images/check1.svg";
 import { useEffect, useState, useMemo, useCallback } from "react";
@@ -76,7 +75,7 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
     <div className="min-w-[65rem]">
       <Upload congregationID={props.congID} territoryID={props.territoryID}></Upload>
       <div className="table">
-        <table className="table">
+        <table className="table md:text-base text-[.75rem]/[1.25rem]">
           <thead>
             <tr>
               <th colSpan={5} className="bg-blue-400 border-b border-gray-200 py-4 px-4">
@@ -127,7 +126,7 @@ export default function TerritoryGeneralView(props: TerritoryCheckProps) {
               </th>
             </tr>
             <tr className="bg-blue-200  border-gray-200 py-4 px-4">
-              <th className="border-r border-b border-gray-200 py-1 px-2 ">Encargado:</th>
+              <th className="border-r border-b border-gray-200 py-1 px-2">Encargado:</th>
               <th className="py-1 px-2 border-r border-b border-gray-200" colSpan={2}>
                 {user[0].name}
               </th>

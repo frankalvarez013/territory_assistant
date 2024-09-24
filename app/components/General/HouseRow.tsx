@@ -78,7 +78,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
     >
       {isEditable ? (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200 w-min">
+          <td className="py-1 px-2 border-r border-b border-gray-200">
             {house.status === Status.LLEGA
               ? house.observation === Observation.INGLES ||
                 house.observation === Observation.OTRO_IDIOMA ||
@@ -96,6 +96,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
               <input
                 name="StreetAd"
                 type="text"
+                className="w-[80%]"
                 placeholder={house.StreetAd}
                 onChange={(e) => handleChange(e)}
               />
@@ -113,12 +114,13 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
               <input
                 name="Direction"
                 type="text"
+                className="w-full"
                 placeholder={house.Direction}
                 onChange={(e) => handleChange(e)}
               />
             </label>
           </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200 ">
+          <td className="py-1 px-2 border-r border-b  border-gray-200">
             <SelectObservation
               uniqueOption={emptyState.observation}
               options={observationValues}
@@ -138,6 +140,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
               <input
                 name="comment"
                 type="text"
+                className="w-full"
                 placeholder={house.comment || ""}
                 onChange={(e) => handleChange(e)}
               />
@@ -162,7 +165,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
         </>
       ) : (
         <>
-          <td className="py-1 px-2 border-r border-b border-gray-200 w-min">
+          <td className="py-1 px-2 border-r border-b border-gray-200">
             {house.status === Status.LLEGA
               ? house.observation === Observation.INGLES ||
                 house.observation === Observation.OTRO_IDIOMA ||
@@ -196,7 +199,7 @@ const HouseRow = React.memo(({ house, makeEditable, isEditable }: HouseRowProps)
               />
             </label>
           </td>
-          <td className="py-1 px-2 border-r border-b border-gray-200 " style={{ width: "300px" }}>
+          <td className="py-1 px-2 border-r border-b border-gray-200">
             <SelectObservation
               uniqueOption={emptyState.observation}
               options={observationValues}

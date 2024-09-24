@@ -28,7 +28,7 @@ function SelectObservation(props: SelectAdminObservationProps) {
   }, [props.isEditable, props.localSave, props.uniqueOption]);
   return (
     <select
-      className=" bg-white  border-2 rounded-xl px-3"
+      className=" bg-white border-2 w-full min-w-32 rounded-xl px-3"
       onChange={handleChange}
       // onBlur={handleBlur}
       value={selectedOption || Observation.EMPTY}

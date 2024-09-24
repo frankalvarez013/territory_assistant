@@ -37,7 +37,7 @@ export default function TerritoryCheck(params: TerritoryCheckProps) {
     <>
       <div className="flex justify-evenly mb-10 items-center gap-20">
         <header className="text-5xl md:text-5xl lg:text-6xl font-bold text-center">
-          EDIT Territory {params.territoryID}
+          EDIT Territory #{params.territoryID}
         </header>
         <button className="">
           <Image src={qrCode} alt="Picture of QR Code Icon" width={100} height={100}></Image>

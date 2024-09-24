@@ -24,13 +24,13 @@ export default function InnerHeader() {
   // Early return for when there's no user role determined
   if (!check) {
     return (
-      <header className="bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex justify-around items-center fixed w-full z-10 text-white"></header>
+      <header className="bg-[rgb(65,105,225)] h-16 flex justify-around items-center fixed w-full z-10 text-white"></header>
     );
   }
 
   // Conditional rendering based on the user's role
   return (
-    <header className="bg-[rgb(65,105,225)] bg-opacity-95 h-16 flex md:justify-around pl-5 md:pl-10 md:px-0 items-center justify-between fixed w-full z-10 text-white">
+    <header className="bg-[rgb(65,105,225)] h-16 flex md:justify-around pl-5 md:pl-10 md:px-0 items-center justify-between fixed w-full z-10 text-white">
       <a href={`/${check}/dashboard`} className="flex justify-center items-center gap-2">
         <Image alt="Territory Assistant Logo" src={logo} width={50} height={50} />
         <div className="w-20">Territory Assistant</div>

@@ -41,6 +41,13 @@ export default function TerritoryGeneralView(props: terrcongProps) {
     <div className="min-w-[35rem]">
       <div className="table ">
         <table className="table md:text-base text-[.75rem]/[1.25rem]">
+          <colgroup>
+            <col className="w-[13%]" />
+            <col className="w-[14%]" />
+            <col className="w-[22%]" />
+            <col className="w-[15%]" />
+            <col className="w-[15%]" />
+          </colgroup>
           <thead>
             <tr>
               <th colSpan={5} className="bg-blue-400 border-b border-gray-200 py-4 px-4">

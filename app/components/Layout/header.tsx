@@ -19,7 +19,7 @@ export default function Header() {
           <>
             <XIcon className="h-6 w-6" aria-hidden="true" />
 
-            <nav className="z-50 absolute bg-[rgb(65,105,225)] right-0 pt-4 h-40 bg-opacity-95 justify-evenly flex flex-col basis-1/2 px-3">
+            <nav className="z-50 absolute bg-[rgb(65,105,225)] right-0 pt-4 h-40 justify-evenly flex flex-col basis-1/2 px-3">
               <a href="/" className=" hover:text-black">
                 Home Page
               </a>

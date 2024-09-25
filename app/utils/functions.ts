@@ -15,3 +15,10 @@ export function nextRequestToIncomingMessage(req: NextRequest): IncomingMessage 
 
   return message as IncomingMessage;
 }
+export function formatDate(dateString: Date) {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is zero-based
+  const day = String(date.getDate()).padStart(2, "0"); // Day of the month
+  const year = date.getFullYear(); // Full year
+  return `${month}/${day}/${year}`; // Return formatted date
+}

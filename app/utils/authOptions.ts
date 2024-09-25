@@ -67,7 +67,7 @@ export const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       try {
-        console.log("Redirect callback - baseUrl:", baseUrl);
+        // console.log("Redirect callback - baseUrl:", baseUrl);
         const response = await fetch(`${baseUrl}/api/auth/session`);
         if (!response.ok) {
           throw new Error(`Failed to fetch session - Status: ${response.status}`);

@@ -185,6 +185,6 @@ const prismaClientSingleton = (): ExtendedPrismaClient => {
 
 const prisma = prismaClientSingleton();
 
-console.log(`Prisma client initialization count: ${globalThis.prismaInitializationCount}`);
+// console.log(`Prisma client initialization count: ${globalThis.prismaInitializationCount}`);
 
 export default prisma;

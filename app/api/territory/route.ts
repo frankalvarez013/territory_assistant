@@ -18,7 +18,7 @@ const updateTerritorySchema = z.object({
   congregationID: z.string().min(1).max(255),
   currentUserID: z.string().min(1).max(255).optional(),
   dateLength: z.string().min(1).max(255).optional(),
-  location: z.string().min(1).max(255).optional(),
+  date: z.string().min(1).max(255).optional(),
 });
 export async function POST(
   request: NextRequest
@@ -151,23 +151,22 @@ export async function PATCH(
   request: NextRequest
 ): Promise<NextResponse<Territory | ErrorResponse | ZodIssue[]>> {
   const body = await request.json();
-  console.log(body);
   const validation = updateTerritorySchema.safeParse(body);
   const session = await getServerSession(authOptions);
-  console.log("terr update");
   if (!validation.success) {
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
-  console.log("rearranging update info");
-
   const updateData: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(body)) {
-    if (value !== undefined) {
-      if (key === "dateLength") {
-        const dateLengthStr: string = body.dateLength;
+    if (value !== undefined && key != "dateLength") {
+      if (key === "date") {
+        console.log(validation.data.dateLength);
+        const dateLengthStr: string = validation.data.dateLength || "30";
         const dateLength = parseInt(dateLengthStr);
-        const date = new Date();
-        const endDate = ExperiationDateCalculator(date, dateLength);
+        const date = new Date(validation.data.date!);
+        console.log("new dateee obj", date);
+        console.log(dateLength);
+        const endDate = ExperiationDateCalculator(date, dateLength + 1);
         updateData["AssignedDate"] = date;
         updateData["ExperiationDate"] = endDate;
       } else {
@@ -223,7 +222,6 @@ export async function PATCH(
       console.log("terr updated");
 
       if (!updatedTerritory) {
-        console.log("()OI");
         return NextResponse.json({ message: "Territory Record was not found" });
       }
       return NextResponse.json(updatedTerritory, { status: 201 });

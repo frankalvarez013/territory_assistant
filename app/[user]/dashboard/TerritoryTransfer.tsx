@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import SelectComponent from "../../components/Interact/selectTerrOwner";
 import { Territory, TerritoryComment, User } from "@prisma/client";
 import { ExtendedTerritory } from "@/app/types/common";
-
+import patchTerrOwner from "../../components/fetch/patchTerrOwner";
+import TerritorySlot from "./TerritorySlot";
+import TerritoryCol from "./TerritoryCol";
 export default function TerritoryTransfer() {
   const [territories, setTerritories] = useState<ExtendedTerritory[] | null>(null);
   const [users, setUsers] = useState<User[] | null>(null);
-
+  const [date, setDate] = useState({});
+  const [dateLength, setDateLength] = useState("30");
   useEffect(() => {
     async function fetchUserData() {
       const response = await fetch(`/api/territory`);
@@ -30,11 +33,28 @@ export default function TerritoryTransfer() {
     }
     fetchUserData();
   }, []);
-
   if (!territories || !users) return <div>Loading territories data...</div>;
 
   return (
     <div className="container mx-auto p-4">
+      <div className="flex gap-16 justify-center items-center">
+        <div className="basis-2/3 font-mono text-gray-400">
+          Change The Amount of Days a Publisher Can Hold a Territory. Will Only Be Applied Once You
+          Change The Assigned Date
+        </div>
+        <div className=" basis-1/3">
+          <label htmlFor="quantity">Date Length:</label>
+          <input
+            className="border-2  border-gray-200 ml-4 w-10"
+            type="number"
+            value={dateLength}
+            onChange={(e) => {
+              setDateLength(e.target.value);
+            }}
+            placeholder="30"
+          />
+        </div>
+      </div>
       <div className="hidden md:block h-full">
         <table className="w-full border-collapse text-center h-full">
           <thead>
@@ -59,46 +79,16 @@ export default function TerritoryTransfer() {
                 return a.territoryID.localeCompare(b.territoryID);
               })
               .map((element: ExtendedTerritory) => (
-                <tr
+                <TerritoryCol
                   key={element.territoryID}
-                  className={`border-t border-gray-200 ${
-                    element.activity == TerritoryComment.Available ? "bg-green-200" : ""
-                  }`}
-                >
-                  <td className="border-t border-gray-200 py-4 px-4 hover:underline hover:to-blue-300">
-                    <a href={`/territory/${element.congregationID}/${element.territoryID}`}>
-                      {element.territoryID}
-                    </a>
-                  </td>
-                  <td className="border-t border-gray-200 py-4 px-4">
-                    <SelectComponent
-                      uniqueOption={
-                        element.currentUser && !element.currentUser.isAdmin
-                          ? element.currentUser
-                          : { id: element.currentUser?.id ?? "", name: "Add a User" }
-                      }
-                      options={users}
-                      territoryId={element.territoryID}
-                      congregationId={element.congregationID}
-                    ></SelectComponent>
-                  </td>
-                  <td className="border-t border-gray-200 py-4 px-4">
-                    {element.AssignedDate
-                      ? new Date(element.AssignedDate).toLocaleDateString("en-US")
-                      : "..."}
-                  </td>
-                  <td className="border-t border-gray-200 py-4 px-4">
-                    {element.ExperiationDate
-                      ? new Date(element.ExperiationDate).toLocaleDateString("en-US")
-                      : "..."}
-                  </td>
-                  <td className="border-t border-gray-200 py-4 px-4">{element.activity}</td>
-                </tr>
+                  element={element}
+                  users={users}
+                  dateLength={dateLength}
+                />
               ))}
           </tbody>
         </table>
       </div>
-
       <div className="block md:hidden min-w-full ">
         {territories
           .sort((a, b) => {
@@ -112,50 +102,12 @@ export default function TerritoryTransfer() {
             return a.territoryID.localeCompare(b.territoryID);
           })
           .map((element: ExtendedTerritory) => (
-            <div
+            <TerritorySlot
               key={element.territoryID}
-              className={`mb-4 p-4 border rounded-lg min-w-44 ${
-                element.activity == TerritoryComment.Available ? "bg-green-200" : ""
-              }`}
-            >
-              <div className="mb-2 flex ">
-                <strong>Territory:</strong>
-                <a
-                  href={`/territory/${element.congregationID}/${element.territoryID}`}
-                  className="hover:underline hover:to-blue-300"
-                >
-                  {element.territoryID}
-                </a>
-              </div>
-              <div className="mb-2">
-                <strong>Publisher:</strong>
-                <SelectComponent
-                  uniqueOption={
-                    element.currentUser && !element.currentUser.isAdmin
-                      ? element.currentUser
-                      : { id: element.currentUser?.id ?? "", name: "Add a User" }
-                  }
-                  options={users}
-                  territoryId={element.territoryID}
-                  congregationId={element.congregationID}
-                ></SelectComponent>
-              </div>
-              <div className="mb-2">
-                <strong>Assigned Date:</strong>
-                {element.AssignedDate
-                  ? new Date(element.AssignedDate).toLocaleDateString("en-US")
-                  : "..."}
-              </div>
-              <div className="mb-2">
-                <strong>Expiration Date:</strong>
-                {element.ExperiationDate
-                  ? new Date(element.ExperiationDate).toLocaleDateString("en-US")
-                  : "..."}
-              </div>
-              <div className="mb-2">
-                <strong>Comments:</strong> {element.activity}
-              </div>
-            </div>
+              element={element}
+              users={users}
+              dateLength={dateLength}
+            />
           ))}
       </div>
     </div>

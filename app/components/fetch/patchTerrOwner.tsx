@@ -1,7 +1,9 @@
 export default async function handleUserChange(
   territoryID: string,
   userID: string,
-  congregationID: string
+  congregationID: string,
+  dateLength: string | null,
+  date: Date | null = null
 ) {
   try {
     const response = await fetch("/api/territory", {
@@ -13,6 +15,8 @@ export default async function handleUserChange(
         territoryID: territoryID,
         currentUserID: userID,
         congregationID: congregationID,
+        dateLength: dateLength,
+        date: date,
       }),
     });
 

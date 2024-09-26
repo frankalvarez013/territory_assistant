@@ -17,8 +17,8 @@ const updateTerritorySchema = z.object({
   territoryID: z.string().min(1).max(255),
   congregationID: z.string().min(1).max(255),
   currentUserID: z.string().min(1).max(255).optional(),
-  dateLength: z.string().min(1).max(255).optional(),
-  date: z.string().min(1).max(255).optional(),
+  dateLength: z.string().min(1).max(255).optional().nullable(),
+  date: z.string().min(1).max(255).optional().nullable(),
 });
 export async function POST(
   request: NextRequest
@@ -154,6 +154,7 @@ export async function PATCH(
   const validation = updateTerritorySchema.safeParse(body);
   const session = await getServerSession(authOptions);
   if (!validation.success) {
+    console.log("sessionoof");
     return NextResponse.json(validation.error.errors, { status: 400 });
   }
   const updateData: { [key: string]: any } = {};

@@ -35,11 +35,11 @@ export default function TerritoryCheck(params: TerritoryCheckProps) {
   console.log(qrCode);
   return (
     <>
-      <div className="flex justify-evenly mb-10 items-center gap-20">
-        <header className="text-5xl md:text-5xl lg:text-6xl font-bold text-center">
+      <div className="flex justify-evenly mb-10 items-center gap-3 sm:gap-20 flex-wrap">
+        <header className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-nowrap sm:pl-11">
           EDIT Territory #{params.territoryID}
         </header>
-        <button className="">
+        <button className=" min-w-16">
           <Image src={qrCode} alt="Picture of QR Code Icon" width={100} height={100}></Image>
         </button>
       </div>

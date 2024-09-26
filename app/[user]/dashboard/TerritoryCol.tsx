@@ -51,6 +51,8 @@ const TerritoryCol = memo(function TerritoryItem({ element, users, dateLength }:
           options={users}
           territoryId={element.territoryID}
           congregationId={element.congregationID}
+          dateLength={dateLength}
+          assignedDate={element.AssignedDate!}
         ></SelectComponent>
       </td>
       <td className="border-t border-gray-200 py-4 px-4">

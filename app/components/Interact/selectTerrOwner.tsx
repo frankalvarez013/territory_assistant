@@ -10,8 +10,14 @@ function SelectComponent(props: SelectComponentProps) {
     <select
       className=" bg-white  border-2 rounded-xl px-3"
       onChange={async (e) => {
-        await onUserChange(props.territoryId, e.target.value, props.congregationId);
-        window.location.reload();
+        await onUserChange(
+          props.territoryId,
+          e.target.value,
+          props.congregationId,
+          props.dateLength,
+          props.assignedDate
+        );
+        // window.location.reload();
       }}
     >
       <option value={props.uniqueOption.id}>

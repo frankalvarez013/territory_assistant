@@ -90,6 +90,8 @@ interface LocalState {
   dateVisited: string;
 }
 type SelectComponentProps = {
+  dateLength: string;
+  assignedDate: Date;
   uniqueOption: User | { id: string; name: string };
   options: User[];
   territoryId: string;

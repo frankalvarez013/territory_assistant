@@ -57,6 +57,8 @@ const TerritorySlot = memo(function TerritoryItem({ element, users, dateLength }
           options={users}
           territoryId={element.territoryID}
           congregationId={element.congregationID}
+          dateLength={dateLength}
+          assignedDate={element.AssignedDate!}
         />
       </div>
       <div className="mb-2">

@@ -35,11 +35,11 @@ export default function Page({ params }: TerritoryParams) {
   return (
     <DashboardLayout>
       <div className="flex flex-col mt-10 lg:justify-center lg:items-center w-full overflow-auto">
-        <div className="flex justify-evenly mb-10 items-center gap-20">
-          <header className="text-5xl md:text-5xl lg:text-6xl font-bold text-center text-nowrap pl-11">
+        <div className="flex justify-evenly mb-10 items-center gap-3 sm:gap-20 flex-wrap">
+          <header className="text-5xl md:text-5xl lg:text-6xl font-bold text-center text-nowrap sm:pl-11">
             Territory #{params.territoryID}
           </header>
-          <button className="">
+          <button className="min-w-16">
             <Image
               src={qrcode}
               alt="Picture of QR Code Icon"

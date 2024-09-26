@@ -2,7 +2,7 @@ export default async function handleUserChange(
   territoryID: string,
   userID: string,
   congregationID: string,
-  dateLength: string | null,
+  dateLength: string | null = null,
   date: Date | null = null
 ) {
   try {
